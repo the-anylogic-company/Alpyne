@@ -1,0 +1,65 @@
+AnyLogic Model End User Agreement
+Document number 20180614
+THE MODEL PROVIDED TO YOU HEREUNDER WAS DEVELOPED THROUGH THE USE OF ANYLOGIC NORTH AMERICA, LLC’s (“AnyLogic”) PROPRIETARY SOFTWARE. IN ORDER FOR YOU TO USE THE MODEL(S), YOU, THE END USER, AGREE TO ABIDE BY THE TERMS AND CONDITIONS HEREIN WHEN UTILIZING THE MODELS DESCRIBED BELOW. 
+BY RECEIVING, TRANSFERRING, OR OTHERWISE USING THE MODELS PURSUANT TO THE TERMS OF THIS AGREEMENT, YOU REPRESENT THAT YOU ARE DULY AUTHORIZED TO ENTER INTO THIS AGREEMENT WITH ANYLOGIC AND THAT YOU ACCEPT AND AGREE TO BE BOUND BY THE TERMS AND CONDITIONS OF THIS AGREEMENT. IF YOU DO NOT ACCEPT AND AGREE TO BE BOUND BY THIS AGREEMENT, YOU MAY NOT USE THE MODEL.
+1. Definitions
+a. AnyLogic Software. The “AnyLogic Software” shall mean the software owned by AnyLogic that is used to create the Models (defined below) pursuant to the terms of the Software Licensing Agreement for AnyLogic 8.x.x. 
+b. AnyLogic Cloud. The “AnyLogic Cloud” means the specific edition of AnyLogic software, platform, or other services developed, operated, and maintained by AnyLogic, that are accessible via AnyLogic’s cloud-based web service at https://cloud.anylogic.com or another designated website or IP address, or ancillary online or offline products and services provided by AnyLogic.
+c. AnyLogic Private Cloud. The “AnyLogic Private Cloud” means the software developed and owned by AnyLogic that is installed and operates on a Licensee’s private network pursuant to the Software Licensing Agreement for AnyLogic Private Cloud and provides functionality similar to AnyLogic Cloud.
+d. Model(s). The “Model” or “Models” means a simulation model created through the use of the AnyLogic Software and provided to End User hereunder. 
+e. Model Output. “Model Output” means the output and data that is derived from running a Model. 
+f. Licensee. “Licensee” is the individual or entity that entered into an agreement with AnyLogic for the right and license to use the Software.
+g. Authorized Licensee User(s). An “Authorized Licensee User” is any individual employed by Licensee within the same business unit, internal division or group that was authorized to access, use, or otherwise exploit the Software. For the avoidance of doubt, an employee of the same company as Licensee but of a different business unit is not an Authorized Licensee User.
+h. End User. An “End User” is you, an individual or entity, which receives the Models from Licensee or Authorized Licensee User pursuant to this End User Agreement to use in the regular course of your affairs, but not for resale, modification, distribution or exploitation by third parties without AnyLogic’s prior written consent. 
+i. Intellectual Property Rights. “Intellectual Property Rights” means patents of any type, design rights, utility models or other similar invention rights, copyrights and any and all derivatives, mask work rights, trade secret or confidentiality rights, trademarks, trade names and service marks and any other intangible property rights, including applications and registrations for any of the foregoing, in any country, arising under statutory or common law or by contract and whether or not perfected, now existing or hereafter filed, issued, or acquired.
+2. Restrictions on Use and Distribution of Models
+Subject to the terms and conditions of this Agreement, End User shall have the following rights and responsibilities with respect to the Models:
+a. The End User has a limited right to use, reproduce, transfer, or otherwise exploit the Models only in accordance with the permitted uses set forth in the attached Exhibit A (the “Acceptable Uses”). 
+b. If the End User is not sure whether its desired use of the Models is permitted under the Acceptable Uses, then End User should consider the desired use to be prohibited, and End User must obtain AnyLogic’s prior written consent, which may be withheld in AnyLogic’s sole discretion, before engaging in the desired use. 
+c. This End User Agreement must accompany any dissemination, sale, or other transfer of the Model to a third party by End User.
+3. Indemnification
+End User agrees to defend, indemnify, and hold harmless AnyLogic and any parent, subsidiary, affiliate, director, officer, employee, licensor, distributor, supplier, agent, reseller, owner, or operator of AnyLogic from and against any and all claims, damages, obligations, losses, liabilities, costs or debt, and expenses (including but not limited to attorney’s fees) arising from End Users use of the Models. 
+4. Injunctive Relief
+End User agrees that money damages will not be an adequate remedy if End User breaches Sections 2 of this Agreement. Therefore, AnyLogic will be entitled to an injunction or similar equitable relief. This Section 4 in no way limits AnyLogic’s ability to pursue any other legal or equitable remedies against End User.
+5. Intellectual Property Ownership
+AnyLogic (and its licensors, where applicable) shall exclusively own all right, title, and interest, including all related Intellectual Property Rights, in and to the AnyLogic Software and the AnyLogic Software as embodied within any Models. This Agreement is not a sale and does not convey to End User any rights of ownership in or related to the AnyLogic Software or the Intellectual Property Rights owned by AnyLogic. AnyLogic’s name, logo, and the product names associated with the AnyLogic Software are trademarks of AnyLogic or third parties, and no right or license is granted to use them. 
+6. Disclaimer
+THE MODEL(S) SUBJECT TO THIS AGREEMENT ARE PROVIDED ON AN “AS IS” BASIS, WITHOUT ANY WARRANTIES OR REPRESENTATIONS EXPRESS, IMPLIED OR STATUTORY; INCLUDING, WITHOUT LIMITATION, WARRANTIES OF QUALITY, PERFORMANCE, TITLE, NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. ANYLOGIC DOES NOT WARRANT THAT THE MODELS WILL MEET END USER’S NEEDS OR REQUIREMENTS, OR THAT THE OPERATION OF THE MODEL WILL BE ERROR FREE. ANY WARRANTIES IMPLIED BY LAW, BY THE COURSE OF DEALING BETWEEN THE PARTIES, OR OTHERWISE, ARE HEREBY EXCLUDED TO THE FULLEST EXTENT PERMITTED BY LAW. ANYLOGIC DOES NOT WARRANT THAT THE USES OF THE MODEL ALLOWED HEREUNDER SHALL RESULT IN ANY PARTICULAR LEVEL OR TYPE OF FINANCIAL RESULTS FOR END USER. MOREOVER, ANYLOGIC SPECIFICALLY DISCLAIMS ANY AND ALL LIABILITY WITH RESPECT TO YOUR USE OF THE MODELS OR RELIANCE ON ANY MODEL OUTPUT. YOU ARE SOLELY RESPONSIBLE FOR DETERMINING THE APPROPRIATENESS OF USING OR PROVIDING THE MODELS TO THIRD PARTIES AND ASSUME ANY RISKS ASSOCIATED WITH YOUR EXERCISE OF PERMISSIONS UNDER THIS AGREEMENT. 
+7. Limitation of Liability
+END USER AGREES THAT ANYLOGIC SHALL NOT BE LIABLE FOR ANY CONSEQUENTIAL, INCIDENTAL, SPECIAL, INDIRECT, ECONOMIC, EXEMPLARY, AGGRAVATED OR PUNITIVE DAMAGES WHATSOEVER (INCLUDING BUT NOT LIMITED TO DAMAGES FOR LOSS OF BUSINESS OR PERSONAL PROFITS OR REVENUE, FAILURE TO REALIZE EXPECTED SAVINGS, LOSS OF BUSINESS OR INFORMATION, OR ANY OTHER PECUNIARY LOSS) ARISING OUT OF OR IN ANY WAY RELATED TO THIS AGREEMENT OR THE USE OF OR INABILITY TO USE THE MODELS, EVEN IF THE PARTIES HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES OR IF SUCH DAMAGES WERE FORESEEABLE. IN NO EVENT WILL THE AGGREGATE LIABILITY OF ANYLOGIC ARISING OUT OF THIS AGREEMENT EXCEED $100. THE FOREGOING LIMITATIONS SHALL APPLY EVEN IF ANY REMEDY FAILS OF ITS ESSENTIAL PURPOSE AND SHALL APPLY REGARDLESS OF THE CAUSE OF ACTION UNDER WHICH SUCH DAMAGES ARE SOUGHT. 
+Certain states and/or jurisdictions do not allow the exclusion of implied warranties or limitation of liability for incidental, consequential, or certain other types of damages, so the exclusions set forth above may not apply to the parties hereunder.
+8. Choice of Law
+This Agreement will be governed by and construed under the laws of the United States of America and, to the extent not inconsistent therewith, the laws of the State of Illinois without regard to conflicts-of-laws principles that would require the application of any other law. The parties agree that exclusive venue for any legal action relating hereto shall be in Cook County, Illinois, United States, and jurisdiction shall be vested in the Circuit Court of the First Judicial Circuit in and for Cook County, Illinois, or the United States District Court for the Northern District of Illinois, as the case may be. The parties agree not to contest the venue set forth herein and to submit to, and not contest, the exercise of personal jurisdiction over them by any of the foregoing courts. The parties hereby waive all rights concerning the exercise of personal jurisdiction of them by the foregoing courts and all claims of or concerning forum non-convenience in the foregoing forums.
+9. Acknowledgement
+End User acknowledges that: (a) End User has read and understands this Agreement; (b) End User had an opportunity to have its legal counsel review this Agreement; (c) that this Agreement has the same force and effect as a signed agreement; and (d) you as the individual accepting this Agreement, on behalf of a corporation or other legal entity do personally represent that you are duly authorized to accept this Agreement on behalf of such entity and that this Agreement is binding upon such entity.
+Exhibit A. Acceptable and Unacceptable Uses
+Your use of the AnyLogic Software and Models (as defined in the AnyLogic End User Agreement) is limited. This document presents acceptable and unacceptable uses of the AnyLogic Software. If you are not sure whether your use or desired exploitation of the Models is allowed by AnyLogic, you should assume the use or exploitation is unacceptable. In such circumstances, please contact AnyLogic directly. 
+1. Acceptable Uses
+a. An Authorized Licensee User runs and uses the Model through the AnyLogic Software (i.e. on a computer where the AnyLogic Software is installed) manually, not via any kind of remote interface. This is an acceptable use regardless whether the Model was developed using the same installation of the AnyLogic Software or not, by the same Authorized Licensee User or not, or by the same Licensee or not. In this case, the Authorized Licensee User is also the End User.
+b. An Authorized Licensee User exports the Model by function “Export to standalone Java application” of the AnyLogic Software and provides the exported Model to another employee of the same Licensee (“Colleague”) for his or her use. In this case, the Colleague is the End User.
+c. An Authorized Licensee User exports the Model by function “Export to standalone Java application” of the AnyLogic Software and provides it to a person or entity other than the Licensee, such as a client of the Licensee (“Client”), provided that the Model is tailored for this particular Client and not provided to multiple parties. In this case, the Client is the End User.
+d. An End User provides the Model to another employee of the same division, business unit or group that the End User belongs to. In this case, the second employee becomes an End User.
+e. An Authorized Licensee User exports the Model by function “Export to AnyLogic Cloud” of the AnyLogic Software and uses the model through the AnyLogic Cloud or AnyLogic Private Cloud. In this case, the Authorized Licensee User is also the End User.
+f. An Authorized Licensee User exports the Model by function “Export to AnyLogic Cloud” of the AnyLogic Software and provides it to any person or entity other than the Licensee, such as a client of the Licensee (“Client”), through the AnyLogic Cloud or AnyLogic Private Cloud. In this case, the Client is the End User.
+2. Unacceptable Uses
+a. The AnyLogic Software is installed on a server, including but not limited to a web server or a computer acting as a server, and the AnyLogic Software is remotely invoked to generate and/or execute a Model.
+b. A Model is executed on a server, including but not limited to a web server or a computer acting as a server, and specifically excluding the AnyLogic Cloud servers and AnyLogic Private Cloud servers, and the Model is remotely invoked either as a standalone application or as a part of another application.
+c. A Model is a product or a part of a product (software delivered/made available to multiple parties, where a party can be a different business unit of the same company where Licensee belongs to), provided free of charge or commercially, in the course of providing services to the receiving party or not.
+If you desire to use the AnyLogic Software and/or Models in a way that is listed among the Unacceptable Uses and/or not listed among the Acceptable Uses, it does not mean your intended use is fully prohibited. Rather, you are required to notify AnyLogic about your desired use or provision and obtain AnyLogic’s prior written consent. Additional consents may incur a certain one-time fee and/or applicable royalties.
+
+
+
+
+AnyLogic North America, LLC, Oakbrook Terrace Tower
+1 Tower Ln, Suite 2655 Oakbrook Terrace, IL 60181 USA
+(312) 635-3344 www.anylogic.com
+
+
+
+
+
+1 of 18
+
+
+
+

@@ -1,0 +1,12 @@
+[2021-09-22 15:10:13] INFO    ? com.anylogic.alpyne.AlpyneServer main 
+                              ? [PID=13708] Initializing @ 'C:\Users\Tyler Wolfe-Adam\Documents\Project Pypeline\Case 2\AL_Pyne\source\AlpynePythonClient\examples\Stock Management Game\Exported\StockManagementGame' with arguments: {path=., port=51150, dev_mode=false}
+[2021-09-22 15:10:13] WARNING ? org.glassfish.jersey.server.wadl.WadlFeature configure 
+                              ? JAX-B API not found . WADL feature is disabled.
+[2021-09-22 15:10:13] WARNING ? org.glassfish.jersey.internal.Errors logErrors 
+                              ? The following warnings have been detected: WARNING: The (sub)resource method getAllRuns in com.anylogic.alpyne.server.api.RunsResource contains empty path annotation.
+WARNING: The (sub)resource method createNewRun in com.anylogic.alpyne.server.api.RunsResource contains empty path annotation.
+
+[2021-09-22 15:10:14] INFO    ? org.glassfish.grizzly.http.server.NetworkListener start 
+                              ? Started listener bound to [localhost:51150]
+[2021-09-22 15:10:14] INFO    ? org.glassfish.grizzly.http.server.HttpServer start 
+                              ? [HttpServer] Started.
