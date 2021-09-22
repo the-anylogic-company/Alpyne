@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overview: module code &mdash; Alpyne b0.1.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #1e9bd8" >
+            <a href="../index.html" class="icon icon-home"> Alpyne<img src="../_static/alpyne_logo_3.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../intro_getstarted.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../intro_getstarted.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../intro_getstarted.html#preparing-an-anylogic-model">Preparing an AnyLogic model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../intro_getstarted.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../intro_components.html">Components of an RL-ready model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../intro_components.html#filling-out-the-rl-experiment">Filling out the RL experiment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../intro_components.html#about-the-takeaction-method">About the <code class="docutils literal notranslate"><span class="pre">takeAction</span></code> method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../intro_components.html#about-the-optional-mode-parameter">About the optional “mode” parameter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../walkthrough.html">High-level walkthrough</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../walkthrough.html#creating-the-alpyne-client-object">Creating the Alpyne Client object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../walkthrough.html#creating-model-runs-from-the-client">Creating model runs from the client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../walkthrough.html#interacting-with-model-runs">Interacting with model runs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../walkthrough.html#multi-runs-and-rl-training">Multi-runs and RL training</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Technical</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api_main.html">API Docs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api_sub1_client.html">Client Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api_sub1_client.html#module-alpyne.client.alpyne_client">alpyne.client.alpyne_client</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api_sub2_run.html">Model Run</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api_sub2_run.html#module-alpyne.client.model_run">alpyne.client.model_run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api_sub2_run.html#module-alpyne.data.model_error">alpyne.data.model_error</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api_sub3_spaces.html">RL Spaces</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api_sub3_spaces.html#module-alpyne.data.spaces">alpyne.data.spaces</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api_sub4_io.html">I/O</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api_sub4_io.html#module-alpyne.data.model_data">alpyne.data.model_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api_sub4_io.html#module-alpyne.data.single_run_outputs">alpyne.data.single_run_outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api_sub4_io.html#module-alpyne.data.inputs">alpyne.data.inputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api_sub5_constants.html">Constants/Enums</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api_sub5_constants.html#module-alpyne.data.constants">alpyne.data.constants</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api_sub6_utils.html">Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api_sub6_utils.html#module-alpyne.client.utils">alpyne.client.utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../appendix.html">Appendix</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../appendix.html#data-storage-format">Data storage format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendix.html#overriding-pre-implemented-methods-in-basealpyneenv">Overriding pre-implemented methods in <code class="docutils literal notranslate"><span class="pre">BaseAlpyneEnv</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendix.html#data-type-conversion">Data type conversion</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #1e9bd8" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Alpyne</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Overview: module code</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>All modules for which code is available</h1>
+<ul><li><a href="alpyne/client/alpyne_client.html">alpyne.client.alpyne_client</a></li>
+<li><a href="alpyne/client/model_run.html">alpyne.client.model_run</a></li>
+<li><a href="alpyne/client/utils.html">alpyne.client.utils</a></li>
+<li><a href="alpyne/data/constants.html">alpyne.data.constants</a></li>
+<li><a href="alpyne/data/inputs.html">alpyne.data.inputs</a></li>
+<li><a href="alpyne/data/model_data.html">alpyne.data.model_data</a></li>
+<li><a href="alpyne/data/model_error.html">alpyne.data.model_error</a></li>
+<li><a href="alpyne/data/single_run_outputs.html">alpyne.data.single_run_outputs</a></li>
+<li><a href="alpyne/data/spaces.html">alpyne.data.spaces</a></li>
+</ul>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, AnyLogic North America, LLC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

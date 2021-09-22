@@ -1,12 +1,598 @@
-[2021-09-22 15:10:13] INFO    ? com.anylogic.alpyne.AlpyneServer main 
-                              ? [PID=13708] Initializing @ 'C:\Users\Tyler Wolfe-Adam\Documents\Project Pypeline\Case 2\AL_Pyne\source\AlpynePythonClient\examples\Stock Management Game\Exported\StockManagementGame' with arguments: {path=., port=51150, dev_mode=false}
-[2021-09-22 15:10:13] WARNING ? org.glassfish.jersey.server.wadl.WadlFeature configure 
+[2021-09-22 15:37:29] INFO    ? com.anylogic.alpyne.AlpyneServer main 
+                              ? [PID=7228] Initializing @ 'C:\Users\Tyler Wolfe-Adam\Documents\Project Pypeline\Case 2\AL_Pyne\source\PythonClient\Alpyne\examples\Stock Management Game\Exported\StockManagementGame' with arguments: {path=., port=51150, dev_mode=false}
+[2021-09-22 15:37:29] FINER   @ ModelManager.<init>
+                              | ENTRY {0}	.
+[2021-09-22 15:37:29] FINER   @ BonsaiBrainLearningPlatform.<init>
+                              | ENTRY {0}	{}
+[2021-09-22 15:37:29] INFO    @ Version.load
+                              | Loading from experiment
+[2021-09-22 15:37:29] INFO    @ Version.load
+                              | Inputs      = [(BOOLEAN)inRLMode=null, (DOUBLE)acquisitionLag=null, (DOUBLE)maxHoldingAmount=null, (DOUBLE){START_TIME}=0.0, (DATE_TIME){START_DATE}=Wed Jan 01 00:00:00 CST 2020, (DOUBLE){STOP_TIME}=731.0, (DATE_TIME){STOP_DATE}=Sat Jan 01 00:00:00 CST 2022, (LONG){RANDOM_SEED}=null]
+                                Outputs     = [(DATA_SET)stockValueDS=null, (DATA_SET)orderRateDS=null, (DATA_SET)demandRateDS=null, (HISTOGRAM_DATA)fullnessDistribution=null, (DOUBLE)amountSold=null, (DOUBLE)amountWasted=null]
+                                Config      = [(INTEGER)acquisition_lag_days=null, (DOUBLE){START_TIME}=0.0, (DATE_TIME){START_DATE}=Wed Jan 01 00:00:00 CST 2020, (DOUBLE){STOP_TIME}=731.0, (DATE_TIME){STOP_DATE}=Sat Jan 01 00:00:00 CST 2022, (LONG){RANDOM_SEED}=null]
+                                Observation = [(DOUBLE)stock_amount=null, (DOUBLE_ARRAY)recent_stock_amounts=null, (DOUBLE)last_order_rate=null, (DOUBLE)time_days=null]
+                                Action      = [(DOUBLE)order_rate=null]
+[2021-09-22 15:37:30] WARNING ? org.glassfish.jersey.server.wadl.WadlFeature configure 
                               ? JAX-B API not found . WADL feature is disabled.
-[2021-09-22 15:10:13] WARNING ? org.glassfish.jersey.internal.Errors logErrors 
+[2021-09-22 15:37:30] WARNING ? org.glassfish.jersey.internal.Errors logErrors 
                               ? The following warnings have been detected: WARNING: The (sub)resource method getAllRuns in com.anylogic.alpyne.server.api.RunsResource contains empty path annotation.
 WARNING: The (sub)resource method createNewRun in com.anylogic.alpyne.server.api.RunsResource contains empty path annotation.
 
-[2021-09-22 15:10:14] INFO    ? org.glassfish.grizzly.http.server.NetworkListener start 
+[2021-09-22 15:37:30] INFO    ? org.glassfish.grizzly.http.server.NetworkListener start 
                               ? Started listener bound to [localhost:51150]
-[2021-09-22 15:10:14] INFO    ? org.glassfish.grizzly.http.server.HttpServer start 
+[2021-09-22 15:37:30] INFO    ? org.glassfish.grizzly.http.server.HttpServer start 
                               ? [HttpServer] Started.
+[2021-09-22 15:37:30] FINER   @ VersionsResource.getVersion
+                              | ENTRY
+[2021-09-22 15:37:30] FINE    @ RunsResource.<init>
+                              | Initializing Runs Resource endpoint
+[2021-09-22 15:37:30] FINER   @ RunsResource.createNewRun
+                              | ENTRY {0}	{"experimentType": "REINFORCEMENT_LEARNING", "inputs": [{"name": "acquisition_lag_days", "type": "INTEGER", "value": 1, "units": null}, {"name": "{START_TIME}", "type": "DOUBLE", "value": 0, "units": "DAY"}, {"name": "{START_DATE}", "type": "DATE_TIME", "value": "2020-01-01T06:00:00Z", "units": null}, {"name": "{STOP_TIME}", "type": "DOUBLE", "value": 731.0, "units": "DAY"}, {"name": "{STOP_DATE}", "type": "DATE_TIME", "value": "2022-01-01T06:00:00Z", "units": null}, {"name": "{RANDOM_SEED}", "type": "LONG", "value": 1, "units": null}]}
+[2021-09-22 15:37:30] INFO    @ ModelRunPlatform.<init>
+                              | Initializing ModelRun 1
+[2021-09-22 15:37:30] FINER   @ ModelRunPlatform.lockUntilServerRequests
+                              | ENTRY
+[2021-09-22 15:37:30] FINER   @ ModelRunPlatform.run
+                              | ENTRY {0}	1
+[2021-09-22 15:37:30] FINER   @ BonsaiBrainLearningPlatform.<init>
+                              | ENTRY {0}	{}
+[2021-09-22 15:37:30] FINER   @ BonsaiBrainLearningPlatform.<init>
+                              | ENTRY {0}	{"id": 1}
+[2021-09-22 15:37:30] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [ 0,  0] platform requesting configuration
+[2021-09-22 15:37:30] FINER   @ BonsaiBrainLearningPlatform.serverSetupNewEpisode
+                              | server waiting
+[2021-09-22 15:37:30] FINER   @ ModelRunPlatform.lockUntilServerRequests
+                              | RETURN
+[2021-09-22 15:37:30] FINER   @ ModelRunPlatform.setConfiguration
+                              | ENTRY {0}	[(INTEGER)acquisition_lag_days=1, (DOUBLE){START_TIME}=0, (DATE_TIME){START_DATE}=2020-01-01T06:00:00Z, (DOUBLE){STOP_TIME}=731.0, (DATE_TIME){STOP_DATE}=2022-01-01T06:00:00Z, (LONG){RANDOM_SEED}=1]
+[2021-09-22 15:37:30] FINER   @ ModelRunPlatform.setConfiguration
+                              | Platform ready to accept inputs
+[2021-09-22 15:37:30] FINER   @ BonsaiBrainLearningPlatform.clientStartNewEpisode
+                              | client notifying
+[2021-09-22 15:37:30] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:30] FINER   @ RunsResource.createNewRun
+                              | RETURN {0}	OutboundJaxrsResponse{status=201, reason=Created, hasEntity=true, closed=false, buffered=false}
+[2021-09-22 15:37:30] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:30] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:31] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [ 1,  1] platform step, not terminal; requesting next action
+[2021-09-22 15:37:31] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:31] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:31] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:31] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:31] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:31] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:31] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:31] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:31] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:31] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:31] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:31] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [ 2,  2] platform step, not terminal; requesting next action
+[2021-09-22 15:37:31] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:31] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:31] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:31] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:31] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:31] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:31] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:31] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:31] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:31] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [ 3,  3] platform step, not terminal; requesting next action
+[2021-09-22 15:37:31] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:31] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:31] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:31] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:31] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:31] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:31] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:31] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:31] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:31] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [ 4,  4] platform step, not terminal; requesting next action
+[2021-09-22 15:37:31] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:31] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:31] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:31] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:31] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:31] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:31] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:31] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:31] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:31] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:31] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:31] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [ 5,  5] platform step, not terminal; requesting next action
+[2021-09-22 15:37:31] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:31] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:31] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:31] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:31] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:31] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:31] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:31] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:31] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:31] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:31] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:31] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [ 6,  6] platform step, not terminal; requesting next action
+[2021-09-22 15:37:31] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:31] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:31] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:31] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:32] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:32] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:32] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:32] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:32] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [ 7,  7] platform step, not terminal; requesting next action
+[2021-09-22 15:37:32] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:32] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:32] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:32] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:32] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:32] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:32] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [ 8,  8] platform step, not terminal; requesting next action
+[2021-09-22 15:37:32] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:32] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:32] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:32] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:32] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:32] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:32] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [ 9,  9] platform step, not terminal; requesting next action
+[2021-09-22 15:37:32] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:32] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:32] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:32] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:32] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:32] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:32] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [10, 10] platform step, not terminal; requesting next action
+[2021-09-22 15:37:32] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:32] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:32] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:32] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:32] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:32] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:32] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [11, 11] platform step, not terminal; requesting next action
+[2021-09-22 15:37:32] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:32] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:32] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:32] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:32] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:32] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:32] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [12, 12] platform step, not terminal; requesting next action
+[2021-09-22 15:37:32] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:32] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:32] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:32] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:32] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:32] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:32] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [13, 13] platform step, not terminal; requesting next action
+[2021-09-22 15:37:32] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:32] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:32] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:32] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:32] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:32] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:32] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [14, 14] platform step, not terminal; requesting next action
+[2021-09-22 15:37:32] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:32] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:32] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:32] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:32] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:32] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:32] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [15, 15] platform step, not terminal; requesting next action
+[2021-09-22 15:37:32] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:32] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:32] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:32] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:32] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:32] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:32] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:32] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [16, 16] platform step, not terminal; requesting next action
+[2021-09-22 15:37:33] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:33] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:33] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:33] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:33] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:33] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:33] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:33] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:33] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:33] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [17, 17] platform step, not terminal; requesting next action
+[2021-09-22 15:37:33] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:33] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:33] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:33] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:33] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:33] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:33] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:33] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:33] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:33] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [18, 18] platform step, not terminal; requesting next action
+[2021-09-22 15:37:33] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:33] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:33] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:33] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:33] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:33] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:33] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:33] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:33] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:33] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [19, 19] platform step, not terminal; requesting next action
+[2021-09-22 15:37:33] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:33] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:33] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:33] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:33] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:33] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:33] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:33] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:33] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:33] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [20, 20] platform step, not terminal; requesting next action
+[2021-09-22 15:37:33] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:33] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:33] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:33] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:33] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:33] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:33] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:33] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:33] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:33] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [21, 21] platform step, not terminal; requesting next action
+[2021-09-22 15:37:33] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:33] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:33] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:33] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:33] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:33] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:33] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:33] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:33] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:33] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [22, 22] platform step, not terminal; requesting next action
+[2021-09-22 15:37:33] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:33] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:34] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:34] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:34] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:34] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:34] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:34] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:34] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:34] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [23, 23] platform step, not terminal; requesting next action
+[2021-09-22 15:37:34] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:34] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:34] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:34] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:34] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:34] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:34] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:34] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:34] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:34] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:34] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [24, 24] platform step, not terminal; requesting next action
+[2021-09-22 15:37:34] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:34] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:34] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:34] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:34] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:34] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:34] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:34] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:34] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [25, 25] platform step, not terminal; requesting next action
+[2021-09-22 15:37:34] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:34] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:34] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:34] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:34] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:34] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:34] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "ACTION", "argument": [{"name": "order_rate", "type": "DOUBLE", "value": 25, "units": null}]}
+[2021-09-22 15:37:34] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command ACTION with argument [(DOUBLE)order_rate=25]
+[2021-09-22 15:37:34] FINER   @ ModelRunPlatform.setAction
+                              | ENTRY {0}	[(DOUBLE)order_rate=25]
+[2021-09-22 15:37:34] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [26, 26] platform step -- is terminal due to STOP_TIMEDATE (null) ... BREAKING!
+[2021-09-22 15:37:34] INFO    @ BonsaiBrainLearningPlatform.run
+                              | [26, 26] platform finished. requesting finishing response
+[2021-09-22 15:37:34] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:34] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:34] FINER   @ RunsResource.getRunProgress
+                              | ENTRY {0}	1
+[2021-09-22 15:37:34] FINER   @ ModelRunPlatform.getRunState
+                              | ENTRY
+[2021-09-22 15:37:34] FINER   @ RunsResource.executeRLCommand
+                              | ENTRY {0} {1}	1, {"command": "OBSERVATION"}
+[2021-09-22 15:37:34] INFO    @ RunsResource.executeRLCommand
+                              | For run 1 issuing command OBSERVATION with argument null
+[2021-09-22 15:37:34] FINER   @ RunsResource.getRunResults
+                              | ENTRY {0} {1}	1, null
+[2021-09-22 15:37:34] FINER   @ ModelRunPlatform.getOutputs
+                              | ENTRY {0}	[fullnessDistribution, demandRateDS, amountWasted, stockValueDS, orderRateDS, amountSold]
+[2021-09-22 15:37:41] INFO    ? com.anylogic.alpyne.AlpyneServer main 
+                              ? Terminating app...
+[2021-09-22 15:37:41] INFO    ? org.glassfish.grizzly.http.server.NetworkListener shutdownNow 
+                              ? Stopped listener bound to [localhost:51150]
+[2021-09-22 15:37:41] WARNING ? com.anylogic.alpyne.AlpyneServer main 
+                              ? Alpyne terminated.

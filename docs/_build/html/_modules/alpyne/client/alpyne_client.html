@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>alpyne.client.alpyne_client &mdash; Alpyne b0.1.0 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #1e9bd8" >
+            <a href="../../../index.html" class="icon icon-home"> Alpyne<img src="../../../_static/alpyne_logo_3.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro_getstarted.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../intro_getstarted.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../intro_getstarted.html#preparing-an-anylogic-model">Preparing an AnyLogic model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../intro_getstarted.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro_components.html">Components of an RL-ready model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../intro_components.html#filling-out-the-rl-experiment">Filling out the RL experiment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../intro_components.html#about-the-takeaction-method">About the <code class="docutils literal notranslate"><span class="pre">takeAction</span></code> method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../intro_components.html#about-the-optional-mode-parameter">About the optional “mode” parameter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../walkthrough.html">High-level walkthrough</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough.html#creating-the-alpyne-client-object">Creating the Alpyne Client object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough.html#creating-model-runs-from-the-client">Creating model runs from the client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough.html#interacting-with-model-runs">Interacting with model runs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough.html#multi-runs-and-rl-training">Multi-runs and RL training</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Technical</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_main.html">API Docs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_sub1_client.html">Client Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_sub1_client.html#module-alpyne.client.alpyne_client">alpyne.client.alpyne_client</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_sub2_run.html">Model Run</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_sub2_run.html#module-alpyne.client.model_run">alpyne.client.model_run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_sub2_run.html#module-alpyne.data.model_error">alpyne.data.model_error</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_sub3_spaces.html">RL Spaces</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_sub3_spaces.html#module-alpyne.data.spaces">alpyne.data.spaces</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_sub4_io.html">I/O</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_sub4_io.html#module-alpyne.data.model_data">alpyne.data.model_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_sub4_io.html#module-alpyne.data.single_run_outputs">alpyne.data.single_run_outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_sub4_io.html#module-alpyne.data.inputs">alpyne.data.inputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_sub5_constants.html">Constants/Enums</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_sub5_constants.html#module-alpyne.data.constants">alpyne.data.constants</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_sub6_utils.html">Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_sub6_utils.html#module-alpyne.client.utils">alpyne.client.utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../appendix.html">Appendix</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../appendix.html#data-storage-format">Data storage format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../appendix.html#overriding-pre-implemented-methods-in-basealpyneenv">Overriding pre-implemented methods in <code class="docutils literal notranslate"><span class="pre">BaseAlpyneEnv</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../appendix.html#data-type-conversion">Data type conversion</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #1e9bd8" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Alpyne</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>alpyne.client.alpyne_client</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for alpyne.client.alpyne_client</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">atexit</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">alpyne</span> <span class="kn">import</span> <span class="n">LOG_LEVEL</span>
+<span class="kn">from</span> <span class="nn">alpyne.client.http_client</span> <span class="kn">import</span> <span class="n">HttpClient</span>
+<span class="kn">from</span> <span class="nn">alpyne.client.model_run</span> <span class="kn">import</span> <span class="n">ModelRun</span>
+<span class="kn">from</span> <span class="nn">alpyne.client.utils</span> <span class="kn">import</span> <span class="n">resolve_model_jar</span><span class="p">,</span> \
+    <span class="n">get_wildcard_paths</span><span class="p">,</span> <span class="n">shorten_by_relativeness</span><span class="p">,</span> <span class="n">get_resources_path</span>
+<span class="kn">from</span> <span class="nn">alpyne.data.constants</span> <span class="kn">import</span> <span class="n">ExperimentType</span>
+<span class="kn">from</span> <span class="nn">alpyne.data.inputs</span> <span class="kn">import</span> <span class="n">Inputs</span>
+<span class="kn">from</span> <span class="nn">alpyne.data.model_error</span> <span class="kn">import</span> <span class="n">ModelError</span>
+<span class="kn">from</span> <span class="nn">alpyne.data.model_version</span> <span class="kn">import</span> <span class="n">ModelVersion</span>
+<span class="kn">from</span> <span class="nn">alpyne.data.single_run_outputs</span> <span class="kn">import</span> <span class="n">SingleRunOutputs</span>
+<span class="kn">from</span> <span class="nn">alpyne.data.spaces</span> <span class="kn">import</span> <span class="n">Configuration</span><span class="p">,</span> <span class="n">Observation</span><span class="p">,</span> <span class="n">Action</span>
+
+<span class="n">ConfigQuery</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Configuration</span><span class="p">],</span> <span class="n">Configuration</span><span class="p">]</span>
+<span class="n">ActionQuery</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Observation</span><span class="p">,</span> <span class="n">Action</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SingleRunOutputs</span><span class="p">]],</span> <span class="n">Action</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="AlpyneClient"><a class="viewcode-back" href="../../../api_sub1_client.html#alpyne.client.alpyne_client.AlpyneClient">[docs]</a><span class="k">class</span> <span class="nc">AlpyneClient</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The main object to initiate the Alpyne application and derive simulation runs from.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_loc</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">blocking</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">51150</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param model_loc: a relative or absolute path to the exported model zip or extracted model.jar file</span>
+<span class="sd">        :param blocking: whether to halt the calling Python thread during time-consuming tasks (e.g., advancing the sim)</span>
+<span class="sd">        :param port: what local port to run the Alpyne app on</span>
+<span class="sd">        :param verbose: whether to enable detailed app logging</span>
+<span class="sd">        :raises ModelError: if the app fails to start</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">LOG_LEVEL</span><span class="p">,</span>
+            <span class="nb">format</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;%(asctime)s [%(name)s @ %(lineno)s][%(levelname)8s] %(message)s&quot;</span><span class="p">,</span>
+            <span class="n">handlers</span><span class="o">=</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()],</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_blocking</span> <span class="o">=</span> <span class="n">blocking</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_app</span><span class="p">(</span><span class="n">model_loc</span><span class="p">,</span> <span class="n">blocking</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_http_client</span> <span class="o">=</span> <span class="n">HttpClient</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;http://127.0.0.1:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_http_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/versions/number/0&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">ModelVersion</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ModelError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to properly start the app. Error from process: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_start_app</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_loc</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">blocking</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute the backend app with the desired preferences.</span>
+
+<span class="sd">        :param model_loc:</span>
+<span class="sd">        :param port:</span>
+<span class="sd">        :param blocking:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">model_loc</span> <span class="o">=</span> <span class="n">resolve_model_jar</span><span class="p">(</span><span class="n">model_loc</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span>
+
+        <span class="c1"># temporarily change to the exported model folder&#39;s directory for starting purposes</span>
+        <span class="c1"># (needed to make sure database is properly connected to)</span>
+        <span class="n">initdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">model_loc</span><span class="o">.</span><span class="n">absolute</span><span class="p">()))</span>
+
+        <span class="n">jar_sources</span> <span class="o">=</span> <span class="n">get_wildcard_paths</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">get_resources_path</span><span class="p">()))</span> <span class="o">+</span> <span class="n">get_wildcard_paths</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">model_loc</span><span class="p">))</span>
+        <span class="n">jar_sources</span> <span class="o">=</span> <span class="n">shorten_by_relativeness</span><span class="p">(</span><span class="n">jar_sources</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;nt&quot;</span><span class="p">:</span>
+            <span class="n">class_path</span> <span class="o">=</span> <span class="s2">&quot;;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">jar_sources</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">class_path</span> <span class="o">=</span> <span class="s2">&quot;:&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">jar_sources</span><span class="p">)</span>
+
+        <span class="n">cmdline_args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;java&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;-cp&quot;</span><span class="p">,</span> <span class="n">class_path</span><span class="p">,</span>
+                        <span class="s2">&quot;com.anylogic.alpyne.AlpyneServer&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;-l&quot;</span><span class="p">,</span> <span class="s2">&quot;WARNING&quot;</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">verbose</span> <span class="k">else</span> <span class="s2">&quot;ALL&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;.&quot;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Executing:</span><span class="se">\n</span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmdline_args</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="n">proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmdline_args</span><span class="p">,</span>
+                                <span class="n">stdin</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>  <span class="c1"># Needed for quitting the app</span>
+                                <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="c1"># Both stdout and stderr should be empty,</span>
+                                <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span> <span class="c1">#   but open up just in case.</span>
+
+        <span class="c1"># return back to original directory</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">initdir</span><span class="p">)</span>
+
+        <span class="n">returncode</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">returncode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">err_message</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="ne">EnvironmentError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Process returned code: </span><span class="si">{</span><span class="n">returncode</span><span class="si">}</span><span class="s2">; message: </span><span class="si">{</span><span class="n">err_message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PID = </span><span class="si">{</span><span class="n">proc</span><span class="o">.</span><span class="n">pid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quit_app</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">proc</span>
+
+    <span class="k">def</span> <span class="nf">_quit_app</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Trigger self-destruct, killing any active runs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_http_client</span><span class="o">.</span><span class="n">api_request</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># send arbitrary text directly to process to trigger shutdown</span>
+            <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">communicate</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">stdout</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Uncaught output from app&#39;s stdout: </span><span class="si">{</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">stderr</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Uncaught output from app&#39;s stderr: </span><span class="si">{</span><span class="n">stderr</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to communicate: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Force killing app; did not quit as expected: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_http_client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">configuration_template</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Configuration</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: a blank copy of the Configuration object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">get_configuration_template</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">observation_template</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Observation</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: a blank copy of the Observation object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">get_observation_template</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">action_template</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Action</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: a blank copy of the Action object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">get_action_template</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">output_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: a list of the detected output objects; specified as part of a run&#39;s get_outputs method</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">o</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">get_outputs_template</span><span class="p">()]</span>
+
+<div class="viewcode-block" id="AlpyneClient.create_default_rl_inputs"><a class="viewcode-back" href="../../../api_sub1_client.html#alpyne.client.alpyne_client.AlpyneClient.create_default_rl_inputs">[docs]</a>    <span class="k">def</span> <span class="nf">create_default_rl_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Configuration</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the object intended to be filled out and passed in the creation of a new model run.</span>
+
+<span class="sd">        :return: a copy of the Configuration object; equivalent to accessing the `configuration_template` attribute</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration_template</span></div>
+
+<div class="viewcode-block" id="AlpyneClient.create_reinforcement_learning"><a class="viewcode-back" href="../../../api_sub1_client.html#alpyne.client.alpyne_client.AlpyneClient.create_reinforcement_learning">[docs]</a>    <span class="k">def</span> <span class="nf">create_reinforcement_learning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Configuration</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ModelRun</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Builds a new, single RL experiment using the provided configuration, or the default if none is provided.</span>
+
+<span class="sd">        Note: &quot;the default&quot; is all zeros/nulls (*not* your parameter&#39;s defaults), so this should only be omitted</span>
+<span class="sd">        if your logic handles this or if you have no Configuration.</span>
+
+<span class="sd">        :param inputs: the initial configuration to start the model with</span>
+<span class="sd">        :return: an object referencing the created model run</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ModelRun</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_http_client</span><span class="p">,</span> <span class="n">ExperimentType</span><span class="o">.</span><span class="n">REINFORCEMENT_LEARNING</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocking</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, AnyLogic North America, LLC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

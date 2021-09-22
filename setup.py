@@ -4,7 +4,7 @@ with open("README.md") as f:
     long_description = f.read()
 
 setup(
-    name="anylogic_alpyne",
+    name="anylogic-alpyne",
     version="0.1.0",
     author="Tyler Wolfe-Adam",
     author_email="t.wolfeadam@anylogic.com",

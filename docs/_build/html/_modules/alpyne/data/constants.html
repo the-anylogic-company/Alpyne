@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>alpyne.data.constants &mdash; Alpyne b0.1.0 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #1e9bd8" >
+            <a href="../../../index.html" class="icon icon-home"> Alpyne<img src="../../../_static/alpyne_logo_3.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro_getstarted.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../intro_getstarted.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../intro_getstarted.html#preparing-an-anylogic-model">Preparing an AnyLogic model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../intro_getstarted.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro_components.html">Components of an RL-ready model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../intro_components.html#filling-out-the-rl-experiment">Filling out the RL experiment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../intro_components.html#about-the-takeaction-method">About the <code class="docutils literal notranslate"><span class="pre">takeAction</span></code> method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../intro_components.html#about-the-optional-mode-parameter">About the optional “mode” parameter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../walkthrough.html">High-level walkthrough</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough.html#creating-the-alpyne-client-object">Creating the Alpyne Client object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough.html#creating-model-runs-from-the-client">Creating model runs from the client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough.html#interacting-with-model-runs">Interacting with model runs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough.html#multi-runs-and-rl-training">Multi-runs and RL training</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Technical</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_main.html">API Docs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_sub1_client.html">Client Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_sub1_client.html#module-alpyne.client.alpyne_client">alpyne.client.alpyne_client</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_sub2_run.html">Model Run</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_sub2_run.html#module-alpyne.client.model_run">alpyne.client.model_run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_sub2_run.html#module-alpyne.data.model_error">alpyne.data.model_error</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_sub3_spaces.html">RL Spaces</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_sub3_spaces.html#module-alpyne.data.spaces">alpyne.data.spaces</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_sub4_io.html">I/O</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_sub4_io.html#module-alpyne.data.model_data">alpyne.data.model_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_sub4_io.html#module-alpyne.data.single_run_outputs">alpyne.data.single_run_outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_sub4_io.html#module-alpyne.data.inputs">alpyne.data.inputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_sub5_constants.html">Constants/Enums</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_sub5_constants.html#module-alpyne.data.constants">alpyne.data.constants</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_sub6_utils.html">Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api_sub6_utils.html#module-alpyne.client.utils">alpyne.client.utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../appendix.html">Appendix</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../appendix.html#data-storage-format">Data storage format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../appendix.html#overriding-pre-implemented-methods-in-basealpyneenv">Overriding pre-implemented methods in <code class="docutils literal notranslate"><span class="pre">BaseAlpyneEnv</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../appendix.html#data-type-conversion">Data type conversion</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #1e9bd8" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Alpyne</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>alpyne.data.constants</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for alpyne.data.constants</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+
+
+<div class="viewcode-block" id="ExperimentType"><a class="viewcode-back" href="../../../api_sub5_constants.html#alpyne.data.constants.ExperimentType">[docs]</a><span class="k">class</span> <span class="nc">ExperimentType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Internally used when creating a new model run. &quot;&quot;&quot;</span>
+    <span class="c1">#SIMULATION = &quot;SIMULATION&quot;</span>
+    <span class="n">REINFORCEMENT_LEARNING</span> <span class="o">=</span> <span class="s2">&quot;REINFORCEMENT_LEARNING&quot;</span></div>
+
+
+<div class="viewcode-block" id="RLCommand"><a class="viewcode-back" href="../../../api_sub5_constants.html#alpyne.data.constants.RLCommand">[docs]</a><span class="k">class</span> <span class="nc">RLCommand</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Internally used when POSTing to the /rl/ endpoint. &quot;&quot;&quot;</span>
+    <span class="n">CONFIGURATION</span> <span class="o">=</span> <span class="s2">&quot;CONFIGURATION&quot;</span>
+    <span class="n">OBSERVATION</span> <span class="o">=</span> <span class="s2">&quot;OBSERVATION&quot;</span>
+    <span class="n">ACTION</span> <span class="o">=</span> <span class="s2">&quot;ACTION&quot;</span></div>
+
+
+<div class="viewcode-block" id="RunStatus"><a class="viewcode-back" href="../../../api_sub5_constants.html#alpyne.data.constants.RunStatus">[docs]</a><span class="k">class</span> <span class="nc">RunStatus</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents the status of a run&#39;s engine.</span>
+
+<span class="sd">    In general, the engine can be considered either waiting for some type of user-input, actively processing, or</span>
+<span class="sd">    in a halted state (which may or may not be recoverable). The various statuses divide these three categories</span>
+<span class="sd">    into subcategories, to provide more useful context.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">FRESH</span> <span class="o">=</span> <span class="s2">&quot;FRESH&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Just started, waiting for the configuration. End users will typically not see this status due to configuration \</span>
+<span class="sd">    being provided in conjunction with some other command (e.g., reset). &quot;&quot;&quot;</span>
+
+    <span class="n">PAUSED</span> <span class="o">=</span> <span class="s2">&quot;PAUSED&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Mid-run, waiting for action and open to observation and output querying. &quot;&quot;&quot;</span>
+
+    <span class="n">RUNNING</span> <span class="o">=</span> <span class="s2">&quot;RUNNING&quot;</span>
+    <span class="sd">&quot;&quot;&quot; The model is being actively executed (cannot be interacted with). &quot;&quot;&quot;</span>
+
+    <span class="n">COMPLETED</span> <span class="o">=</span> <span class="s2">&quot;COMPLETED&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Reached stopping condition - either time/date or based on the RL experiment&#39;s &quot;done&quot; field. &quot;&quot;&quot;</span>
+
+    <span class="n">STOPPED</span> <span class="o">=</span> <span class="s2">&quot;STOPPED&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Manually finished (by API call). &quot;&quot;&quot;</span>
+
+
+    <span class="n">FAILED</span> <span class="o">=</span> <span class="s2">&quot;FAILED&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Encountered runtime error. &quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="InputTypes"><a class="viewcode-back" href="../../../api_sub5_constants.html#alpyne.data.constants.InputTypes">[docs]</a><span class="k">class</span> <span class="nc">InputTypes</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Represents the data types of elements provided in the inputs/configuration. &quot;&quot;&quot;</span>
+    <span class="n">STRING</span> <span class="o">=</span> <span class="s2">&quot;STRING&quot;</span>
+    <span class="n">DOUBLE</span> <span class="o">=</span> <span class="s2">&quot;DOUBLE&quot;</span>
+    <span class="n">INTEGER</span> <span class="o">=</span> <span class="s2">&quot;INTEGER&quot;</span>
+    <span class="n">LONG</span> <span class="o">=</span> <span class="s2">&quot;LONG&quot;</span>
+    <span class="n">BOOLEAN</span> <span class="o">=</span> <span class="s2">&quot;BOOLEAN&quot;</span>
+    <span class="n">OBJECT</span> <span class="o">=</span> <span class="s2">&quot;OBJECT&quot;</span>
+    <span class="n">DATE_TIME</span> <span class="o">=</span> <span class="s2">&quot;DATE_TIME&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">to_class</span><span class="p">(</span><span class="n">input_</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;InputTypes&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="c1"># first check for `_ARRAY` types (not specfied in this enum but considered valid)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">input_</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_ARRAY&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">list</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">itype</span> <span class="o">=</span> <span class="n">input_</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="n">InputTypes</span><span class="p">)</span> <span class="k">else</span> <span class="n">InputTypes</span><span class="p">(</span><span class="n">input_</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="c1"># currently occurs when trying to convert output-typed objects</span>
+            <span class="c1">#warn(f&quot;Input &#39;{input_}&#39; does not have an equivalent input type&quot;)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">itype</span> <span class="o">==</span> <span class="n">InputTypes</span><span class="o">.</span><span class="n">STRING</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">str</span>
+        <span class="k">elif</span> <span class="n">itype</span> <span class="o">==</span> <span class="n">InputTypes</span><span class="o">.</span><span class="n">DOUBLE</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">float</span>
+        <span class="k">elif</span> <span class="n">itype</span> <span class="o">==</span> <span class="n">InputTypes</span><span class="o">.</span><span class="n">INTEGER</span> <span class="ow">or</span> <span class="n">itype</span> <span class="o">==</span> <span class="n">InputTypes</span><span class="o">.</span><span class="n">LONG</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">int</span>
+        <span class="k">elif</span> <span class="n">itype</span> <span class="o">==</span> <span class="n">InputTypes</span><span class="o">.</span><span class="n">BOOLEAN</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">bool</span>
+        <span class="k">elif</span> <span class="n">itype</span> <span class="o">==</span> <span class="n">InputTypes</span><span class="o">.</span><span class="n">OBJECT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">dict</span>
+        <span class="k">elif</span> <span class="n">itype</span> <span class="o">==</span> <span class="n">InputTypes</span><span class="o">.</span><span class="n">DATE_TIME</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">datetime</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unhandled input type (</span><span class="si">{</span><span class="n">itype</span><span class="si">}</span><span class="s2"> for input </span><span class="si">{</span><span class="n">input_</span><span class="si">}</span><span class="s2">; returning None&quot;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_value</span><span class="p">(</span><span class="n">input_</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;InputTypes&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">InputTypes</span><span class="o">.</span><span class="n">STRING</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span> <span class="c1"># check before ints since isinstance(True, int) == True</span>
+            <span class="k">return</span> <span class="n">InputTypes</span><span class="o">.</span><span class="n">BOOLEAN</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">InputTypes</span><span class="o">.</span><span class="n">LONG</span> <span class="c1"># assume over int to avoid potential bit-loss</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">InputTypes</span><span class="o">.</span><span class="n">DOUBLE</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">InputTypes</span><span class="o">.</span><span class="n">DATE_TIME</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">InputTypes</span><span class="o">.</span><span class="n">OBJECT</span>
+
+<div class="viewcode-block" id="InputTypes.validate"><a class="viewcode-back" href="../../../api_sub5_constants.html#alpyne.data.constants.InputTypes.validate">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">expected</span><span class="p">:</span> <span class="s1">&#39;InputTypes&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks whether the passed value is of the expected input type.</span>
+<span class="sd">        :param value: either an object or a class of an object</span>
+<span class="sd">        :param expected: the expected input type to check against</span>
+<span class="sd">        :return: True if the value is an instance or a subclass of the expected type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># use different function depending on whether &#39;value&#39; is an object or a class</span>
+        <span class="n">ischeck</span> <span class="o">=</span> <span class="nb">issubclass</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="k">else</span> <span class="nb">isinstance</span>
+        <span class="k">if</span> <span class="n">expected</span> <span class="o">==</span> <span class="n">InputTypes</span><span class="o">.</span><span class="n">STRING</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ischeck</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">expected</span> <span class="o">==</span> <span class="n">InputTypes</span><span class="o">.</span><span class="n">DOUBLE</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ischeck</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">expected</span> <span class="o">==</span> <span class="n">InputTypes</span><span class="o">.</span><span class="n">INTEGER</span> <span class="ow">or</span> <span class="n">expected</span> <span class="o">==</span> <span class="n">InputTypes</span><span class="o">.</span><span class="n">LONG</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ischeck</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">expected</span> <span class="o">==</span> <span class="n">InputTypes</span><span class="o">.</span><span class="n">BOOLEAN</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ischeck</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">expected</span> <span class="o">==</span> <span class="n">InputTypes</span><span class="o">.</span><span class="n">OBJECT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ischeck</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">expected</span> <span class="o">==</span> <span class="n">InputTypes</span><span class="o">.</span><span class="n">DATE_TIME</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ischeck</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">datetime</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">False</span></div></div>
+
+
+<div class="viewcode-block" id="OutputTypes"><a class="viewcode-back" href="../../../api_sub5_constants.html#alpyne.data.constants.OutputTypes">[docs]</a><span class="k">class</span> <span class="nc">OutputTypes</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Represents the data types in a `SingleRunOutputs` object. &quot;&quot;&quot;</span>
+    <span class="n">STRING</span> <span class="o">=</span> <span class="s2">&quot;STRING&quot;</span>
+    <span class="n">DOUBLE</span> <span class="o">=</span> <span class="s2">&quot;DOUBLE&quot;</span>
+    <span class="n">INTEGER</span> <span class="o">=</span> <span class="s2">&quot;INTEGER&quot;</span>
+    <span class="n">LONG</span> <span class="o">=</span> <span class="s2">&quot;LONG&quot;</span>
+    <span class="n">DATE_TIME</span> <span class="o">=</span> <span class="s2">&quot;DATE_TIME&quot;</span>
+    <span class="n">BOOLEAN</span> <span class="o">=</span> <span class="s2">&quot;BOOLEAN&quot;</span>
+    <span class="n">DATA_SET</span> <span class="o">=</span> <span class="s2">&quot;DATA_SET&quot;</span>
+    <span class="n">STATISTICS_DISCRETE</span> <span class="o">=</span> <span class="s2">&quot;STATISTICS_DISCRETE&quot;</span>
+    <span class="n">STATISTICS_CONTINUOUS</span> <span class="o">=</span> <span class="s2">&quot;STATISTICS_CONTINUOUS&quot;</span>
+    <span class="n">HISTOGRAM_DATA</span> <span class="o">=</span> <span class="s2">&quot;HISTOGRAM_DATA&quot;</span>
+    <span class="n">HISTOGRAM_2D_DATA</span> <span class="o">=</span> <span class="s2">&quot;HISTOGRAM_2D_DATA&quot;</span></div>
+
+
+<div class="viewcode-block" id="EngineSettings"><a class="viewcode-back" href="../../../api_sub5_constants.html#alpyne.data.constants.EngineSettings">[docs]</a><span class="k">class</span> <span class="nc">EngineSettings</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Represents the different engine-level settings as part of a run&#39;s inputs/configuration. &quot;&quot;&quot;</span>
+    <span class="n">START_TIME</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{START_TIME}</span><span class="s2">&quot;</span>
+    <span class="n">START_DATE</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{START_DATE}</span><span class="s2">&quot;</span>
+    <span class="n">STOP_TIME</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{STOP_TIME}</span><span class="s2">&quot;</span>
+    <span class="n">STOP_DATE</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{STOP_DATE}</span><span class="s2">&quot;</span>
+    <span class="n">STOP_MODE</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{STOP_MODE}</span><span class="s2">&quot;</span>
+    <span class="n">SEED</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{RANDOM_SEED}</span><span class="s2">&quot;</span>
+    <span class="n">MAX_MEMORY_MB</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{MAX_MEMORY_MB}</span><span class="s2">&quot;</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, AnyLogic North America, LLC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
