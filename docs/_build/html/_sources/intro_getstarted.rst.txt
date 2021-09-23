@@ -4,7 +4,7 @@ Getting started
 
 Installation
 ------------
-Install this library by navigating to the ``dist`` directory in a terminal prompt and executing ``pip install WHL_FILE`` (replacing "WHL_FILE" with the file's actual name).
+Install this library by navigating to the ``dist`` directory in a terminal prompt and executing ``pip install anylogic-alpyne``/
 
 Preparing an AnyLogic model
 ---------------------------
