@@ -5,7 +5,7 @@ with open("README.md") as f:
 
 setup(
     name="anylogic-alpyne",
-    version="0.1.0",
+    version="0.2.0",
     author="Tyler Wolfe-Adam",
     author_email="t.wolfeadam@anylogic.com",
     description="Run AnyLogic models exported from the RL Experiment",

@@ -223,13 +223,13 @@
     <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="resolve_model_jar"><a class="viewcode-back" href="../../../api_sub6_utils.html#alpyne.client.utils.resolve_model_jar">[docs]</a><span class="k">def</span> <span class="nf">resolve_model_jar</span><span class="p">(</span><span class="n">model_loc</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<div class="viewcode-block" id="resolve_model_jar"><a class="viewcode-back" href="../../../api_sub6_utils.html#alpyne.client.utils.resolve_model_jar">[docs]</a><span class="k">def</span> <span class="nf">resolve_model_jar</span><span class="p">(</span><span class="n">model_loc</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Validate the provided location of a supposed model. It handles location validation, unzipping zip files to a</span>
 <span class="sd">    temporary directory, and other cases.</span>
 
 <span class="sd">    :param model_loc: The user-specified location of their model</span>
-<span class="sd">    :return: A (possibly updated) location of the model.jar</span>
+<span class="sd">    :return: A (possibly updated) location of the model.jar and whether it&#39;s in a temporary directory</span>
 <span class="sd">    :raises ValueError: If the location is ambiguous or couldn&#39;t be properly resolved</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">model_loc</span><span class="p">)</span>
@@ -237,9 +237,11 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Ambiguous model location. Point to a model.jar or exported zip file&quot;</span><span class="p">)</span>
 
     <span class="c1"># find path to model jar, unzipping if necessary</span>
+    <span class="n">in_temp</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.jar&quot;</span><span class="p">:</span>
         <span class="n">model_jar_path</span> <span class="o">=</span> <span class="n">path</span>
     <span class="k">elif</span> <span class="n">path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.zip&quot;</span><span class="p">:</span>
+        <span class="n">in_temp</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="c1"># [00000-99999] based on the current time of day</span>
         <span class="n">day_ratio</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">dt</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">dt</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">date</span><span class="p">(),</span> <span class="n">time</span><span class="p">()))</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">/</span> <span class="mi">864</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
         <span class="n">tmp_dir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;alpyne_</span><span class="si">{</span><span class="n">day_ratio</span><span class="si">:</span><span class="s2">05d</span><span class="si">}</span><span class="s2">_&quot;</span><span class="p">)</span>
@@ -252,7 +254,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Unrecognized file type. Pass in a zip or jar file&quot;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">model_jar_path</span></div>
+    <span class="k">return</span> <span class="n">model_jar_path</span><span class="p">,</span> <span class="n">in_temp</span></div>
 
 
 <div class="viewcode-block" id="histogram_outputs_to_fake_dataset"><a class="viewcode-back" href="../../../api_sub6_utils.html#alpyne.client.utils.histogram_outputs_to_fake_dataset">[docs]</a><span class="k">def</span> <span class="nf">histogram_outputs_to_fake_dataset</span><span class="p">(</span><span class="n">lower_bound</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">interval_width</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">hits</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> \
@@ -288,7 +290,7 @@
 
 <div class="viewcode-block" id="get_resources_path"><a class="viewcode-back" href="../../../api_sub6_utils.html#alpyne.client.utils.get_resources_path">[docs]</a><span class="k">def</span> <span class="nf">get_resources_path</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; Convenience method to return the `resources` directory in this project &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">alpyne</span><span class="o">.</span><span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;resources&quot;</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">alpyne</span><span class="o">.</span><span class="n">_ROOT_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;resources&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_wildcard_paths"><a class="viewcode-back" href="../../../api_sub6_utils.html#alpyne.client.utils.get_wildcard_paths">[docs]</a><span class="k">def</span> <span class="nf">get_wildcard_paths</span><span class="p">(</span><span class="n">model_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>

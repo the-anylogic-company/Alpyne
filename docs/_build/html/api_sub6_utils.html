@@ -163,7 +163,7 @@ For example, <cite>json.dumps(my_object, cls=AlpyneJSONEncoder)</cite></p>
 
 <dl class="py function">
 <dt id="alpyne.client.utils.resolve_model_jar">
-<code class="sig-prename descclassname">alpyne.client.utils.</code><code class="sig-name descname">resolve_model_jar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model_loc</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; pathlib.Path<a class="reference internal" href="_modules/alpyne/client/utils.html#resolve_model_jar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alpyne.client.utils.resolve_model_jar" title="Permalink to this definition"></a></dt>
+<code class="sig-prename descclassname">alpyne.client.utils.</code><code class="sig-name descname">resolve_model_jar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model_loc</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>pathlib.Path<span class="p">, </span>bool<span class="p">]</span><a class="reference internal" href="_modules/alpyne/client/utils.html#resolve_model_jar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alpyne.client.utils.resolve_model_jar" title="Permalink to this definition"></a></dt>
 <dd><p>Validate the provided location of a supposed model. It handles location validation, unzipping zip files to a
 temporary directory, and other cases.</p>
 <dl class="field-list simple">
@@ -171,7 +171,7 @@ temporary directory, and other cases.</p>
 <dd class="field-odd"><p><strong>model_loc</strong> – The user-specified location of their model</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A (possibly updated) location of the model.jar</p>
+<dd class="field-even"><p>A (possibly updated) location of the model.jar and whether it’s in a temporary directory</p>
 </dd>
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><strong>ValueError</strong> – If the location is ambiguous or couldn’t be properly resolved</p>

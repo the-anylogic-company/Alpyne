@@ -124,11 +124,11 @@
              
   <h1>Source code for alpyne.client.model_run</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">Logger</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">,</span> <span class="n">Optional</span>
 
-<span class="kn">from</span> <span class="nn">alpyne</span> <span class="kn">import</span> <span class="n">LOG_LEVEL</span>
 <span class="kn">from</span> <span class="nn">alpyne.client.http_client</span> <span class="kn">import</span> <span class="n">HttpClient</span>
 <span class="kn">from</span> <span class="nn">alpyne.data.constants</span> <span class="kn">import</span> <span class="n">ExperimentType</span><span class="p">,</span> <span class="n">RunStatus</span><span class="p">,</span> <span class="n">RLCommand</span>
 <span class="kn">from</span> <span class="nn">alpyne.data.model_error</span> <span class="kn">import</span> <span class="n">ModelError</span>
@@ -148,8 +148,8 @@
     <span class="n">DEFAULT_POLLING_PERIOD</span> <span class="o">=</span> <span class="mf">0.1</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">http_client</span><span class="p">:</span> <span class="n">HttpClient</span><span class="p">,</span> <span class="n">type_</span><span class="p">:</span> <span class="n">ExperimentType</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Configuration</span><span class="p">,</span> <span class="n">blocking</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-                 <span class="n">polling_period</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Number</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">(</span><span class="s2">&quot;ModelRun&quot;</span><span class="p">,</span> <span class="n">LOG_LEVEL</span><span class="p">)</span>
+                 <span class="n">polling_period</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Number</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">(</span><span class="s2">&quot;ModelRun&quot;</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span> <span class="k">if</span> <span class="n">verbose</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">http_client</span> <span class="o">=</span> <span class="n">http_client</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">type_</span>
@@ -185,7 +185,7 @@
 
 <div class="viewcode-block" id="ModelRun.reset"><a class="viewcode-back" href="../../../api_sub2_run.html#alpyne.client.model_run.ModelRun.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Configuration</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ModelRun&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Setup the instance to begin a new run with the specified inputs.</span>
+<span class="sd">        Revert the run back to time 0 and apply the specified configuration inputs.</span>
 <span class="sd">        After calling this method, the server will automatically start the next run.</span>
 
 <span class="sd">        If `blocking` is enabled, this method will consume the current thread until the operation is complete.</span>
@@ -194,9 +194,11 @@
 <span class="sd">        :return: this object</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Model run cannot be reset because experiment has not started. Call `run` first.&quot;</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">inputs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span>
-        <span class="c1">#self.stop()</span>
 
         <span class="c1"># calling to set the configuration will reset the sim</span>
         <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/runs/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">/rl&quot;</span>
