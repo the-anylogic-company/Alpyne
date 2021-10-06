@@ -51,9 +51,6 @@ class AlpyneClient:
         except:
             raise ModelError(f"Failed to properly start the app. Error from process: {self._proc.stderr.readline().decode()}")
 
-    def _validate_java(self):
-        cmdline_args = ["java", "--version"]
-
     def _start_app(self, model_loc: str, blocking: bool, port: int, verbose: bool) -> subprocess.Popen:
         """
         Execute the backend app with the desired preferences.
