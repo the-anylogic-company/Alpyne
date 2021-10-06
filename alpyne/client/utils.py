@@ -98,13 +98,13 @@ def convert_to_string(value: Any) -> str:
     return json.dumps(value)
 
 
-def resolve_model_jar(model_loc: str) -> Path:
+def resolve_model_jar(model_loc: str) -> Tuple[Path, bool]:
     """
     Validate the provided location of a supposed model. It handles location validation, unzipping zip files to a
     temporary directory, and other cases.
 
     :param model_loc: The user-specified location of their model
-    :return: A (possibly updated) location of the model.jar
+    :return: A (possibly updated) location of the model.jar and whether it's in a temporary directory
     :raises ValueError: If the location is ambiguous or couldn't be properly resolved
     """
     path = Path(model_loc)
@@ -112,9 +112,11 @@ def resolve_model_jar(model_loc: str) -> Path:
         raise ValueError("Ambiguous model location. Point to a model.jar or exported zip file")
 
     # find path to model jar, unzipping if necessary
+    in_temp = False
     if path.suffix == ".jar":
         model_jar_path = path
     elif path.suffix == ".zip":
+        in_temp = True
         # [00000-99999] based on the current time of day
         day_ratio = int((dt.now() - dt.combine(dt.now().date(), time())).total_seconds() / 864 * 1000)
         tmp_dir = tempfile.mkdtemp(prefix=f"alpyne_{day_ratio:05d}_")
@@ -127,7 +129,7 @@ def resolve_model_jar(model_loc: str) -> Path:
     else:
         raise Exception("Unrecognized file type. Pass in a zip or jar file")
 
-    return model_jar_path
+    return model_jar_path, in_temp
 
 
 def histogram_outputs_to_fake_dataset(lower_bound: float, interval_width: float, hits: List[int]) -> \
@@ -163,7 +165,7 @@ def limit(lower: Number, value: Number, upper: Number) -> Number:
 
 def get_resources_path() -> Path:
     """ Convenience method to return the `resources` directory in this project """
-    return alpyne.ROOT_PATH.joinpath("resources")
+    return alpyne._ROOT_PATH.joinpath("resources")
 
 
 def get_wildcard_paths(model_dir: str) -> List[str]:

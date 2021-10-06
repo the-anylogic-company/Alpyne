@@ -1,10 +1,11 @@
 import atexit
 import logging
 import os
+import shutil
 import subprocess
+import time
 from typing import List, Callable, Optional
 
-from alpyne import LOG_LEVEL
 from alpyne.client.http_client import HttpClient
 from alpyne.client.model_run import ModelRun
 from alpyne.client.utils import resolve_model_jar, \
@@ -19,7 +20,6 @@ from alpyne.data.spaces import Configuration, Observation, Action
 ConfigQuery = Callable[[Configuration], Configuration]
 ActionQuery = Callable[[Observation, Action, Optional[int], Optional[SingleRunOutputs]], Action]
 
-
 class AlpyneClient:
     """
     The main object to initiate the Alpyne application and derive simulation runs from.
@@ -33,13 +33,15 @@ class AlpyneClient:
         :raises ModelError: if the app fails to start
         """
         logging.basicConfig(
-            level=LOG_LEVEL,
+            level=logging.DEBUG if verbose else logging.WARNING,
             format=f"%(asctime)s [%(name)s @ %(lineno)s][%(levelname)8s] %(message)s",
             handlers=[logging.StreamHandler()],
         )
+
         self.log = logging.getLogger(__name__)
 
         self._blocking = blocking
+        self._verbose = verbose
         self._proc = self._start_app(model_loc, blocking, port, verbose)
 
         try:
@@ -47,7 +49,7 @@ class AlpyneClient:
             _, _, output = self._http_client.get("/versions/number/0")
             self.version = ModelVersion.from_json(output)
         except:
-            raise ModelError(f"Failed to properly start the app. Error from process: {self._proc.stderr.read().decode()}")
+            raise ModelError(f"Failed to properly start the app. Error from process: {self._proc.stderr.readline().decode()}")
 
     def _start_app(self, model_loc: str, blocking: bool, port: int, verbose: bool) -> subprocess.Popen:
         """
@@ -57,14 +59,18 @@ class AlpyneClient:
         :param port:
         :param blocking:
         """
-        model_loc = resolve_model_jar(model_loc).parent.absolute()
+        model_jar, in_temp = resolve_model_jar(model_loc)
+        model_dir = str(model_jar.parent.absolute())
 
         # temporarily change to the exported model folder's directory for starting purposes
         # (needed to make sure database is properly connected to)
         initdir = os.getcwd()
-        os.chdir(str(model_loc.absolute()))
 
-        jar_sources = get_wildcard_paths(str(get_resources_path())) + get_wildcard_paths(str(model_loc))
+        self.log.info(f"Starting model in {model_dir}")
+
+        os.chdir(model_dir)
+
+        jar_sources = get_wildcard_paths(str(get_resources_path())) + get_wildcard_paths(str(model_dir))
         jar_sources = shorten_by_relativeness(jar_sources)
 
         if os.name == "nt":
@@ -76,6 +82,7 @@ class AlpyneClient:
                         "-cp", class_path,
                         "com.anylogic.alpyne.AlpyneServer",
                         "-p", f"{port}",
+                        "-o", initdir,
                         "-l", "WARNING" if not verbose else "ALL",
                         "."]
 
@@ -94,13 +101,19 @@ class AlpyneClient:
             err_message = proc.stderr.readlines()
             raise EnvironmentError(f"Process returned code: {returncode}; message: {err_message}")
 
-        self.log.debug(f"PID = {proc.pid}")
+        self.log.info(f"Started app | PID = {proc.pid}")
 
-        atexit.register(self._quit_app)
+        atexit.register(self._quit_app, model_dir if in_temp else None)
 
         return proc
 
-    def _quit_app(self):
+    def _quit_app(self, temp_dir: str = None):
+        """
+        Trigger app's self-destruct, killing any active runs, in addition to cleaning up any temporary files
+
+        :param temp_dir: The location of the temporary unzipped model, or None if the app was started with a \
+            non-temporary model
+        """
         # Trigger self-destruct, killing any active runs
         self._http_client.api_request("/", "DELETE", None)
         try:
@@ -118,6 +131,10 @@ class AlpyneClient:
         except Exception as e:
             self.log.error(f"Force killing app; did not quit as expected: {e}")
             self._proc.kill()
+
+        if temp_dir:
+            self.log.info(f"Deleting temporary directory: {temp_dir}")
+            shutil.rmtree(temp_dir)
 
     def _status(self):
         return self._http_client.post("/")
@@ -168,4 +185,4 @@ class AlpyneClient:
         :param inputs: the initial configuration to start the model with
         :return: an object referencing the created model run
         """
-        return ModelRun(self._http_client, ExperimentType.REINFORCEMENT_LEARNING, inputs, self._blocking)
+        return ModelRun(self._http_client, ExperimentType.REINFORCEMENT_LEARNING, inputs, self._blocking, verbose=self._verbose)

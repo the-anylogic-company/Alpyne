@@ -1,9 +1,9 @@
 import json
+import logging
 import time
 from logging import Logger
 from typing import List, Tuple, NoReturn, Optional
 
-from alpyne import LOG_LEVEL
 from alpyne.client.http_client import HttpClient
 from alpyne.data.constants import ExperimentType, RunStatus, RLCommand
 from alpyne.data.model_error import ModelError
@@ -23,8 +23,8 @@ class ModelRun:
     DEFAULT_POLLING_PERIOD = 0.1
 
     def __init__(self, http_client: HttpClient, type_: ExperimentType, inputs: Configuration, blocking: bool,
-                 polling_period: Optional[Number] = None):
-        self.log = Logger("ModelRun", LOG_LEVEL)
+                 polling_period: Optional[Number] = None, verbose: bool = False):
+        self.log = Logger("ModelRun", logging.DEBUG if verbose else logging.WARNING)
 
         self.http_client = http_client
         self.type = type_

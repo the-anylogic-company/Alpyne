@@ -1,6 +1,4 @@
-import logging
 import os
-from pathlib import Path
+import pathlib
 
-ROOT_PATH = Path(os.path.dirname(os.path.abspath(__file__)))
-LOG_LEVEL = logging.WARNING
+_ROOT_PATH = pathlib.Path(os.path.dirname(os.path.abspath(__file__)))

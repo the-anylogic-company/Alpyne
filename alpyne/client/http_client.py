@@ -11,8 +11,6 @@ from alpyne.data.model_error import ModelError
 
 RequestResponse = Tuple[int, dict, Optional[Union[dict, list]]]
 
-#LOG_LEVEL = logging.DEBUG
-
 class HttpClient:
     """
     Communication facilitator between Python and the Alpyne app.
