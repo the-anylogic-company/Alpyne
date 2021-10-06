@@ -51,6 +51,9 @@ class AlpyneClient:
         except:
             raise ModelError(f"Failed to properly start the app. Error from process: {self._proc.stderr.readline().decode()}")
 
+    def _validate_java(self):
+        cmdline_args = ["java", "--version"]
+
     def _start_app(self, model_loc: str, blocking: bool, port: int, verbose: bool) -> subprocess.Popen:
         """
         Execute the backend app with the desired preferences.
@@ -87,11 +90,14 @@ class AlpyneClient:
                         "."]
 
         self.log.debug(f"Executing:\n{' '.join(cmdline_args)}\n")
-        
-        proc = subprocess.Popen(cmdline_args,
-                                stdin=subprocess.PIPE,  # Needed for quitting the app
-                                stdout=subprocess.PIPE, # Both stdout and stderr should be empty,
-                                stderr=subprocess.PIPE) #   but open up just in case.
+
+        try:
+            proc = subprocess.Popen(cmdline_args,
+                                    stdin=subprocess.PIPE,  # Needed for quitting the app
+                                    stdout=subprocess.PIPE, # Both stdout and stderr should be empty,
+                                    stderr=subprocess.PIPE) #   but open up just in case.
+        except FileNotFoundError:
+            raise RuntimeError("Java not found. Please check your system path.")
 
         # return back to original directory
         os.chdir(initdir)

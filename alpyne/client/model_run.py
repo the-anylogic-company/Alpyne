@@ -60,7 +60,7 @@ class ModelRun:
 
     def reset(self, inputs: Optional[Configuration] = None) -> 'ModelRun':
         """
-        Setup the instance to begin a new run with the specified inputs.
+        Revert the run back to time 0 and apply the specified configuration inputs.
         After calling this method, the server will automatically start the next run.
 
         If `blocking` is enabled, this method will consume the current thread until the operation is complete.
@@ -69,9 +69,11 @@ class ModelRun:
         :return: this object
 
         """
+        if self.id is None:
+            raise RuntimeError("Model run cannot be reset because experiment has not started. Call `run` first.")
+
         if inputs is not None:
             self.inputs = inputs
-        #self.stop()
 
         # calling to set the configuration will reset the sim
         endpoint = f"/runs/{self.id}/rl"

@@ -1,6 +1,7 @@
 from typing import Dict, Union, List
 
 from alpyne.data.model_data import ModelData
+from alpyne.data.model_error import ModelError
 from alpyne.data.spaces import Configuration, Observation, Action
 
 
@@ -37,5 +38,7 @@ class ModelVersion:
 
     @staticmethod
     def from_json(json_data: Dict[str, Union[int, dict]]):
+        if json_data is None:
+            raise RuntimeError("Attempted to parse 'None' Version data; check that the app started correctly.")
         return ModelVersion(json_data["version"],
                             json_data["experimentTemplate"])
