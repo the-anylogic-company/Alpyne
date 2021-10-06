@@ -1,3 +1,4 @@
+import math
 from typing import Dict, Any
 
 from alpyne.data.constants import InputTypes
@@ -15,7 +16,14 @@ class ModelData:
         self.type_ = type_
         self.py_type = InputTypes.to_class(type_)
         self.units = units
-        self.value = value or (0 if self.py_type in [int, float] else None)
+        self.value = value
+        if not value:
+            if self.py_type in [int, float]:
+                self.value = 0
+            elif self.py_type == bool:
+                self.value = False  # default Java
+        elif value == 'Infinity':
+            self.value = math.inf
 
     def __str__(self):
         unit_suffix = "" if self.units is None else " " + self.units
