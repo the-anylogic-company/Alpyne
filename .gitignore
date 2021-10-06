@@ -1,3 +1,7 @@
+
+*.log
+Exported/
+
 # IDE
 .idea/*
 */.idea/*
