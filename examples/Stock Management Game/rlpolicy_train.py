@@ -1,6 +1,8 @@
 import numpy as np
 from gym import spaces
 try:  # handle sb2 or sb3
+    # v- stops pycharm from complaining
+    # noinspection PyUnresolvedReferences
     from stable_baselines3 import PPO, A2C
 except ModuleNotFoundError:
     try:
@@ -56,8 +58,8 @@ class MyStockGameEnv(BaseAlpyneEnv):
     def _get_action_space(self) -> spaces.Space:
         return spaces.Box(low=0.0, high=50.0, shape=(1,), dtype=np.float16)
 
-    def _convert_to_action(self, action: float) -> Action:
-        return Action(order_rate=action)
+    def _convert_to_action(self, action: np.ndarray) -> Action:
+        return Action(order_rate=float(action[0]))
 
     def _calc_reward(self, observation: Observation) -> float:
         return max(-1,-125e-16*(observation.stock_amount-5000)**4+1)
@@ -73,12 +75,15 @@ class MyStockGameEnv(BaseAlpyneEnv):
 
 
 if __name__ == '__main__':
+
     client = AlpyneClient(r"Exported\StockManagementGame\model.jar")
 
     # create new model run from basic configuration
     cfg = client.configuration_template
     cfg.acquisition_lag_days = 1
     sim = client.create_reinforcement_learning(cfg)
+
+
 
     # wrap in our custom gym environment
     env = MyStockGameEnv(sim)
