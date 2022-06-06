@@ -1,9 +1,10 @@
 import json
+from time import sleep
 import logging
 import socket
 import urllib.parse
 from typing import Tuple, Optional, Union, Any
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 from urllib.request import Request
 
 from alpyne.client.utils import AlpyneJSONEncoder
@@ -30,19 +31,30 @@ class HttpClient:
         self.log.debug("%s %s: %s", method, url, body)
 
         url_path = self.root_url + url #urllib.parse.quote(url)
-        try:
-            request = Request(url_path, method=method, unverifiable=True)
-            if body is not None:
-                request.data = json.dumps(body, cls=AlpyneJSONEncoder).encode('utf-8')
-            request.add_header("Content-Type", "application/json")
-            response = urllib.request.urlopen(request, timeout=3)
-            if response.getcode() >= 400:  # TODO model errors should warn user and mark episode as halted
-                raise ModelError(response.getcode(), response.reason, response.read(), url_path)
-        except HTTPError as err:
-            # Can either be handled from alpyne or the underlying server
-            raise ModelError(err.code, err.reason, err.read(), url_path)
-        except socket.timeout as err:
-            raise ModelError(err.errno, "timeout|model exception", "see alpyne.log", url_path)
+        urlErrorCounter = 0
+        maxUrlErrors = 100
+        success = False
+        while not success:
+            try:
+                request = Request(url_path, method=method, unverifiable=True)
+                if body is not None:
+                    request.data = json.dumps(body, cls=AlpyneJSONEncoder).encode('utf-8')
+                request.add_header("Content-Type", "application/json")
+                response = urllib.request.urlopen(request, timeout=3)
+                if response.getcode() >= 400:  # TODO model errors should warn user and mark episode as halted
+                    raise ModelError(response.getcode(), response.reason, response.read(), url_path)
+                success = True
+            except URLError as err:
+                if urlErrorCounter < maxUrlErrors:
+                    urlErrorCounter += 1
+                    sleep(0.1)
+                else:
+                    # Can either be handled from alpyne or the underlying server
+                    raise ModelError(err.code, err.reason, err.read(), url_path)
+            except HTTPError as err:
+                raise ModelError(err.code, err.reason, err.read(), url_path)
+            except socket.timeout as err:
+                raise ModelError(err.errno, "timeout|model exception", "see alpyne.log", url_path)
 
         code = response.getcode()
         headers = response.getheaders()
