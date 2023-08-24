@@ -52,7 +52,7 @@ class HttpClient:
                     sleep(0.1)
                 else:
                     # Can either be handled from alpyne or the underlying server
-                    raise ModelError(err.code, err.reason, err.read(), url_path)
+                    raise ModelError(err.reason, url_path)
             except socket.timeout as err:
                 raise ModelError(err.errno, "timeout|model exception", "see alpyne.log", url_path)
 
