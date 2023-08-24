@@ -1,6 +1,6 @@
 import itertools
 import logging
-from collections import Iterable, Mapping
+from collections.abc import Iterable, Mapping
 from datetime import datetime
 from math import ceil
 from typing import Any, Dict, List, Optional, Union, Tuple, Callable
