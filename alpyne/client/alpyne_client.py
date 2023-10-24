@@ -71,6 +71,7 @@ class AlpyneClient:
         os.chdir(model_dir)
 
         jar_sources = get_wildcard_paths(str(get_resources_path())) + get_wildcard_paths(str(model_dir))
+
         jar_sources = shorten_by_relativeness(jar_sources)
 
         if os.name == "nt":
@@ -82,10 +83,13 @@ class AlpyneClient:
                         "-cp", class_path,
                         "com.anylogic.alpyne.AlpyneServer",
                         "-p", f"{port}",
-                        "-o", initdir,
-                        "-l", "WARNING" if not verbose else "ALL",
-                        "."]
+                        "-o", ".", #initdir,
+                        ]
+        if verbose:
+            cmdline_args += ["-l", "ALL"]
+        cmdline_args.append(".")
 
+        print(f"Executing:\n{' '.join(cmdline_args)}\n")
         self.log.debug(f"Executing:\n{' '.join(cmdline_args)}\n")
 
         try:

@@ -40,7 +40,6 @@ class RunStatus(Enum):
     STOPPED = "STOPPED"
     """ Manually finished (by API call). """
 
-
     FAILED = "FAILED"
     """ Encountered runtime error. """
 
