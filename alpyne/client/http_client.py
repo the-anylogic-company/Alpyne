@@ -44,15 +44,15 @@ class HttpClient:
                 if response.getcode() >= 400:  # TODO model errors should warn user and mark episode as halted
                     raise ModelError(response.getcode(), response.reason, response.read(), url_path)
                 success = True
+            except HTTPError as err:
+                raise ModelError(err.code, err.reason, err.read(), url_path)
             except URLError as err:
                 if urlErrorCounter < maxUrlErrors:
                     urlErrorCounter += 1
                     sleep(0.1)
                 else:
                     # Can either be handled from alpyne or the underlying server
-                    raise ModelError(err.code, err.reason, err.read(), url_path)
-            except HTTPError as err:
-                raise ModelError(err.code, err.reason, err.read(), url_path)
+                    raise ModelError(error=err.reason, path=url_path)
             except socket.timeout as err:
                 raise ModelError(err.errno, "timeout|model exception", "see alpyne.log", url_path)
 
