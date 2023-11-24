@@ -6,6 +6,9 @@ import urllib.parse
 from typing import Tuple, Optional, Union, Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request
+from urllib.parse import (
+        urlencode, unquote, urlparse, parse_qsl, ParseResult
+    )
 
 from alpyne.client.utils import AlpyneJSONEncoder
 from alpyne.data.model_error import ModelError
@@ -20,17 +23,66 @@ class HttpClient:
         self.root_url = root_url
         self.log = logging.getLogger(__name__)
 
-    def api_request(self, url: str, method: str="GET", body: Any=None) -> RequestResponse:
+    @staticmethod
+    def add_url_params(url: str, params: dict) -> str:  # https://stackoverflow.com/a/25580545
+        """ Add GET params to provided URL being aware of existing.
+
+        :param url: target URL
+        :param params: requested params to be added
+        :return: updated URL
+
+        >> url = 'https://stackoverflow.com/test'
+        >> new_params = {'answers': False, 'data': ['some','values']}
+        >> add_url_params(url, new_params)
+        'https://stackoverflow.com/test?data=some&data=values&answers=false'
+        """
+        # Unquoting URL first so we don't lose existing args
+        url = unquote(url)
+        # Extracting url info
+        parsed_url = urlparse(url)
+        # Extracting URL arguments from parsed URL
+        get_args = parsed_url.query
+        # Converting URL arguments to dict
+        parsed_get_args = dict(parse_qsl(get_args))
+        # Merging URL arguments dict with new params
+        parsed_get_args.update(params)
+
+        # Bool and Dict values should be converted to json-friendly values
+        # you may throw this part away if you don't like it :)
+        parsed_get_args.update(
+            {k: json.dumps(v) for k, v in parsed_get_args.items()
+             if isinstance(v, (bool, dict))}
+        )
+
+        # Converting URL argument to proper query string
+        encoded_get_args = urlencode(parsed_get_args, doseq=True)
+        # Creating new parsed result object based on provided with new
+        # URL arguments. Same thing happens inside urlparse.
+        # V- bypass incorrect flagging; may be removable after hard refresh TODO
+        # noinspection PyArgumentList
+        new_url = ParseResult(
+            parsed_url.scheme, parsed_url.netloc, parsed_url.path,
+            parsed_url.params, encoded_get_args, parsed_url.fragment
+        ).geturl()
+
+        return new_url
+
+    def api_request(self, url: str, method: str="GET", params: dict = None, body: Any=None) -> RequestResponse:
         """
         :param url: the sub-path (under the root url) to execute a request at
         :param method: the HTTP method
+        :param params: dict containing requested params to be added
         :param body: data to be included with the request
         :return: the status code, a header dictionary, and the outputs
         :raises ModelError: when encountering an error from the application
         """
-        self.log.debug("%s %s: %s", method, url, body)
 
         url_path = self.root_url + url #urllib.parse.quote(url)
+        if params:
+            url_path = self.add_url_params(url_path, params)
+
+        self.log.debug("%s %s: %s", method, url_path, body)
+
         urlErrorCounter = 0
         maxUrlErrors = 100
         success = False
@@ -65,8 +117,16 @@ class HttpClient:
 
         return code, headers, output
 
-    def get(self, url: str) -> RequestResponse:
-        return self.api_request(url, method="GET")
+    def get(self, url: str, params: dict = None) -> RequestResponse:
+        return self.api_request(url, method="GET", params=params)
 
-    def post(self, url: str, body: Any=None) -> RequestResponse:
+    def post(self, url: str, body: Any = None) -> RequestResponse:
         return self.api_request(url, method="POST", body=body)
+
+    def put(self, url: str, body: Any = None) -> RequestResponse:
+        return self.api_request(url, method="PUT", body=body)
+
+    def patch(self, url: str, body: Any = None) -> RequestResponse:
+        return self.api_request(url, method="PATCH", body=body)
+
+

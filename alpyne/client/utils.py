@@ -1,18 +1,20 @@
 import json
 import os
+import re
 import tempfile
 import zipfile
+from collections import namedtuple
 from collections.abc import Sequence
 from datetime import datetime as dt
 from datetime import time
 from enum import Enum
 from pathlib import Path
-from typing import List, Tuple, Any
+from typing import List, Tuple, Any, Dict
 from warnings import warn
 
 import alpyne
-from alpyne.data.model_data import ModelData
-from alpyne.data.spaces import RLSpace, Number
+from alpyne.data.model_data import ModelData, Number, EngineSettings
+from alpyne.data.spaces import RLSpace
 
 
 class AlpyneJSONEncoder(json.JSONEncoder):
@@ -26,10 +28,10 @@ class AlpyneJSONEncoder(json.JSONEncoder):
         """ Overridden method to handle classes used by Alpyne. """
         if callable(o):
             return o()
-        elif isinstance(o, RLSpace):
+        elif isinstance(o, (RLSpace,EngineSettings)):
             # recursively call `default` on each of the values
-            output = list(map(self.default, o._data.values()))
-            return output
+            #output = list(map(self.default, o._data.values()))
+            return o.__dict__
         elif isinstance(o, ModelData):
             return {"name": o.name, "type": o.type_, "value": o.value, "units": o.units}
         elif isinstance(o, dt):
@@ -98,13 +100,13 @@ def convert_to_string(value: Any) -> str:
     return json.dumps(value)
 
 
-def resolve_model_jar(model_loc: str) -> Tuple[Path, bool]:
+def resolve_model_jar(model_loc: str) -> Tuple[Path, tempfile.TemporaryDirectory]:
     """
     Validate the provided location of a supposed model. It handles location validation, unzipping zip files to a
     temporary directory, and other cases.
 
     :param model_loc: The user-specified location of their model
-    :return: A (possibly updated) location of the model.jar and whether it's in a temporary directory
+    :return: A (possibly updated) location of the model.jar and the TemporaryDirectory object, if one was created
     :raises ValueError: If the location is ambiguous or couldn't be properly resolved
     """
     path = Path(model_loc)
@@ -112,24 +114,23 @@ def resolve_model_jar(model_loc: str) -> Tuple[Path, bool]:
         raise ValueError("Ambiguous model location. Point to a model.jar or exported zip file")
 
     # find path to model jar, unzipping if necessary
-    in_temp = False
+    temp_dir = None
     if path.suffix == ".jar":
         model_jar_path = path
     elif path.suffix == ".zip":
-        in_temp = True
         # [00000-99999] based on the current time of day
         day_ratio = int((dt.now() - dt.combine(dt.now().date(), time())).total_seconds() / 864 * 1000)
-        tmp_dir = tempfile.mkdtemp(prefix=f"alpyne_{day_ratio:05d}_")
+        temp_dir = tempfile.TemporaryDirectory(prefix=f"alpyne_{day_ratio:05d}_")
 
-        warn(f"Unzipping to temporary directory ({tmp_dir})")
+        warn(f"Unzipping to temporary directory ({temp_dir.name})")
 
         with zipfile.ZipFile(path, 'r') as zip_ref:
-            zip_ref.extractall(tmp_dir)
-        model_jar_path = Path(tmp_dir, "model.jar")
+            zip_ref.extractall(temp_dir.name)
+        model_jar_path = Path(temp_dir.name, "model.jar")
     else:
         raise Exception("Unrecognized file type. Pass in a zip or jar file")
 
-    return model_jar_path, in_temp
+    return model_jar_path, temp_dir
 
 
 def histogram_outputs_to_fake_dataset(lower_bound: float, interval_width: float, hits: List[int]) -> \
@@ -163,6 +164,7 @@ def limit(lower: Number, value: Number, upper: Number) -> Number:
     """ Convenience function to constrain a given value between a lower and upper bound. """
     return max(lower, min(value, upper))
 
+
 def get_resources_path() -> Path:
     """ Convenience method to return the `resources` directory in this project """
     return alpyne._ROOT_PATH.joinpath("resources")
@@ -189,3 +191,29 @@ def shorten_by_relativeness(paths: List[str]) -> List[str]:
         else:
             new_paths.append(pathstr)
     return new_paths
+
+
+def extended_namedtuple(name, source_fields):
+    assert isinstance(source_fields, list)
+    new_type_fields = []
+    for f in source_fields:
+        try:
+            new_type_fields.extend(f._fields)
+        except:
+            new_type_fields.append(f)
+    return namedtuple(name, new_type_fields)
+
+
+def space_name_orders(alp: str) -> Tuple[List[str], List[str], List[str]]:
+    """
+    Find the order of field definition for each space type in the given ALP file
+    :param alp:
+    :return:
+    """
+    with open(alp, errors="ignore") as f:
+        content = f.read()
+
+    cfg_names = re.findall(r"<ConfigurationField>\s+<Name><!\[CDATA\[(\w+)", content)
+    obs_names = re.findall(r"<ObservationField>\s+<Name><!\[CDATA\[(\w+)", content)
+    act_names = re.findall(r"<ActionField>\s+<Name><!\[CDATA\[(\w+)", content)
+    return cfg_names, obs_names, act_names

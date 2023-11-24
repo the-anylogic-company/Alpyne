@@ -1,148 +1,260 @@
+import logging
+from abc import abstractmethod
+from collections import namedtuple
 from datetime import datetime
-from enum import Enum
-from typing import Any, Type, Union
+from enum import Enum, Flag, auto
+from typing import Any, Type, Union, Optional, Literal, TypeVar, Generic
+
+#from alpyne.client.utils import extended_namedtuple  # causes circular dep errors when present
+def extended_namedtuple(name, source_fields):
+    assert isinstance(source_fields, list)
+    new_type_fields = []
+    for f in source_fields:
+        try:
+            new_type_fields.extend(f._fields)
+        except:
+            new_type_fields.append(f)
+    return namedtuple(name, new_type_fields)
+
+class PyLogLevel(Enum):
+    CRITICAL = logging.CRITICAL
+    ERROR = logging.ERROR
+    WARNING = logging.WARNING
+    INFO = logging.INFO
+    DEBUG = logging.DEBUG
 
 
-class ExperimentType(Enum):
-    """ Internally used when creating a new model run. """
-    #SIMULATION = "SIMULATION"
-    REINFORCEMENT_LEARNING = "REINFORCEMENT_LEARNING"
+class JavaLogLevel(Enum):
+    SEVERE = "SEVERE"
+    WARNING = "WARNING"
+    INFO = "INFO"
+    CONFIG = "CONFIG"
+    FINE = "FINE"
+    FINER = "FINER"
+    FINEST = "FINEST"
 
 
-class RLCommand(Enum):
-    """ Internally used when POSTing to the /rl/ endpoint. """
-    CONFIGURATION = "CONFIGURATION"
-    OBSERVATION = "OBSERVATION"
-    ACTION = "ACTION"
-
-
-class RunStatus(Enum):
+# v- falsely claims `auto()` is incorrect; may fix with a hard refresh TODO
+# noinspection PyArgumentList
+class State(Flag):
     """
-    Represents the status of a run's engine.
+    Represents the state of the run's engine.
 
     In general, the engine can be considered either waiting for some type of user-input, actively processing, or
     in a halted state (which may or may not be recoverable). The various statuses divide these three categories
     into subcategories, to provide more useful context.
     """
-    FRESH = "FRESH"
-    """ Just started, waiting for the configuration. End users will typically not see this status due to configuration \
-    being provided in conjunction with some other command (e.g., reset). """
+    IDLE = auto()
+    """ Just started, waiting for the configuration """
 
-    PAUSED = "PAUSED"
-    """ Mid-run, waiting for action and open to observation and output querying. """
+    PAUSED = auto()
+    """ Mid-run, waiting for action and open to observation and output querying """
 
-    RUNNING = "RUNNING"
-    """ The model is being actively executed (cannot be interacted with). """
+    RUNNING = auto()
+    """ The model is being actively executed """
 
-    COMPLETED = "COMPLETED"
-    """ Reached stopping condition - either time/date or based on the RL experiment's "done" field. """
+    FINISHED = auto()
+    """ The model execution is finished successfully  """
 
-    STOPPED = "STOPPED"
-    """ Manually finished (by API call). """
+    ERROR = auto()
+    """ Internal model error """
 
-    FAILED = "FAILED"
-    """ Encountered runtime error. """
+    PLEASE_WAIT = auto()
+    """ In the process of executing an uninterruptible command (`pause()`, `stop()`, `step()`) """
 
-
-
-class InputTypes(Enum):
-    """ Represents the data types of elements provided in the inputs/configuration. """
-    STRING = "STRING"
-    DOUBLE = "DOUBLE"
-    INTEGER = "INTEGER"
-    LONG = "LONG"
-    BOOLEAN = "BOOLEAN"
-    OBJECT = "OBJECT"
-    DATE_TIME = "DATE_TIME"
+    @classmethod
+    def ANY(cls):
+        return ~cls(0)
 
     @staticmethod
-    def to_class(input_: Union[str, 'InputTypes']) -> Union[Type, None]:
-        # first check for `_ARRAY` types (not specfied in this enum but considered valid)
-        if isinstance(input_, str) and input_.endswith("_ARRAY"):
-            return list
-
-        try:
-            itype = input_ if isinstance(input_, InputTypes) else InputTypes(input_)
-        except ValueError:
-            # currently occurs when trying to convert output-typed objects
-            #warn(f"Input '{input_}' does not have an equivalent input type")
-            return None
-
-        if itype == InputTypes.STRING:
-            return str
-        elif itype == InputTypes.DOUBLE:
-            return float
-        elif itype == InputTypes.INTEGER or itype == InputTypes.LONG:
-            return int
-        elif itype == InputTypes.BOOLEAN:
-            return bool
-        elif itype == InputTypes.OBJECT:
-            return dict
-        elif itype == InputTypes.DATE_TIME:
-            return datetime
-        raise ValueError(f"Unhandled input type ({itype} for input {input_}; returning None")
-
-    @staticmethod
-    def from_value(input_: Any) -> 'InputTypes':
-        if isinstance(input_, str):
-            return InputTypes.STRING
-        elif isinstance(input_, bool): # check before ints since isinstance(True, int) == True
-            return InputTypes.BOOLEAN
-        elif isinstance(input_, int):
-            return InputTypes.LONG # assume over int to avoid potential bit-loss
-        elif isinstance(input_, float):
-            return InputTypes.DOUBLE
-        elif isinstance(input_, datetime):
-            return InputTypes.DATE_TIME
-        else:
-            return InputTypes.OBJECT
-
-    @staticmethod
-    def validate(value: Any, expected: 'InputTypes') -> bool:
-        """
-        Checks whether the passed value is of the expected input type.
-        :param value: either an object or a class of an object
-        :param expected: the expected input type to check against
-        :return: True if the value is an instance or a subclass of the expected type
-        """
-        # use different function depending on whether 'value' is an object or a class
-        ischeck = issubclass if isinstance(value, type) else isinstance
-        if expected == InputTypes.STRING:
-            return ischeck(value, str)
-        elif expected == InputTypes.DOUBLE:
-            return ischeck(value, float)
-        elif expected == InputTypes.INTEGER or expected == InputTypes.LONG:
-            return ischeck(value, int)
-        elif expected == InputTypes.BOOLEAN:
-            return ischeck(value, bool)
-        elif expected == InputTypes.OBJECT:
-            return ischeck(value, dict)
-        elif expected == InputTypes.DATE_TIME:
-            return ischeck(value, (str, datetime))
-        return False
+    def to_flag(name: str) -> 'State':
+        return State.__members__.get(name, State(0))
 
 
-class OutputTypes(Enum):
-    """ Represents the data types in a `SingleRunOutputs` object. """
-    STRING = "STRING"
-    DOUBLE = "DOUBLE"
-    INTEGER = "INTEGER"
-    LONG = "LONG"
-    DATE_TIME = "DATE_TIME"
-    BOOLEAN = "BOOLEAN"
-    DATA_SET = "DATA_SET"
-    STATISTICS_DISCRETE = "STATISTICS_DISCRETE"
-    STATISTICS_CONTINUOUS = "STATISTICS_CONTINUOUS"
-    HISTOGRAM_DATA = "HISTOGRAM_DATA"
-    HISTOGRAM_2D_DATA = "HISTOGRAM_2D_DATA"
+BaseUnitAttrs = namedtuple('BaseUnitAttrs', ['symbol'])
+NumericUnitAttrs = extended_namedtuple('NumericUnitAttrs', ['conversion_factor', BaseUnitAttrs])
+SpaceUnitAttrs = extended_namedtuple('SpaceUnitAttrs', ['length_unit', BaseUnitAttrs])  # area
+RateUnitAttrs = extended_namedtuple('RateUnitAttrs', ['time_unit', BaseUnitAttrs])  # rate
+VelocityUnitAttrs = extended_namedtuple('VelocityUnitAttrs', ['spacial_unit', RateUnitAttrs])  # accel, speed, flow, rotation speed
 
 
-class EngineSettings(Enum):
-    """ Represents the different engine-level settings as part of a run's inputs/configuration. """
-    START_TIME = "{START_TIME}"
-    START_DATE = "{START_DATE}"
-    STOP_TIME = "{STOP_TIME}"
-    STOP_DATE = "{STOP_DATE}"
-    STOP_MODE = "{STOP_MODE}"
-    SEED = "{RANDOM_SEED}"
-    MAX_MEMORY_MB = "{MAX_MEMORY_MB}"
+class IEnum(Enum):
+
+    @abstractmethod
+    def modifier(self, units: 'IEnum') -> float:
+        raise NotImplementedError()
+
+    @abstractmethod
+    def convertTo(self, this_amount: float, new_units: 'IEnum') -> float:
+        raise NotImplementedError()
+
+
+class AmountUnits(IEnum):
+    LITER = NumericUnitAttrs(0.001, 'L')
+    OIL_BARREL = NumericUnitAttrs(0.158987295, 'barrels')
+    CUBIC_METER = NumericUnitAttrs(1.0, 'm3')
+    KILOGRAM = NumericUnitAttrs(1.0, 'kg')
+    TON = NumericUnitAttrs(1000.0, 'ton')
+
+    def __init__(self, conversion_factor, symbol):
+        self.conversion_factor = conversion_factor
+        self.symbol = symbol
+
+    def modifier(self, units: 'AmountUnits') -> float:
+        return self.conversion_factor / units.conversion_factor
+
+    def convertTo(self, this_amount: float, new_units: 'AmountUnits') -> float:
+        return this_amount * self.modifier(new_units)
+
+
+class TimeUnits(IEnum):
+    MILLISECOND = NumericUnitAttrs(0.001, "ms")
+    SECOND = NumericUnitAttrs(1.0, "sec")
+    MINUTE = NumericUnitAttrs(60.0, "min")
+    HOUR = NumericUnitAttrs(3600.0, "hr")
+    DAY = NumericUnitAttrs(86400.0, "day")
+    WEEK = NumericUnitAttrs(604800.0, "wk")
+    MONTH = NumericUnitAttrs(2592000.0, "mn")
+    YEAR = NumericUnitAttrs(3.1536E7, "yr")
+
+    def __init__(self, conversion_factor, symbol):
+        self.conversion_factor = conversion_factor
+        self.symbol = symbol
+
+    def modifier(self, units: 'TimeUnits') -> float:
+        return self.conversion_factor / units.conversion_factor
+
+    def convertTo(self, this_amount: float, new_units: 'TimeUnits') -> float:
+        return this_amount * self.modifier(new_units)
+
+
+class LengthUnits(IEnum):
+    MILLIMETER = NumericUnitAttrs(0.001, "mm")
+    CENTIMETER = NumericUnitAttrs(0.01, "cm")
+    METER = NumericUnitAttrs(1.0, "m")
+    KILOMETER = NumericUnitAttrs(1000.0, "km")
+    INCH = NumericUnitAttrs(0.0254, "in")
+    FOOT = NumericUnitAttrs(0.3048, "ft")
+    YARD = NumericUnitAttrs(0.9144, "yd")
+    MILE = NumericUnitAttrs(1609.344, "m")
+    NAUTICAL_MILE = NumericUnitAttrs(1853.184, "nm")
+
+    def __init__(self, conversion_factor, symbol):
+        self.conversion_factor = conversion_factor
+        self.symbol = symbol
+
+    def modifier(self, units: 'LengthUnits') -> float:
+        return self.conversion_factor / units.conversion_factor
+
+    def convertTo(self, this_amount: float, new_units: 'LengthUnits') -> float:
+        return this_amount * self.modifier(new_units)
+
+
+class AngleUnits(IEnum):
+    TURN = NumericUnitAttrs(6.283185307179586, 'turn')
+    RADIAN = NumericUnitAttrs(1.0, 'rad')
+    DEGREE = NumericUnitAttrs(0.017453292519943295, 'deg')
+
+    def __init__(self, conversion_factor, symbol):
+        self.conversion_factor = conversion_factor
+        self.symbol = symbol
+
+    def modifier(self, units: 'AngleUnits') -> float:
+        return self.conversion_factor / units.conversion_factor
+
+    def convertTo(self, this_amount: float, new_units: 'AngleUnits') -> float:
+        return this_amount * self.modifier(new_units)
+
+
+class RateUnits(IEnum):
+    PER_MILLISECOND = RateUnitAttrs(TimeUnits.MILLISECOND, "per ms")
+    PER_SECOND = RateUnitAttrs(TimeUnits.SECOND, "per sec")
+    PER_MINUTE = RateUnitAttrs(TimeUnits.MINUTE, "per min")
+    PER_HOUR = RateUnitAttrs(TimeUnits.HOUR, "per hr")
+    PER_DAY = RateUnitAttrs(TimeUnits.DAY, "per day")
+    PER_WEEK = RateUnitAttrs(TimeUnits.WEEK, "per wk")
+    PER_MONTH = RateUnitAttrs(TimeUnits.MONTH, "per month")
+    PER_YEAR = RateUnitAttrs(TimeUnits.YEAR, "per year")
+
+    def __init__(self, time_unit, symbol):
+        self.time_unit = time_unit
+        self.symbol = symbol
+
+    def modifier(self, units: 'RateUnits') -> float:
+        return 1.0 / self.time_unit.modifier(units.time_unit)
+
+    def convertTo(self, this_amount: float, new_units: 'RateUnits') -> float:
+        return this_amount * self.modifier(new_units)
+
+
+class AccelerationUnits(IEnum):
+    MPS_SQ = VelocityUnitAttrs(LengthUnits.METER, TimeUnits.SECOND, "mps2")
+    FPS_SQ = VelocityUnitAttrs(LengthUnits.FOOT, TimeUnits.SECOND, "fps2")
+
+    def __init__(self, length_unit, time_unit, symbol):
+        self.length_unit = length_unit
+        self.time_unit = time_unit
+        self.symbol = symbol
+
+    def modifier(self, units: 'AccelerationUnits') -> float:
+        d = self.time_unit.modifier(units.time_unit)
+        return self.length_unit.modifier(units.length_unit) / d * d
+
+    def convertTo(self, this_amount: float, new_units: 'AccelerationUnits') -> float:
+        return this_amount * self.modifier(new_units)
+
+
+class SpeedUnits(IEnum):
+    MPS = VelocityUnitAttrs(LengthUnits.METER, TimeUnits.SECOND, "meters per second")
+    KPH = VelocityUnitAttrs(LengthUnits.KILOMETER, TimeUnits.HOUR, "kilometers per hour")
+    FPS = VelocityUnitAttrs(LengthUnits.FOOT, TimeUnits.SECOND, "feet per second")
+    FPM = VelocityUnitAttrs(LengthUnits.FOOT, TimeUnits.MINUTE, "feet per minute")
+    MPH = VelocityUnitAttrs(LengthUnits.MILE, TimeUnits.HOUR, "miles per hour")
+    KN = VelocityUnitAttrs(LengthUnits.NAUTICAL_MILE, TimeUnits.HOUR, "knots")
+
+    def __init__(self, length_unit, time_unit, symbol):
+        self.length_unit = length_unit
+        self.time_unit = time_unit
+        self.symbol = symbol
+
+    def modifier(self, units: 'SpeedUnits') -> float:
+        return self.length_unit.modifier(units.length_unit) / self.time_unit.modifier(units.time_unit)
+
+    def convertTo(self, this_amount: float, new_units: 'SpeedUnits') -> float:
+        return this_amount * self.modifier(new_units)
+
+
+class FlowRateUnits(IEnum):
+    LITER_PER_SECOND = VelocityUnitAttrs(AmountUnits.LITER, TimeUnits.SECOND, "liter per second")
+    OIL_BARREL_PER_SECOND = VelocityUnitAttrs(AmountUnits.OIL_BARREL, TimeUnits.SECOND, "oil barrel per second")
+    CUBIC_METER_PER_SECOND = VelocityUnitAttrs(AmountUnits.CUBIC_METER, TimeUnits.SECOND, "meter3 per second")
+    KILOGRAM_PER_SECOND = VelocityUnitAttrs(AmountUnits.KILOGRAM, TimeUnits.SECOND, "kilogram per second")
+    TON_PER_SECOND = VelocityUnitAttrs(AmountUnits.TON, TimeUnits.SECOND, "ton per second")
+
+    def __init__(self, amount_unit, time_unit, symbol):
+        self.amount_unit = amount_unit
+        self.time_unit = time_unit
+        self.symbol = symbol
+
+    def modifier(self, units: 'FlowRateUnits') -> float:
+        return self.amount_unit.modifier(units.amount_unit) / self.time_unit.modifier(units.time_unit)
+
+    def convertTo(self, this_amount: float, new_units: 'FlowRateUnits') -> float:
+        return this_amount * self.modifier(new_units)
+
+
+class RotationSpeedUnits(IEnum):
+    RPM = VelocityUnitAttrs(AngleUnits.TURN, TimeUnits.MINUTE, "rotations per minute")
+    RAD_PER_SECOND = VelocityUnitAttrs(AngleUnits.RADIAN, TimeUnits.SECOND, "radians per second")
+    DEG_PER_SECOND = VelocityUnitAttrs(AngleUnits.DEGREE, TimeUnits.SECOND, "degrees per second")
+
+    def __init__(self, angle_unit, time_unit, symbol):
+        self.angle_unit = angle_unit
+        self.time_unit = time_unit
+        self.symbol = symbol
+
+    def modifier(self, units: 'RotationSpeedUnits') -> float:
+        return self.angle_unit.modifier(units.angle_unit) / self.time_unit.modifier(units.time_unit)
+
+    def convertTo(self, this_amount: float, new_units: 'RotationSpeedUnits') -> float:
+        return this_amount * self.modifier(new_units)
