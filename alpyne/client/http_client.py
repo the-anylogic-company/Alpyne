@@ -84,7 +84,7 @@ class HttpClient:
         self.log.debug("%s %s: %s", method, url_path, body)
 
         urlErrorCounter = 0
-        maxUrlErrors = 100
+        maxUrlErrors = 10
         success = False
         while not success:
             try:
@@ -92,11 +92,15 @@ class HttpClient:
                 if body is not None:
                     request.data = json.dumps(body, cls=AlpyneJSONEncoder).encode('utf-8')
                 request.add_header("Content-Type", "application/json")
-                response = urllib.request.urlopen(request, timeout=3)
+
+                # when calling `wait_for` increase web request's timeout to 2x the endpoint's timeout
+                timeout_val = 10 if params is None else params.get('timeout', 10e3)/1000*2  # convert back to sec from ms
+                response = urllib.request.urlopen(request, timeout=timeout_val)
                 if response.getcode() >= 400:  # TODO model errors should warn user and mark episode as halted
                     raise ModelError(response.getcode(), response.reason, response.read(), url_path)
                 success = True
             except URLError as err:
+                self.log.warning(f"[ATTEMPT {urlErrorCounter} / {maxUrlErrors}] ERROR: {err}")
                 if urlErrorCounter < maxUrlErrors:
                     urlErrorCounter += 1
                     sleep(0.1)
