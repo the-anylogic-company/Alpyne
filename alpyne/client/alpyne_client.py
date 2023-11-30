@@ -72,7 +72,8 @@ class AlpyneClient:
         :param port:
         :param java_log_level:
         """
-        model_jar, in_temp = resolve_model_jar(model_loc)
+        # get the directory for the model, optionally extracting it to a temp dir if necessary
+        model_jar, temp_dir = resolve_model_jar(model_loc)
         model_dir = str(model_jar.parent.absolute())
 
         # temporarily change to the exported model folder's directory for starting purposes
@@ -122,11 +123,11 @@ class AlpyneClient:
 
         self.log.info(f"Started app | PID = {proc.pid}")
 
-        atexit.register(self._quit_app, model_dir if in_temp else None)
+        atexit.register(self._quit_app, temp_dir)
 
         return proc
 
-    def _quit_app(self, temp_dir: str = None):
+    def _quit_app(self, temp_dir: TemporaryDirectory = None):
         """
         Trigger app's self-destruct, killing any active runs, in addition to cleaning up any temporary files
 
@@ -152,10 +153,17 @@ class AlpyneClient:
             self.log.error(f"Force killing app; did not quit as expected: {e}")
             self._proc.kill()
 
-        if temp_dir:
-            self.log.info(f"Deleting temporary directory: {temp_dir}")
-            shutil.rmtree(temp_dir)
+        try:
+            _ = psutil.Process(self._proc.pid)
+            msg = "All attempts to force kill app failed. Requires system restart or manual quit to close."
+            self.log.error(msg)
+            print(f"[ALPYNE: FATAL ERROR] {msg}")
+        except NoSuchProcess:
+            pass
 
+        if temp_dir:
+            temp_dir.cleanup()
+            self.log.info(f"Deleted temporary directory: {temp_dir.name}")
 
     def reset(self, config: Configuration, settings: EngineSettings = None) -> bool:
         """
