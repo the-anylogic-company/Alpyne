@@ -17,13 +17,13 @@ _EngineStatusBase = namedtuple("EngineStatus", "successful message state time da
 class ExperimentStatus(_ExperimentStatusBase):
     def __new__(cls, successful, message, observation, done, state, sequenceId, episodeNum, stepNum):
         observation_obj = Observation(**observation)
-        state_flag = State.to_flag(state)
+        state_flag = None if state is None else State[state]
         return super(ExperimentStatus, cls).__new__(cls, successful, message, observation_obj, done, state_flag, sequenceId, episodeNum, stepNum)
 
 
 class EngineStatus(_EngineStatusBase):
     def __new__(cls, successful, message, state, time, date, eventCount, stepCount, nextStepTime, nextEventTime, progress, settings):
-        state_flag = State.to_flag(state)
+        state_flag = None if state is None else State[state]
         settings_obj = None if settings is None else EngineSettings(**settings)
         return super(EngineStatus, cls).__new__(cls, successful, message, state_flag, time, date, eventCount, stepCount, nextStepTime, nextEventTime, progress, settings_obj)
 

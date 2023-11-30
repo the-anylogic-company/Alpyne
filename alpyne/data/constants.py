@@ -67,8 +67,6 @@ class State(Flag):
         return ~cls(0)
 
     @staticmethod
-    def to_flag(name: str) -> 'State':
-        return State.__members__.get(name, State(0))
 
 
 BaseUnitAttrs = namedtuple('BaseUnitAttrs', ['symbol'])
