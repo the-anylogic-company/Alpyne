@@ -67,6 +67,8 @@ class State(Flag):
         return ~cls(0)
 
     @staticmethod
+    def ready():
+        return State.PAUSED | State.FINISHED | State.ERROR
 
 
 BaseUnitAttrs = namedtuple('BaseUnitAttrs', ['symbol'])
