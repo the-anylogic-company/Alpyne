@@ -13,6 +13,7 @@ from typing import List, Tuple, Any, Dict
 from warnings import warn
 
 import alpyne
+from alpyne.data.constants import TimeUnits
 from alpyne.data.model_data import ModelData, Number, EngineSettings
 from alpyne.data.spaces import RLSpace
 
@@ -28,6 +29,8 @@ class AlpyneJSONEncoder(json.JSONEncoder):
         """ Overridden method to handle classes used by Alpyne. """
         if callable(o):
             return o()
+        elif isinstance(o, TimeUnits):
+            return o.name
         elif isinstance(o, (RLSpace,EngineSettings)):
             # recursively call `default` on each of the values
             #output = list(map(self.default, o._data.values()))
