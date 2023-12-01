@@ -6,6 +6,7 @@ import subprocess
 from http import HTTPStatus
 from tempfile import TemporaryDirectory
 from typing import List, Literal
+import socket
 
 import psutil as psutil
 from psutil import NoSuchProcess
@@ -21,13 +22,17 @@ from alpyne.data.spaces import Configuration, Action, Observation
 PyLogType = Literal[PyLogLevel.CRITICAL, PyLogLevel.ERROR, PyLogLevel.WARNING, PyLogLevel.INFO, PyLogLevel.DEBUG]
 JavaLogType = Literal[JavaLogLevel.SEVERE, JavaLogLevel.WARNING, JavaLogLevel.INFO, JavaLogLevel.CONFIG, JavaLogLevel.FINE, JavaLogLevel.FINER, JavaLogLevel.FINEST]
 
+def find_free_port() -> int:
+    with socket.socket() as s:
+        s.bind(('', 0))
+        return s.getsockname()[1]
 
 class AlpyneClient:
     """
     The main object to initiate the Alpyne application and derive simulation runs from.
     """
 
-    def __init__(self, model_loc: str, port: int = 51150,
+    def __init__(self, model_loc: str, port: int = 0,
                  py_log_level: PyLogType = PyLogLevel.WARNING, java_log_level: JavaLogType = JavaLogLevel.INFO,
                  **kwargs):
         """
@@ -39,6 +44,9 @@ class AlpyneClient:
         :param kwargs: optional arguments
         :raises ModelError: if the app fails to start
         """
+        if port == 0:
+            port = find_free_port()
+
         logging.basicConfig(
             level=py_log_level.name,
             format=f"%(asctime)s [%(name)s @ %(lineno)s][%(levelname)8s] %(message)s",
