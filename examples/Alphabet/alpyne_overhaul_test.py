@@ -17,7 +17,7 @@ if __name__ == "__main__":
 
     client.reset(
         Configuration(start="a", finish="z", verbose=True),
-        EngineSettings(stop_time=100, seed=1)  # overrides default engine settings
+        EngineSettings(stopTime=100, seed=1)  # overrides default engine settings
     )
 
     rl_status = client.wait_for(State.PAUSED, 5)  # wait until first call to `takeAction` is made

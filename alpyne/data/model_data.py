@@ -163,25 +163,25 @@ class EngineSettings:
                      r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{6}-\d{2,4}",
                      r"[A-Za-z]{3}, \d{2} \d{2} \d{4} \d{2}:\d{2}:\d{2}[ A-Z]{0,4}"]
 
-    def __init__(self, units: Union[str, TimeUnits] = None, start_time: Number = None,
-                 start_date: Union[int, str] = None, stop_time: Number = None, stop_date: Union[int, str] = None,
+    def __init__(self, units: Union[str, TimeUnits] = None, startTime: Number = None,
+                 startDate: Union[int, str] = None, stopTime: Number = None, stopDate: Union[int, str] = None,
                  seed: int = None,
                  **kwargs):  # TODO remove kwargs once consolidate key names between server and client
         self.units = TimeUnits[units] if isinstance(units, str) else (units if isinstance(units, TimeUnits) else None)
-        self.start_time = start_time if start_time is not None else kwargs.get('startTime')
-        self.start_date = start_date if start_date is not None else kwargs.get('startDate')
-        self.stop_time = stop_time if stop_time is not None else kwargs.get('stopTime')
-        self.stop_date = stop_date if stop_date is not None else kwargs.get('stopDate')
+        self.startTime = startTime if startTime is not None else kwargs.get('start_time')
+        self.startDate = startDate if startDate is not None else kwargs.get('start_date')
+        self.stopTime = stopTime if stopTime is not None else kwargs.get('stop_time')
+        self.stopDate = stopDate if stopDate is not None else kwargs.get('stop_date')
         self.seed = seed
 
-        if not self._recognized_date_format(self.start_date):
-            warnings.warn(f"Start date '{start_date}' does not match any recognized patterns (<EngineSettings.DATE_PATTERNS>); this may cause issues")
+        if not self._recognized_date_format(self.startDate):
+            warnings.warn(f"Start date '{startDate}' does not match any recognized patterns (<EngineSettings.DATE_PATTERNS>); this may cause issues")
 
-        if not self._recognized_date_format(self.stop_date):
-            warnings.warn(f"Start date '{stop_date}' does not match any recognized patterns (<EngineSettings.DATE_PATTERNS>); this may cause issues")
+        if not self._recognized_date_format(self.stopDate):
+            warnings.warn(f"Start date '{stopDate}' does not match any recognized patterns (<EngineSettings.DATE_PATTERNS>); this may cause issues")
 
     def __repr__(self):
-        return "EngineSettings{" + f"units={self.units}, seed={self.seed}, start_time={self.start_time}, start_date={self.start_date}, stop_time={self.stop_time}, stop_date={self.stop_date}" + "}"
+        return "EngineSettings{" + f"units={self.units}, seed={self.seed}, startTime={self.startTime}, startDate={self.startDate}, stopTime={self.stopTime}, stopDate={self.stopDate}" + "}"
 
     def __str__(self):
         return repr(self)
