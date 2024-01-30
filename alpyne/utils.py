@@ -1,21 +1,51 @@
+import itertools
 import json
 import os
 import re
 import tempfile
 import zipfile
 from collections import namedtuple
-from collections.abc import Sequence
+from dataclasses import is_dataclass, asdict
 from datetime import datetime as dt
 from datetime import time
 from enum import Enum
+from math import inf
 from pathlib import Path
-from typing import List, Tuple, Any, Dict
+from typing import List, Tuple, Union, Any
 from warnings import warn
 
 import alpyne
-from alpyne.data.constants import TimeUnits
-from alpyne.data.model_data import ModelData, Number, EngineSettings
-from alpyne.data.spaces import RLSpace
+from alpyne.typing import Number
+
+import numpy as np
+
+def find_jar_overlap(src1: str, src2: str):
+    path1, path2 = Path(src1), Path(src2)
+    jars1, jars2 = path1.rglob("*.jar"), path2.rglob("*.jar")
+    lookup1 = {re.match("[^\d]+", f.name).group(): f.relative_to(path1) for f in jars1}
+    lookup2 = {re.match("[^\d]+", f.name).group(): f.relative_to(path2) for f in jars2}
+    overlaps = [[(v,lookup2[k]) for k,v in lookup1.items() if k in lookup2], [(lookup1[k],v) for k,v in lookup2.items() if k in lookup1]]
+    return overlaps
+
+
+def next_num(start=0, step=1):
+    """
+    Helper function to return a unique number every time it's called.
+    Useful for easily generating unique seeds for the engine settings (e.g., `{seed=next_unique_num}`).
+    The arguments only apply the first time the function is called, so changing after the first will have no effect.
+
+    :param start: The first number to return; where counting starts
+    :param step: How much to increment each time the function is called
+    :return: The next updated number in the series
+    """
+    global __ALPYNE_COUNTER
+    try:
+        _ = __ALPYNE_COUNTER
+    except NameError:  # not defined
+        if step == 0:
+            raise ValueError("Step cannot be 0")
+        __ALPYNE_COUNTER = itertools.count(start, step)
+    return next(__ALPYNE_COUNTER)
 
 
 class AlpyneJSONEncoder(json.JSONEncoder):
@@ -27,80 +57,65 @@ class AlpyneJSONEncoder(json.JSONEncoder):
     """
     def default(self, o):
         """ Overridden method to handle classes used by Alpyne. """
+
+        # local import to avoid circular dependencies
+        from alpyne.data import FieldData, EngineSettings, _SimRLSpace
+        from alpyne.outputs import _UnitEnum
+
         if callable(o):
             return o()
-        elif isinstance(o, TimeUnits):
+        elif isinstance(o, _SimRLSpace):
+            return dict(o)
+        elif isinstance(o, EngineSettings):
+            op = {"units": o.units, "start_time": o.start_time, "start_date": o.start_date, "seed": o.seed}
+            # technically server can accept both, but will use whichever one is longer;
+            # only pass whichever was the last thing the user set
+            if o._using_stop_time:
+                op["stop_time"] = o.stop_time
+            else:
+                op["stop_date"] = o.stop_date
+            return op
+        elif isinstance(o, _UnitEnum):
             return o.name
-        elif isinstance(o, (RLSpace,EngineSettings)):
+        elif is_dataclass(o):
             # recursively call `default` on each of the values
             #output = list(map(self.default, o._data.values()))
-            return o.__dict__
-        elif isinstance(o, ModelData):
-            return {"name": o.name, "type": o.type_, "value": o.value, "units": o.units}
+            return asdict(o)
+        elif isinstance(o, FieldData):
+            return {"name": o.name, "type": o.type, "value": o.value, "units": o.units}
         elif isinstance(o, dt):
             return o.isoformat()
         elif isinstance(o, Enum):
             return o.value
-        elif isinstance(o, str):
-            # format of vars for engine settings ("{NAME}") is confusing the default encoder
-            return str(o)
         try:
-            import numpy
-            if isinstance(o, numpy.integer):
+            if isinstance(o, np.integer):
                 return int(o)
-            elif isinstance(o, numpy.floating):
+            elif isinstance(o, np.floating):
                 return float(o)
-            elif isinstance(o, numpy.ndarray):
+            elif isinstance(o, np.ndarray):
                 return o.tolist()
         except:
             pass
         return super().default(o)
 
-
-def _is_collection_type(o) -> bool:
+class AlpyneJSONDecoder(json.JSONDecoder):
     """
-    Check whether the provided type/annotation is one which can hold elements. Necessarily since the minor versions
-    of Python 3 have evolving ways of comparing type annotations.
+    A custom decoder to convert JSON to Alpyne classes.
 
-    :param o: An annotation or type reference
-    :return: Whether it represents a type which can hold elements
+    To use it, pass a reference to the class to the `cls` argument of `json.load` or `json.loads`).
+    For example, `json.loads(my_json_str, cls=AlpyneJSONDecoder)`
     """
-    try:
-        # Py3.9+
-        from typing import get_origin
-        cls = get_origin(o) or o
-        return issubclass(cls, Sequence)
-    except ImportError:
-        pass
 
-    # extract the base type if 'o' is an annotation
-    cls = o if type(o) == type else o.__orig_bases__[0]
-    return issubclass(cls, Sequence)
+    def decode(self, s, **kwargs):
+        from alpyne.data import FieldData
 
-
-def case_insensitive_equals(name1: str, name2: str) -> bool:
-    """
-    Convenience method to check whether two strings match, irrespective of their case and any surrounding whitespace.
-    """
-    return name1.strip().lower() == name2.strip().lower()
-
-
-def convert_from_string(value: str, dtype: str) -> Any:
-    """
-    Convenience method to handle any edge cases when converting a JSON string to an object.
-    """
-    if dtype == "STRING":
-        return value
-    return json.loads(value)
-
-
-def convert_to_string(value: Any) -> str:
-    """
-    A convenience method to handle any edge cases when dumping an object to a JSON string.
-    """
-    if type(value) == str:
-        return value
-    return json.dumps(value)
+        obj = super().decode(s, **kwargs)
+        # convert dicts with known formats to their proper types
+        # TODO unhandled types here may be converted elsewhere in the code; decide a final resting spot
+        if isinstance(obj, dict):
+            if all(key in obj for key in ('name', 'type', 'value')):
+                obj = FieldData(**obj)
+        return obj
 
 
 def resolve_model_jar(model_loc: str) -> Tuple[Path, tempfile.TemporaryDirectory]:
@@ -148,9 +163,8 @@ def histogram_outputs_to_fake_dataset(lower_bound: float, interval_width: float,
     :param hits: A list of hits in each bin
     :return: A tuple consisting of two lists - for sample data and bins - to use in a plotting library
     :example:
-    >>> histogram_outputs_to_fake_dataset(-0.5, 0.1, [1, 0, 2, 4, 1])
-    ([-0.5, -0.3, -0.3, -0.2, -0.2, -0.2, -0.2, -0.1], [-0.5, -0.4, -0.3, -0.2, -0.1, 0])
-
+      >>> histogram_outputs_to_fake_dataset(-0.5, 0.1, [1, 0, 2, 4, 1])
+      ([-0.5, -0.3, -0.3, -0.2, -0.2, -0.2, -0.2, -0.1], [-0.5, -0.4, -0.3, -0.2, -0.1, 0])
     """
     ds, bins = [], []
     for i, n in enumerate(hits):
@@ -206,17 +220,12 @@ def extended_namedtuple(name, source_fields):
             new_type_fields.append(f)
     return namedtuple(name, new_type_fields)
 
-
-def space_name_orders(alp: str) -> Tuple[List[str], List[str], List[str]]:
-    """
-    Find the order of field definition for each space type in the given ALP file
-    :param alp:
-    :return:
-    """
-    with open(alp, errors="ignore") as f:
-        content = f.read()
-
-    cfg_names = re.findall(r"<ConfigurationField>\s+<Name><!\[CDATA\[(\w+)", content)
-    obs_names = re.findall(r"<ObservationField>\s+<Name><!\[CDATA\[(\w+)", content)
-    act_names = re.findall(r"<ActionField>\s+<Name><!\[CDATA\[(\w+)", content)
-    return cfg_names, obs_names, act_names
+def parse_number(value: Union[Number, str]) -> Number:
+    if isinstance(value, str):
+        if value == 'Infinity':
+            return inf
+        elif value == '-Infinity':
+            return -inf
+        else:
+            raise ValueError(f"Unrecognized number type: {value}")
+    return value

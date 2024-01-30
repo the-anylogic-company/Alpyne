@@ -1,7 +1,6 @@
 import logging
 log = logging.getLogger("RLSpace")
 
-
 class RLSpace:
     """
     A generic object containing the core structure for the Configuration, Observation, and Action spaces.
