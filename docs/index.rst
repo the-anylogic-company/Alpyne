@@ -2,24 +2,26 @@
 Alpyne
 ======
 
-An connector library for running models exported RL experiments in a Python environment.
+An connector library for running AnyLogic models exported from the RL experiment in a Python environment.
 
 .. toctree::
 	:maxdepth: 4
 	:caption: General
 
-	intro_getstarted
-	intro_components
+	get-started
+	components-rlready-model
 	walkthrough
-	
+
+
 .. toctree::
 	:maxdepth: 4
 	:caption: Technical
-	
-	api_main
+
+	api
+	event-sequence-model-creation
+	order-events-takeaction
 	appendix
-	
-	
+
 
 Indices and tables
 ==================
