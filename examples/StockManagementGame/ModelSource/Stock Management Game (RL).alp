@@ -4,10 +4,10 @@
 	         AnyLogic Project File 
 *************************************************	         
 -->
-<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.7.6.202107211618" AlpVersion="8.7.2">
+<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.8.6.202312140435" AlpVersion="8.8.3">
 <Model>
 	<Id>1347625978601</Id>
-	<Name><![CDATA[Stock Management Game]]></Name>
+	<Name><![CDATA[Stock Management Game (RL)]]></Name>
 	<Description><![CDATA[This is a simple game, or a flight simulator – an interactive model that exposes its output to the user as the simulation is being performed and allows the user to make decisions, for example, to change parameters in a running model, and observe the effect.
 The game works in step-pause mode: the model executes for a certain period, then it is put in the paused state, the user observes the output, makes decisions, and starts simulation for the next period. 
 The model is a very simple supply chain. The user is to manage the stock by controlling the order rate. The sales rate is exogenous and is modeled as randomly changing.
@@ -20,8 +20,12 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 		<ActiveObjectClass>
 			<Id>1347625978602</Id>
 			<Name><![CDATA[Main]]></Name>
-			<ClientAreaTopLeft><X>0</X><Y>0</Y></ClientAreaTopLeft>
-			<StartupCode><![CDATA[viewUserScreen.navigateTo();]]></StartupCode>
+			<StartupCode><![CDATA[viewUserScreen.navigateTo();
+
+if (mode == 3) {
+	pyCom.run("from policy_querier import SMGPolicyQuerier",
+		      "querier = SMGPolicyQuerier('" + aiModelFile + "')");
+}]]></StartupCode>
 			<Generic>false</Generic>
 			<GenericParameter>
 				<Id>1537374970816</Id>
@@ -34,13 +38,12 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 			<FlowChartsUsage>ENTITY</FlowChartsUsage>
 			<SamplesToKeep>100</SamplesToKeep>
 			<LimitNumberOfArrayElements>true</LimitNumberOfArrayElements>
-			<ElementsLimitValue>1000</ElementsLimitValue>
+			<ElementsLimitValue>12</ElementsLimitValue>
 			<MakeDefaultViewArea>true</MakeDefaultViewArea>
 			<SceneGridColor/>
 			<SceneBackgroundColor/>
 			<SceneSkybox>null</SceneSkybox>
 			<AgentProperties>
-	 			<SpaceType>CONTINUOUS</SpaceType>			
 				<EnvironmentDefinesInitialLocation>true</EnvironmentDefinesInitialLocation>
 				<RotateAnimationTowardsMovement>true</RotateAnimationTowardsMovement>
 				<RotateAnimationVertically>false</RotateAnimationVertically>
@@ -84,7 +87,7 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 					<MCode><![CDATA[10]]></MCode>
 			</EnvironmentProperties>
 			<DatasetsCreationProperties>
-				<AutoCreate>false</AutoCreate>
+				<AutoCreate>true</AutoCreate>
 					<OccurrenceAtTime>true</OccurrenceAtTime>
 					<OccurrenceDate>1537430400000</OccurrenceDate>
 					<OccurrenceTime Class="CodeUnitValue">
@@ -93,7 +96,7 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 					</OccurrenceTime>
 					<RecurrenceCode Class="CodeUnitValue">
 						<Code><![CDATA[1]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						<Unit Class="TimeUnits"><![CDATA[MONTH]]></Unit>
 					</RecurrenceCode>
 			</DatasetsCreationProperties>
 			<ScaleRuler>
@@ -118,7 +121,7 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 				<Output>
 					<Id>1631734763458</Id>
 					<Name><![CDATA[amountSold]]></Name>
-					<X>260</X><Y>420</Y>
+					<X>300</X><Y>280</Y>
 					<Label><X>15</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -135,39 +138,103 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 					</ComputationTimeCode>
 					<ComputationDate>1631779200000</ComputationDate>
 				</Output>
-				<Output>
-					<Id>1631734776073</Id>
-					<Name><![CDATA[amountWasted]]></Name>
-					<X>260</X><Y>450</Y>
-					<Label><X>15</X><Y>0</Y></Label>
+			</Outputs>
+			<Variables>
+				<Variable Class="PlainVariable">
+					<Id>1699919724897</Id>
+					<Name><![CDATA[autopause]]></Name>
+					<X>330</X><Y>1200</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[boolean]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[true]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1699919933057</Id>
+					<Name><![CDATA[lastStock]]></Name>
+					<ExcludeFromBuild>true</ExcludeFromBuild>
+					<X>1050</X><Y>1050</Y>
+					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Type><![CDATA[double]]></Type>
-					<UnitType><![CDATA[NONE]]></UnitType>
-					<Value Class="CodeValue">
-						<Code><![CDATA[Wasted]]></Code>
-					</Value>
-					<ComputationMoment>ON_SIMULATION_END</ComputationMoment>
-					<ComputationTimeCode Class="CodeUnitValue">
-						<Code><![CDATA[]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
-					</ComputationTimeCode>
-					<ComputationDate>1631779200000</ComputationDate>
-				</Output>
-			</Outputs>
-			<Variables>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1699919939107</Id>
+					<Name><![CDATA[lastSold]]></Name>
+					<ExcludeFromBuild>true</ExcludeFromBuild>
+					<X>1050</X><Y>1080</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1699919943232</Id>
+					<Name><![CDATA[lastWasted]]></Name>
+					<ExcludeFromBuild>true</ExcludeFromBuild>
+					<X>1050</X><Y>1110</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1706226023452</Id>
+					<Name><![CDATA[assignedRate]]></Name>
+					<X>60</X><Y>160</Y>
+					<Label><X>-35</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[25]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
 				<Variable Class="AuxVariable">
 					<Id>1347626783909</Id>
 					<Name><![CDATA[Demand]]></Name>
-					<X>570</X><Y>170</Y>
-					<Label><X>-30</X><Y>-20</Y></Label>
+					<X>590</X><Y>160</Y>
+					<Label><X>0</X><Y>-20</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties External="false" Constant="true" Array="false">
 						<Formula><![CDATA[0]]></Formula>
-						<Value><![CDATA[10]]></Value>
+						<Value><![CDATA[uniform(10, 40)]]></Value>
+						<Color/>
+					</Properties>
+
+				</Variable>
+				<Variable Class="AuxVariable">
+					<Id>1706226040482</Id>
+					<Name><![CDATA[actualRate]]></Name>
+					<X>150</X><Y>160</Y>
+					<Label><X>-25</X><Y>15</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties External="false" Constant="false" Array="false">
+						<Formula><![CDATA[smooth(assignedRate, acquisitionLag, assignedRate)]]></Formula>
+						<Value><![CDATA[0]]></Value>
 						<Color/>
 					</Properties>
 
@@ -175,7 +242,7 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 				<Variable Class="StockVariable">
 					<Id>1347625984180</Id>
 					<Name><![CDATA[Stock]]></Name>
-					<X>500</X><Y>100</Y>
+					<X>420</X><Y>100</Y>
 					<Label><X>-15</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -185,23 +252,7 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 					<Width>72</Width>
 					<Height>52</Height>
 						<Expression><![CDATA[AcquisitionRate - SalesRate]]></Expression>
-						<InitialValue><![CDATA[1000]]></InitialValue>
-						<Color/>
-					</Properties>
-				</Variable>
-				<Variable Class="StockVariable">
-					<Id>1347629595668</Id>
-					<Name><![CDATA[SupplyLine]]></Name>
-					<X>280</X><Y>100</Y>
-					<Label><X>-35</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties Array="false">
-					<EquationStyle>classic</EquationStyle>
-					<Width>112</Width>
-					<Height>32</Height>
-						<InitialValue><![CDATA[0]]></InitialValue>
+						<InitialValue><![CDATA[5000]]></InitialValue>
 						<Color/>
 					</Properties>
 				</Variable>
@@ -221,26 +272,10 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 						<Color/>
 					</Properties>
 				</Variable>
-				<Variable Class="StockVariable">
-					<Id>1631734696916</Id>
-					<Name><![CDATA[Wasted]]></Name>
-					<X>720</X><Y>220</Y>
-					<Label><X>-20</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties Array="false">
-					<EquationStyle>classic</EquationStyle>
-					<Width>80</Width>
-					<Height>40</Height>
-						<InitialValue><![CDATA[0]]></InitialValue>
-						<Color/>
-					</Properties>
-				</Variable>
 				<Variable Class="Flow">
 					<Id>1347625995518</Id>
 					<Name><![CDATA[SalesRate]]></Name>
-					<X>500</X><Y>100</Y>
+					<X>420</X><Y>100</Y>
 					<Label><X>5</X><Y>-20</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -251,8 +286,8 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 						<ValveIndex>1</ValveIndex>
 						<Points>
 							<Point><X>0</X><Y>0</Y></Point>
-							<Point><X>100</X><Y>0</Y></Point>
-							<Point><X>220</X><Y>0</Y></Point>
+							<Point><X>180</X><Y>0</Y></Point>
+							<Point><X>300</X><Y>0</Y></Point>
 						</Points>
 					</Properties>
 				</Variable>
@@ -264,71 +299,32 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Properties TargetId="1347629595668" External="false" Constant="true" Array="false">
-						<Formula><![CDATA[0]]></Formula>
-						<Value><![CDATA[25]]></Value>
+					<Properties TargetId="1347625984180" External="false" Constant="false" Array="false">
+						<Formula><![CDATA[actualRate]]></Formula>
+						<Value><![CDATA[initialOrderRate]]></Value>
 						<Color/>
 						<ValveIndex>1</ValveIndex>
 						<Points>
 							<Point><X>0</X><Y>0</Y></Point>
 							<Point><X>50</X><Y>0</Y></Point>
-							<Point><X>160</X><Y>0</Y></Point>
-						</Points>
-					</Properties>
-				</Variable>
-				<Variable Class="Flow">
-					<Id>1347629653476</Id>
-					<Name><![CDATA[AcquisitionRate]]></Name>
-					<X>280</X><Y>100</Y>
-					<Label><X>-45</X><Y>-25</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SourceId="1347629595668" TargetId="1347625984180" External="false" Constant="false" Array="false">
-						<Formula><![CDATA[SupplyLine / acquisitionLag]]></Formula>
-						<Color/>
-						<ValveIndex>1</ValveIndex>
-						<Points>
-							<Point><X>0</X><Y>0</Y></Point>
-							<Point><X>110</X><Y>0</Y></Point>
-							<Point><X>220</X><Y>0</Y></Point>
-						</Points>
-					</Properties>
-				</Variable>
-				<Variable Class="Flow">
-					<Id>1631734464349</Id>
-					<Name><![CDATA[WastedRate]]></Name>
-					<X>500</X><Y>100</Y>
-					<Label><X>5</X><Y>-20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SourceId="1347625984180" TargetId="1631734696916" External="false" Constant="false" Array="false">
-						<Formula><![CDATA[limitMin(Stock - maxHoldingAmount, 0)]]></Formula>
-						<Color/>
-						<ValveIndex>2</ValveIndex>
-						<Points>
-							<Point><X>0</X><Y>0</Y></Point>
-							<Point><X>0</X><Y>120</Y></Point>
-							<Point><X>100</X><Y>120</Y></Point>
-							<Point><X>220</X><Y>120</Y></Point>
+							<Point><X>300</X><Y>0</Y></Point>
 						</Points>
 					</Properties>
 				</Variable>
 				<Variable Class="Parameter">
 					<Id>1619545330246</Id>
-					<Name><![CDATA[inRLMode]]></Name>
-					<X>110</X><Y>300</Y>
+					<Name><![CDATA[mode]]></Name>
+					<X>100</X><Y>280</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[boolean]]></Type>
+						<Type><![CDATA[int]]></Type>
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[false]]></Code>
+							<Code><![CDATA[0]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1619545330244</Id>
@@ -338,14 +334,28 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 								<Id>0</Id>
 								<Name><![CDATA[User-controlled]]></Name>
 								<Value Class="CodeValue">
-									<Code><![CDATA[false]]></Code>
+									<Code><![CDATA[0]]></Code>
 								</Value>
 							</PredefParamValue>
 							<PredefParamValue>
 								<Id>0</Id>
-								<Name><![CDATA[AI controlled]]></Name>
+								<Name><![CDATA[Automatic]]></Name>
 								<Value Class="CodeValue">
-									<Code><![CDATA[true]]></Code>
+									<Code><![CDATA[1]]></Code>
+								</Value>
+							</PredefParamValue>
+							<PredefParamValue>
+								<Id>0</Id>
+								<Name><![CDATA[AI training]]></Name>
+								<Value Class="CodeValue">
+									<Code><![CDATA[2]]></Code>
+								</Value>
+							</PredefParamValue>
+							<PredefParamValue>
+								<Id>0</Id>
+								<Name><![CDATA[AI testing]]></Name>
+								<Value Class="CodeValue">
+									<Code><![CDATA[3]]></Code>
 								</Value>
 							</PredefParamValue>
 							<MinSliderValue><![CDATA[0]]></MinSliderValue>
@@ -355,24 +365,53 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 					</Properties>                 
 				</Variable>
 				<Variable Class="Parameter">
-					<Id>1631545979749</Id>
-					<Name><![CDATA[maxHoldingAmount]]></Name>
-					<X>610</X><Y>280</Y>
-					<Label><X>15</X><Y>-5</Y></Label>
+					<Id>1703125442728</Id>
+					<Name><![CDATA[autoMode]]></Name>
+					<X>100</X><Y>300</Y>
+					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[double]]></Type>
+						<Type><![CDATA[int]]></Type>
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[10000]]></Code>
+							<Code><![CDATA[0]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
-							<Id>1631545979747</Id>
-							<Label><![CDATA[Max Holding Amount]]></Label>
-							<EditorContolType>TEXT_BOX</EditorContolType>
+							<Id>1703125442726</Id>
+							<Label><![CDATA[AutoMode]]></Label>
+							<EditorContolType>RADIO_BUTTONS</EditorContolType>
+							<HideCondition>
+								<Id>0</Id>
+								<ParameterId>1619545330246</ParameterId>
+								<Operation>NOT_EQUALS</Operation>
+								<Value Class="CodeValue">
+									<Code><![CDATA[1]]></Code>
+								</Value>
+							</HideCondition>
+							<PredefParamValue>
+								<Id>0</Id>
+								<Name><![CDATA[Static]]></Name>
+								<Value Class="CodeValue">
+									<Code><![CDATA[0]]></Code>
+								</Value>
+							</PredefParamValue>
+							<PredefParamValue>
+								<Id>0</Id>
+								<Name><![CDATA[Random]]></Name>
+								<Value Class="CodeValue">
+									<Code><![CDATA[1]]></Code>
+								</Value>
+							</PredefParamValue>
+							<PredefParamValue>
+								<Id>0</Id>
+								<Name><![CDATA[Heuristic]]></Name>
+								<Value Class="CodeValue">
+									<Code><![CDATA[2]]></Code>
+								</Value>
+							</PredefParamValue>
 							<MinSliderValue><![CDATA[0]]></MinSliderValue>
 							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
 							<DelimeterType>NO_DELIMETER</DelimeterType>
@@ -382,8 +421,8 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 				<Variable Class="Parameter">
 					<Id>1347629990592</Id>
 					<Name><![CDATA[acquisitionLag]]></Name>
-					<X>300</X><Y>30</Y>
-					<Label><X>-95</X><Y>-5</Y></Label>
+					<X>210</X><Y>150</Y>
+					<Label><X>-15</X><Y>-20</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
@@ -404,15 +443,133 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 						</ParameterEditor>
 					</Properties>                 
 				</Variable>
+				<Variable Class="Parameter">
+					<Id>1706220457830</Id>
+					<Name><![CDATA[actionRecurrence]]></Name>
+					<X>100</X><Y>260</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[]]></Type>
+						<UnitType><![CDATA[TIME]]></UnitType>
+						<UnitOfValue Class="TimeUnits"><![CDATA[DAY]]></UnitOfValue>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeUnitValue">
+							<Code><![CDATA[30]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1706220457828</Id>
+							<Label><![CDATA[Recurrence between actions]]></Label>
+							<EditorContolType>UNIT_EDITOR</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1706226989006</Id>
+					<Name><![CDATA[volatility]]></Name>
+					<X>100</X><Y>320</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[double]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[5]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1706226989004</Id>
+							<Label><![CDATA[Demand Volatility]]></Label>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1706220702493</Id>
+					<Name><![CDATA[stopConditionLimits]]></Name>
+					<X>100</X><Y>340</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[double[]]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[new double[]{100d, 9900d}]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1706220702491</Id>
+							<Label><![CDATA[Stop condition limits]]></Label>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<HideCondition>
+								<Id>0</Id>
+								<ParameterId>1619545330246</ParameterId>
+								<Operation>NOT_EQUALS</Operation>
+								<Value Class="CodeValue">
+									<Code><![CDATA[2]]></Code>
+								</Value>
+							</HideCondition>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1706992775788</Id>
+					<Name><![CDATA[aiModelFile]]></Name>
+					<X>100</X><Y>360</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[String]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA["ppo.zip"]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1706992775786</Id>
+							<Label><![CDATA[Filename for AI model]]></Label>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<HideCondition>
+								<Id>1706992775785</Id>
+								<ParameterId>1619545330246</ParameterId>
+								<Operation>NOT_EQUALS</Operation>
+								<Value Class="CodeValue">
+									<Code><![CDATA[3]]></Code>
+								</Value>
+							</HideCondition>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
 			</Variables>
 			<Dependences>
 				<Link SourceId="1347626783909" TargetId="1347625995518" Polarity="null">
-					<Height>-21.842274518552777</Height>
+					<Height>13.749</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>30</X><Y>-70</Y></Direction>
+					<Direction><X>10</X><Y>-60</Y></Direction>
 					<Id>1347629206061</Id>
 					<Name><![CDATA[Demand - SalesRate]]></Name>
-					<X>570</X><Y>170</Y>
+					<X>590</X><Y>160</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -424,10 +581,10 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 				<Link SourceId="1347625984180" TargetId="1347625995518" Polarity="null">
 					<Height>53.15995540454064</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>100</X><Y>0</Y></Direction>
+					<Direction><X>180</X><Y>0</Y></Direction>
 					<Id>1347629351740</Id>
 					<Name><![CDATA[Stock - SalesRate]]></Name>
-					<X>500</X><Y>100</Y>
+					<X>420</X><Y>100</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -436,13 +593,28 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 					<LineWidth>1</LineWidth>
 					<Delay>false</Delay>
 				</Link>
-				<Link SourceId="1347629990592" TargetId="1347629653476" Polarity="null">
+				<Link SourceId="1347629990592" TargetId="1706226040482" Polarity="null">
+					<Height>8.105</Height>
+					<PolarityPosition>0.95</PolarityPosition>
+					<Direction><X>-60</X><Y>10</Y></Direction>
+					<Id>1347629982899</Id>
+					<Name><![CDATA[acquisitionLag - actualRate]]></Name>
+					<X>210</X><Y>150</Y>
+					<Label><X>40</X><Y>-50</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color/>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
+				</Link>
+				<Link SourceId="1706226040482" TargetId="1347626016285" Polarity="null">
 					<Height>20.0</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>90</X><Y>70</Y></Direction>
-					<Id>1347629982899</Id>
-					<Name><![CDATA[acquisitionLag - AcquisitionRate]]></Name>
-					<X>300</X><Y>30</Y>
+					<Direction><X>20</X><Y>-60</Y></Direction>
+					<Id>1706226078959</Id>
+					<Name><![CDATA[actualRate - OrderRate]]></Name>
+					<X>150</X><Y>160</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -451,44 +623,14 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 					<LineWidth>1</LineWidth>
 					<Delay>false</Delay>
 				</Link>
-				<Link SourceId="1347629595668" TargetId="1347629653476" Polarity="null">
-					<Height>-49.802465171755536</Height>
+				<Link SourceId="1706226023452" TargetId="1706226040482" Polarity="null">
+					<Height>0.0</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>110</X><Y>0</Y></Direction>
-					<Id>1347630033197</Id>
-					<Name><![CDATA[SupplyLine - AcquisitionRate]]></Name>
-					<X>280</X><Y>100</Y>
+					<Direction><X>90</X><Y>0</Y></Direction>
+					<Id>1706226082688</Id>
+					<Name><![CDATA[assignedRate - actualRate]]></Name>
+					<X>60</X><Y>160</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<Color/>
-					<LineWidth>1</LineWidth>
-					<Delay>false</Delay>
-				</Link>
-				<Link SourceId="1631545979749" TargetId="1631734464349" Polarity="null">
-					<Height>21.041</Height>
-					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-10</X><Y>-60</Y></Direction>
-					<Id>1631546354845</Id>
-					<Name><![CDATA[maxHoldingAmount - WastedRate]]></Name>
-					<X>610</X><Y>280</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<Color/>
-					<LineWidth>1</LineWidth>
-					<Delay>false</Delay>
-				</Link>
-				<Link SourceId="1347625984180" TargetId="1631734464349" Polarity="null">
-					<Height>-92.017</Height>
-					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>100</X><Y>120</Y></Direction>
-					<Id>1631734597547</Id>
-					<Name><![CDATA[Stock - WastedRate]]></Name>
-					<X>500</X><Y>100</Y>
-					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
@@ -501,7 +643,7 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 				<Event>
 					<Id>1347626596393</Id>
 					<Name><![CDATA[actionEvent]]></Name>
-					<X>260</X><Y>1090</Y>
+					<X>230</X><Y>1090</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -518,26 +660,52 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 						<OccurrenceAtTime>true</OccurrenceAtTime>
 						<OccurrenceDate>1580515200000</OccurrenceDate>
 						<OccurrenceTime Class="CodeUnitValue">
-							<Code><![CDATA[1]]></Code>
-							<Unit Class="TimeUnits"><![CDATA[MONTH]]></Unit>
+							<Code><![CDATA[0]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
 						</OccurrenceTime>
 						<RecurrenceCode Class="CodeUnitValue">
-							<Code><![CDATA[1]]></Code>
-							<Unit Class="TimeUnits"><![CDATA[MONTH]]></Unit>
+							<Code><![CDATA[actionRecurrence(DAY)]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
 						</RecurrenceCode>
 						<Condition><![CDATA[false]]></Condition>
 					</Properties>
-					<Action><![CDATA[if (inRLMode) {
-	RLExperiment.takeAction(this);
-} else {
-	pauseSimulation();
+					<Action><![CDATA[switch (mode) {
+	case 0:
+		// user control
+		if (autopause)
+			pauseSimulation();
+		break;
+	case 1:
+		// automatic
+		switch (autoMode) {
+			case 0:
+			default:
+				// do nothing
+				break;
+			case 1:
+				assignedRate = uniform(0, 50);
+				setRatesStats.add(OrderRate);
+				break;
+			case 2:
+				assignedRate = getHeuristicRate();
+				setRatesStats.add(OrderRate);
+				break;
+		}
+	case 2:
+		// training
+		RLExperiment.takeAction(this);
+		break;
+	case 3:
+		// test policy
+		assignedRate = pyCom.runResults(double.class, "querier.query([%s, %s])", Stock, OrderRate);
+		break;
 }]]></Action>
 					<Logging>false</Logging>
 				</Event>
 				<Event>
 					<Id>1347629230788</Id>
 					<Name><![CDATA[ExogenousDemandChange]]></Name>
-					<X>420</X><Y>180</Y>
+					<X>530</X><Y>160</Y>
 					<Label><X>-165</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -563,60 +731,100 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 						</RecurrenceCode>
 						<Condition><![CDATA[false]]></Condition>
 					</Properties>
-					<Action><![CDATA[Demand = limit(0, Demand + uniform( -1, 1 ), 50);]]></Action>
+					<Action><![CDATA[//Demand = limit(0, Demand + uniform( -1, 1 ), 50);
+
+//mod = probability that the value will decrease next turn
+double mod = 0.5;
+if (Demand > 45)
+	mod = 0.8;
+if (Demand < 5)
+	mod = 0.2;
+double dir = uniform() >= mod ? 1 : -1;
+
+//maxToAdd = max amount that the value can change
+double maxToAdd = (50.0 - 0.0) * volatility / 100.0;
+Demand += (uniform() * maxToAdd * dir);
+
+//value can't be 0 -- random low number
+if (Demand < 0) Demand = uniform(0, 5);]]></Action>
 				</Event>
 			</Events>
+			<Functions>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1699919947676</Id>
+					<Name><![CDATA[get_dStock]]></Name>
+					<ExcludeFromBuild>true</ExcludeFromBuild>
+					<X>1150</X><Y>1050</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[double d = Stock - lastStock;
+lastStock = Stock;
+return d;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1699919977572</Id>
+					<Name><![CDATA[get_dSold]]></Name>
+					<ExcludeFromBuild>true</ExcludeFromBuild>
+					<X>1150</X><Y>1080</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[double d = Sold - lastSold;
+lastSold = Sold;
+return d;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1699919978796</Id>
+					<Name><![CDATA[get_dWasted]]></Name>
+					<ExcludeFromBuild>true</ExcludeFromBuild>
+					<X>1150</X><Y>1110</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[double d = Wasted - lastWasted;
+lastWasted = Wasted;
+return d;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1703128491214</Id>
+					<Name><![CDATA[getHeuristicRate]]></Name>
+					<X>140</X><Y>1200</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[double newRate = OrderRate;
+double loLimit = uniform(2000, 4000),
+		hiLimit = uniform(6000, 8000);
+if (Stock < loLimit)
+	newRate *= uniform(1.2, 1.4);
+else if (Stock < 5000)
+	newRate *= uniform(1.1, 1.25);
+else if (Stock >= 5000 && Stock < hiLimit)
+	newRate *= uniform(0.75, 0.999);
+else if (Stock >= hiLimit)
+	newRate *= uniform(0.45, 0.7);
+newRate = limit(0, newRate, 50);
+return newRate;]]></Body>
+				</Function>
+			</Functions>
 			<AnalysisData>
-    			<DataSet>
-					<Id>1627943086370</Id>
-					<Name><![CDATA[stockValueDS]]></Name>
-					<X>260</X><Y>300</Y>
-					<Label><X>15</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<AutoUpdate>true</AutoUpdate>
-					<OccurrenceAtTime>true</OccurrenceAtTime>
-					<OccurrenceDate>1627977600000</OccurrenceDate>
-					<OccurrenceTime Class="CodeUnitValue">
-						<Code><![CDATA[0]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
-					</OccurrenceTime>
-					<RecurrenceCode Class="CodeUnitValue">
-						<Code><![CDATA[1]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
-					</RecurrenceCode>
-					<FreezeXAxis>true</FreezeXAxis>
-					<VerticalAxisExpression><![CDATA[limitMin(Stock, 0)]]></VerticalAxisExpression>
-					<SamplesToKeep>10000</SamplesToKeep>
-				</DataSet>
-    			<DataSet>
-					<Id>1627943122137</Id>
-					<Name><![CDATA[orderRateDS]]></Name>
-					<X>260</X><Y>330</Y>
-					<Label><X>15</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<AutoUpdate>true</AutoUpdate>
-					<OccurrenceAtTime>true</OccurrenceAtTime>
-					<OccurrenceDate>1627977600000</OccurrenceDate>
-					<OccurrenceTime Class="CodeUnitValue">
-						<Code><![CDATA[0]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
-					</OccurrenceTime>
-					<RecurrenceCode Class="CodeUnitValue">
-						<Code><![CDATA[1]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
-					</RecurrenceCode>
-					<FreezeXAxis>true</FreezeXAxis>
-					<VerticalAxisExpression><![CDATA[OrderRate]]></VerticalAxisExpression>
-					<SamplesToKeep>10000</SamplesToKeep>
-				</DataSet>
     			<DataSet>
 					<Id>1631734032892</Id>
 					<Name><![CDATA[demandRateDS]]></Name>
-					<X>260</X><Y>360</Y>
+					<X>300</X><Y>320</Y>
 					<Label><X>15</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -634,19 +842,19 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 					</RecurrenceCode>
 					<FreezeXAxis>true</FreezeXAxis>
 					<VerticalAxisExpression><![CDATA[Demand]]></VerticalAxisExpression>
-					<SamplesToKeep>10000</SamplesToKeep>
+					<SamplesToKeep>31</SamplesToKeep>
 				</DataSet>
-    			<HistogramData>
-					<Id>1631734101958</Id>
-					<Name><![CDATA[fullnessDistribution]]></Name>
-					<X>260</X><Y>390</Y>
+    			<Histogram2DData>
+					<Id>1704409652275</Id>
+					<Name><![CDATA[demandByRate]]></Name>
+					<X>300</X><Y>360</Y>
 					<Label><X>15</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<AutoUpdate>true</AutoUpdate>
 					<OccurrenceAtTime>true</OccurrenceAtTime>
-					<OccurrenceDate>1631779200000</OccurrenceDate>
+					<OccurrenceDate>1704441600000</OccurrenceDate>
 					<OccurrenceTime Class="CodeUnitValue">
 						<Code><![CDATA[0]]></Code>
 						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
@@ -655,18 +863,63 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 						<Code><![CDATA[1]]></Code>
 						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
 					</RecurrenceCode>
-					<Value><![CDATA[Stock / maxHoldingAmount]]></Value>
-					<NumberOfIntervals>30</NumberOfIntervals>
-					<MinMaxAutodetect>true</MinMaxAutodetect>
-					<RangeMinExpression><![CDATA[-0.5]]></RangeMinExpression>
-					<RangeMaxExpression><![CDATA[1.5]]></RangeMaxExpression>
-					<InitialIntervalSize><![CDATA[0.1]]></InitialIntervalSize>
-					<CalculateCDF>true</CalculateCDF>
-					<CalculatePercentiles>true</CalculatePercentiles>
-					<LowPercent>10</LowPercent>
-					<HighPercent>10</HighPercent>
-					<Title><![CDATA[]]></Title>
-				</HistogramData>
+					<FreezeXAxis>false</FreezeXAxis>
+					<HorizontalAxisExpression><![CDATA[Demand]]></HorizontalAxisExpression>
+					<VerticalAxisExpression><![CDATA[OrderRate]]></VerticalAxisExpression>
+					<HorizontalIntervals>10</HorizontalIntervals>
+					<VerticalIntervals>10</VerticalIntervals>
+					<VerticalRangeFromExpression><![CDATA[0]]></VerticalRangeFromExpression>
+					<VerticalRangeToExpression><![CDATA[50]]></VerticalRangeToExpression>
+					<HorizontalRangeFromExpression><![CDATA[0]]></HorizontalRangeFromExpression>
+					<HorizontalRangeToExpression><![CDATA[50]]></HorizontalRangeToExpression>
+					<Envelope>0.25</Envelope>
+					<Envelope>0.5</Envelope>
+					<Envelope>0.75</Envelope>
+				</Histogram2DData>
+    			<Statistics>
+					<Id>1704409717367</Id>
+					<Name><![CDATA[setRatesStats]]></Name>
+					<X>300</X><Y>390</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<AutoUpdate>false</AutoUpdate>
+					<OccurrenceAtTime>true</OccurrenceAtTime>
+					<OccurrenceDate>1704441600000</OccurrenceDate>
+					<OccurrenceTime Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+					</OccurrenceTime>
+					<RecurrenceCode Class="CodeUnitValue">
+						<Code><![CDATA[1]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+					</RecurrenceCode>
+					<Discrete>true</Discrete>
+					<ValueCode><![CDATA[OrderRate]]></ValueCode>
+				</Statistics>
+    			<Statistics>
+					<Id>1706220371718</Id>
+					<Name><![CDATA[stockAmountStats]]></Name>
+					<X>300</X><Y>420</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<AutoUpdate>true</AutoUpdate>
+					<OccurrenceAtTime>true</OccurrenceAtTime>
+					<OccurrenceDate>1704441600000</OccurrenceDate>
+					<OccurrenceTime Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+					</OccurrenceTime>
+					<RecurrenceCode Class="CodeUnitValue">
+						<Code><![CDATA[1]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+					</RecurrenceCode>
+					<Discrete>true</Discrete>
+					<ValueCode><![CDATA[Stock]]></ValueCode>
+				</Statistics>
 			</AnalysisData>
 			<AgentLinks>
 				<AgentLink>
@@ -690,6 +943,125 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 				</AgentLink>
 			</AgentLinks>
 
+			<EmbeddedObjects>
+				<EmbeddedObject>
+					<Id>1706992590315</Id>
+					<Name><![CDATA[pyCom]]></Name>
+					<X>380</X><Y>1070</Y>
+					<Label><X>-5</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[com.anylogic.libraries.pypeline]]></PackageName>
+						<ClassName><![CDATA[PyCommunicator]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[com.anylogic.libraries.pypeline]]></PackageName>
+							<ClassName><![CDATA[PyCommunicator]]></ClassName>
+							<ItemName><![CDATA[1569858524853]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[enable]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[mode == 3 // testing]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[loadLastWorkingConfig]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[pythonCommandType]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[pythonCommand]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[pythonExecPath]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA["C:\\Users\\twolf\\Documents\\Project Pypeline\\Case 2\\AL_Pyne\\source\\PythonWorkspace\\Alpyne\\venv\\Scripts\\python.exe"]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[throwErrorOnFailedAttempt]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[redirectPyOutput]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[isBlacklistMode]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[isCustomConfiguration]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[includeAutogeneratedsBL]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[includeAutogeneratedsWL]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[includedPackagesBL]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[includedPackagesWL]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[includedClassesBL]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[includedClassesWL]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[includedNamesBL]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[includedNamesWL]]></Name>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LatitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LatitudeCode>
+					<LongitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LongitudeCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+			</EmbeddedObjects>
 
 			<Presentation>
 				<Level>
@@ -869,16 +1241,18 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 					<BasicProperties Width="150" Height="20">
                         <EmbeddedIcon>false</EmbeddedIcon>	
 						<Enabled>true</Enabled>
-						<EnableExpression><![CDATA[!inRLMode && getEngine().getState() == Engine.PAUSED]]></EnableExpression>
+						<EnableExpression><![CDATA[mode == 0 && (getEngine().getState() == Engine.PAUSED || !autopause)]]></EnableExpression>
+						<ActionCode><![CDATA[setRatesStats.add(value);
+]]></ActionCode>
 					</BasicProperties>
 					<ExtendedProperties>
 						<DefaultValueCode><![CDATA[0]]></DefaultValueCode>
 						<Orientation>HORIZONTAL</Orientation>
 						<MinValue><![CDATA[0]]></MinValue>
 						<MaxValue><![CDATA[50]]></MaxValue>
-						<Step><![CDATA[0.5]]></Step>
+						<Step><![CDATA[1]]></Step>
 						<LinkTo>true</LinkTo>
-						<Link>OrderRate</Link>
+						<Link>assignedRate</Link>
 					</ExtendedProperties>
 				</Control>
 				<Control Type="Button">
@@ -895,7 +1269,7 @@ The model is a very simple supply chain. The user is to manage the stock by cont
                         <EmbeddedIcon>false</EmbeddedIcon>	
 						<TextColor/>
 						<Enabled>true</Enabled>
-						<EnableExpression><![CDATA[!inRLMode && getEngine().getState() == Engine.PAUSED]]></EnableExpression>
+						<EnableExpression><![CDATA[mode == 0 && getEngine().getState() == Engine.PAUSED]]></EnableExpression>
 						<ActionCode><![CDATA[runSimulation();]]></ActionCode>
 					</BasicProperties>
 					<ExtendedProperties>
@@ -912,7 +1286,7 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<AutoUpdate>false</AutoUpdate>
+					<AutoUpdate>true</AutoUpdate>
 					<OccurrenceAtTime>true</OccurrenceAtTime>
 					<OccurrenceDate>1537430400000</OccurrenceDate>
 					<OccurrenceTime Class="CodeUnitValue">
@@ -956,7 +1330,7 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 					<Expression><![CDATA[stockValueDS]]></Expression>
 					<Color>-4353704</Color>
 					<Expression2><![CDATA[max( 0, Stock )]]></Expression2>
-					<Expression2Flag>false</Expression2Flag>  
+					<Expression2Flag>true</Expression2Flag>
 							<Title><![CDATA[Stock]]></Title>
 					</DatasetExpression>
 					<SamplesToKeep>1000</SamplesToKeep>
@@ -973,7 +1347,7 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<AutoUpdate>false</AutoUpdate>
+					<AutoUpdate>true</AutoUpdate>
 					<OccurrenceAtTime>true</OccurrenceAtTime>
 					<OccurrenceDate>1537430400000</OccurrenceDate>
 					<OccurrenceTime Class="CodeUnitValue">
@@ -1019,14 +1393,14 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 					<DatasetExpression>  
 						<Title><![CDATA[Order rate]]></Title>
 					<Id>1620144819636</Id>
-					<Expression><![CDATA[orderRateDS]]></Expression>
+					<Expression><![CDATA[myDataSet]]></Expression>
 					<Color>-16777011</Color>
 					<Expression2><![CDATA[OrderRate]]></Expression2>
-					<Expression2Flag>false</Expression2Flag>
+					<Expression2Flag>true</Expression2Flag>
 						<PointStyle>NONE</PointStyle>
 						<LineWidth>2.0</LineWidth>
 					</DatasetExpression>
-					<SamplesToKeep>1000</SamplesToKeep>
+					<SamplesToKeep>10000</SamplesToKeep>
 					<TimeWindowExpression><![CDATA[1000]]></TimeWindowExpression>
 					<FillAreaUnderLine>false</FillAreaUnderLine>
 					<LabelFormat>MODEL_TIME_UNITS</LabelFormat>
@@ -1034,7 +1408,7 @@ The model is a very simple supply chain. The user is to manage the stock by cont
     			<Plot>
 					<Id>1632075109180</Id>
 					<Name><![CDATA[plotDemand]]></Name>
-					<X>470</X><Y>320</Y>
+					<X>520</X><Y>240</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1052,15 +1426,15 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
 					</RecurrenceCode>
 					<EmbeddedIcon>false</EmbeddedIcon>
-					<Width>270</Width>
-					<Height>170</Height>
+					<Width>380</Width>
+					<Height>200</Height>
 					<BackgroundColor/>
 					<BorderColor/>
 					<ChartArea>
 						<XOffset>30</XOffset>
 						<YOffset>10</YOffset>
-						<Width>230</Width>
-						<Height>110</Height>
+						<Width>340</Width>
+						<Height>140</Height>
 						<BackgroundColor>-1</BackgroundColor>
 						<BorderColor>-16777216</BorderColor>
 						<GridColor>-12566464</GridColor>
@@ -1097,29 +1471,6 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 					<HorScaleType>AUTO</HorScaleType>
     			</Plot>
 				<Text>
-					<Id>1632250157178</Id>
-					<Name><![CDATA[text7]]></Name>
-					<X>840</X><Y>630</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<VisibleCode><![CDATA[Wasted > 0]]></VisibleCode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-					<Color>-65536</Color>
-					<Text><![CDATA[Wasted: 0000.0]]></Text>
-					<TextCode><![CDATA[String.format("Wasted: %6.1f", Wasted)]]></TextCode>
-					<Font>
-						<Name>SansSerif</Name>
-						<Size>14</Size>
-						<Style>1</Style>
-					</Font>
-					<Alignment>LEFT</Alignment>
-				</Text>
-				<Text>
 					<Id>1632250273485</Id>
 					<Name><![CDATA[dateText]]></Name>
 					<X>500</X><Y>610</Y>
@@ -1142,6 +1493,29 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 					</Font>
 					<Alignment>CENTER</Alignment>
 				</Text>
+				<Control Type="CheckBox">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1699919705187</Id>
+					<Name><![CDATA[checkbox]]></Name>
+					<X>310</X><Y>1130</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="100" Height="30">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor/>
+						<Enabled>true</Enabled>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<LabelText><![CDATA[autopause]]></LabelText>
+						<DefaultValueCode><![CDATA[true]]></DefaultValueCode>
+						<LinkTo>true</LinkTo>
+						<Link>autopause</Link>
+	 				</ExtendedProperties>
+				</Control>
 			</Presentation>
 
 				</Level>
@@ -1181,6 +1555,10 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 		<ImportSettings>
 		</ImportSettings>
 		<ExportSettings>
+			<ExportExcelResourceReference>
+				<PackageName><![CDATA[stock_management_game1]]></PackageName>
+				<ClassName><![CDATA[state_dataset.xlsx]]></ClassName>
+			</ExportExcelResourceReference>
 		</ExportSettings>
 	</Database>
 	
@@ -1213,10 +1591,9 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 		<SimulationExperiment ActiveObjectClassId="1347625978602">
 			<Id>1347625978604</Id>
 			<Name><![CDATA[Simulation]]></Name>
-			<ClientAreaTopLeft><X>0</X><Y>0</Y></ClientAreaTopLeft>
 			<CommandLineArguments><![CDATA[]]></CommandLineArguments>
 			<MaximumMemory>256</MaximumMemory>
-			<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
+			<RandomNumberGenerationType>randomSeed</RandomNumberGenerationType>
 			<CustomGeneratorCode>new Random()</CustomGeneratorCode>
 			<SeedValue>1</SeedValue>
 			<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
@@ -1234,7 +1611,7 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[double]]></Type>        
 						<InitialValue Class="CodeValue">
-							<Code><![CDATA[3]]></Code>
+							<Code><![CDATA[1]]></Code>
 						</InitialValue>
 					</Properties>
 				</Variable>
@@ -1458,10 +1835,16 @@ and is modeled as randomly changing.]]></Text>
 
 			<Parameters>			
 				<Parameter>
-					<ParameterName><![CDATA[inRLMode]]></ParameterName>
+					<ParameterName><![CDATA[mode]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[3]]></Code>
+					</ParameterValue>
 				</Parameter>
 				<Parameter>
-					<ParameterName><![CDATA[maxHoldingAmount]]></ParameterName>
+					<ParameterName><![CDATA[autoMode]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[2]]></Code>
+					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[acquisitionLag]]></ParameterName>
@@ -1469,9 +1852,28 @@ and is modeled as randomly changing.]]></Text>
 						<Code><![CDATA[editbox.getDoubleValue()]]></Code>
 					</ParameterValue>
 				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[actionRecurrence]]></ParameterName>
+					<ParameterValue Class="CodeUnitValue">
+						<Code><![CDATA[]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+					</ParameterValue>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[volatility]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[stopConditionLimits]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[aiModelFile]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA["SMG_PPO.zip"]]></Code>
+					</ParameterValue>
+				</Parameter>
 			</Parameters>			
 			<PresentationProperties>
-				<EnableZoomAndPanning>false</EnableZoomAndPanning>
+				<EnableZoomAndPanning>true</EnableZoomAndPanning>
 				<ExecutionMode><![CDATA[realTimeScaled]]></ExecutionMode>
 				<Title><![CDATA[Stock Management Game : Simulation]]></Title>	
 				<EnableDeveloperPanel>true</EnableDeveloperPanel>
@@ -1479,7 +1881,7 @@ and is modeled as randomly changing.]]></Text>
 				<RealTimeScale>50.0</RealTimeScale>
 			</PresentationProperties>
 			<ModelTimeProperties>
-				<StopOption><![CDATA[Stop at specified date]]></StopOption>
+				<StopOption><![CDATA[Never]]></StopOption>
 				<InitialDate><![CDATA[1577836800000]]></InitialDate>	
 				<InitialTime><![CDATA[0.0]]></InitialTime>	
 				<FinalDate><![CDATA[1640995200000]]></FinalDate>	
@@ -1492,11 +1894,11 @@ and is modeled as randomly changing.]]></Text>
 			<Id>1620144819661</Id>
 			<Name><![CDATA[RLExperiment]]></Name>
 			<MaximumMemory>512</MaximumMemory>
-			<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
+			<RandomNumberGenerationType>randomSeed</RandomNumberGenerationType>
 			<CustomGeneratorCode>new Random()</CustomGeneratorCode>
 			<SeedValue>1</SeedValue>
 			<ModelTimeProperties>
-				<StopOption><![CDATA[Stop at specified date]]></StopOption>
+				<StopOption><![CDATA[Never]]></StopOption>
 				<InitialDate><![CDATA[1577836800000]]></InitialDate>	
 				<InitialTime><![CDATA[0.0]]></InitialTime>	
 				<FinalDate><![CDATA[1640995200000]]></FinalDate>	
@@ -1507,42 +1909,43 @@ and is modeled as randomly changing.]]></Text>
 				<Type><![CDATA[double]]></Type>
 			</ObservationField>
 			<ObservationField>
-				<Name><![CDATA[recent_stock_amounts]]></Name>
-				<Type><![CDATA[double[]]]></Type>
-			</ObservationField>
-			<ObservationField>
-				<Name><![CDATA[last_order_rate]]></Name>
+				<Name><![CDATA[demand]]></Name>
 				<Type><![CDATA[double]]></Type>
 			</ObservationField>
 			<ObservationField>
-				<Name><![CDATA[time_days]]></Name>
+				<Name><![CDATA[current_rate]]></Name>
 				<Type><![CDATA[double]]></Type>
 			</ObservationField>
-			<ObservationCode><![CDATA[// get current stock value
+			<ObservationCode><![CDATA[// the primary metric for the policy to react based on
 stock_amount = root.Stock;
 
-// provide recent values for a possible indication of trajectory
-int n = root.stockValueDS.size();
-recent_stock_amounts = new double[] {
-	root.stockValueDS.getY(limitMin(n-2, 0)),
-	root.stockValueDS.getY(limitMin(n-3, 0)),
-	root.stockValueDS.getY(limitMin(n-4, 0)),
-};
-
-// include last action for more context
-last_order_rate = root.OrderRate;
-
-// include time for logging purposes; may also help the AI train
-time_days = root.time(DAY);]]></ObservationCode>
-			<StopCondition><![CDATA[false]]></StopCondition>
+// technically hidden information; provided for user monitoring during training,
+//	but not intended to be passed to the policy
+demand = root.Demand;
+current_rate = root.OrderRate;]]></ObservationCode>
+			<StopCondition><![CDATA[root.stockAmountStats.min() < root.stopConditionLimits[0] || root.stockAmountStats.max() > root.stopConditionLimits[1]]]></StopCondition>
 			<ActionField>
 				<Name><![CDATA[order_rate]]></Name>
 				<Type><![CDATA[double]]></Type>
 			</ActionField>
-			<ActionCode><![CDATA[root.OrderRate = order_rate;]]></ActionCode>
+			<ActionCode><![CDATA[root.assignedRate = order_rate;
+
+root.setRatesStats.add(order_rate);]]></ActionCode>
 			<ConfigurationField>
 				<Name><![CDATA[acquisition_lag_days]]></Name>
 				<Type><![CDATA[int]]></Type>
+			</ConfigurationField>
+			<ConfigurationField>
+				<Name><![CDATA[action_recurrence_days]]></Name>
+				<Type><![CDATA[double]]></Type>
+			</ConfigurationField>
+			<ConfigurationField>
+				<Name><![CDATA[stop_condition_limits]]></Name>
+				<Type><![CDATA[double[]]]></Type>
+			</ConfigurationField>
+			<ConfigurationField>
+				<Name><![CDATA[demand_volatility]]></Name>
+				<Type><![CDATA[double]]></Type>
 			</ConfigurationField>
 			<ConfigurationCode><![CDATA[// validate input
 if (acquisition_lag_days < 1) {
@@ -1551,27 +1954,59 @@ if (acquisition_lag_days < 1) {
 }
 root.acquisitionLag = acquisition_lag_days; 
 
+if (action_recurrence_days < 1) {
+	root.warning("Provided action recurrence (%s) cannot be < 1; clamping at minimum (1).", action_recurrence_days);
+	action_recurrence_days = 1;
+}
+root.actionRecurrence = action_recurrence_days;
+
+if (stop_condition_limits == null || stop_condition_limits.length != 2) {
+	root.warning("Provided stop condition limits (%s) is not provided or invalid (expecting a two value array); setting to its default", Arrays.toString(stop_condition_limits));
+	stop_condition_limits = new double[]{500d, 9500d};
+}
+root.stopConditionLimits = stop_condition_limits;
+
+if (demand_volatility < 0.5) {
+	root.warning("Provided demand volatility (%s) cannot be < 0.5; setting at its default", demand_volatility);
+	demand_volatility = 5;
+}
+root.volatility = demand_volatility;
+
 // make sure `takeAction` will execute
-root.inRLMode = true; ]]></ConfigurationCode>
+root.mode = 1; ]]></ConfigurationCode>
 		</ReinforcementLearningExperiment>
 	</Experiments>
 	<ModelResources>
 		<Resource>
 			<Path><![CDATA[Game scheme.png]]></Path>
 			<ReferencedFromUserCode>false</ReferencedFromUserCode>
+			<Location>FILE_SYSTEM</Location>
 		</Resource>
 		<Resource>
 			<Path><![CDATA[book.png]]></Path>
 			<ReferencedFromUserCode>false</ReferencedFromUserCode>
+			<Location>FILE_SYSTEM</Location>
 		</Resource>
 		<Resource>
 			<Path><![CDATA[AnyLogic model logo dark.png]]></Path>
 			<ReferencedFromUserCode>false</ReferencedFromUserCode>
+			<Location>FILE_SYSTEM</Location>
+		</Resource>
+		<Resource>
+			<Path><![CDATA[state_dataset.xlsx]]></Path>
+			<ReferencedFromUserCode>false</ReferencedFromUserCode>
+			<Location>FILE_SYSTEM</Location>
 		</Resource>
 	</ModelResources>
     <RequiredLibraryReference>
 		<LibraryName><![CDATA[com.anylogic.libraries.modules.markup_descriptors]]></LibraryName>
 		<VersionMajor>1</VersionMajor>
+		<VersionMinor>0</VersionMinor>
+		<VersionBuild>0</VersionBuild>
+    </RequiredLibraryReference>
+    <RequiredLibraryReference>
+		<LibraryName><![CDATA[com.anylogic.libraries.pypeline]]></LibraryName>
+		<VersionMajor>0</VersionMajor>
 		<VersionMinor>0</VersionMinor>
 		<VersionBuild>0</VersionBuild>
     </RequiredLibraryReference>
