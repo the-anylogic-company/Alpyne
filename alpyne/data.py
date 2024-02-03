@@ -111,7 +111,7 @@ class SimStatus:
         if isinstance(self.state, str):
             self.state = EngineState.__members__[self.state]
         if isinstance(self.date, int):
-            self.date = datetime.fromtimestamp(int(self.date/1000))
+            self.date = datetime.fromtimestamp(int(self.date / 1000))
         if isinstance(self.observation, dict):
             self.observation = SimObservation(**self.observation)
 
@@ -120,8 +120,8 @@ class SimStatus:
 class EngineStatus:
     """A report for the status of the underlying AnyLogic engine driving the simulation model.
 
-    This object is not currently part of the public API and is intended for debugging purposes only.
-    It may be refactored or removed in the future.
+    .. warning:: This object is not currently part of the public API and is intended for debugging purposes only.
+      It may be refactored or removed in the future.
 
     :param state: The current state of the model's engine; this matches the value of what AnyLogic reports
       (e.g., from ``getEngine().getState()``)
@@ -188,7 +188,7 @@ class FieldData:
     def py_value(self):
         if self.py_type == datetime:
             if isinstance(self.value, int):
-                return datetime.fromtimestamp(int(self.value/1000))  # java gives ms; python expects secs
+                return datetime.fromtimestamp(int(self.value / 1000))  # java gives ms; python expects secs
             elif isinstance(self.value, str):
                 for pat, fmt in DATE_PATTERN_LOOKUP.items():
                     if re.match(pat, self.value):
@@ -211,9 +211,9 @@ class SimSchema:
 
     :param _schema_def: A pseudo-field used only for initializing the schema
     :param inputs: Parameters of the top-level agent
-    :param outputs: Analysis objects (Output, DataSet, HistogramData, etc.) on the top-level agent
+    :param outputs: Analysis objects (Output, DataSet, HistogramData, etc.)
     :param configuration: Defined data fields in the *Configuration* section of the RL experiment
-    :param engine_settings: Represents various engine settings (random seed, start and stop time/date)
+    :param engine_settings: Represents various engine settings (model units, random seed, start and stop time/date)
     :param observation: Defined data fields in the *Observation* section of the RL experiment
     :param action: Defined data fields in the *Action* section of the RL experiment.
 
@@ -261,6 +261,7 @@ class EngineSettings:
     Settings to use for the underlying AnyLogic engine to run the simulation model with; contains fields for the
     time units, start/stop time/date, and RNG seed.
     """
+
     def __init__(self, **override_kwargs: dict[EngineSettingKeys, datetime | TimeUnits | Number | None]):
         """
         :param override_kwargs: Desired mapping between setting name and value to override in the sim's RL experiment
