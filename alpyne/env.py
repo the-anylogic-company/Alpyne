@@ -63,17 +63,19 @@ from alpyne.data import SimStatus, SimConfiguration, SimAction, FieldData
 class AlpyneEnv(Env):
     """
     A mostly-complete implementation of an environment using the Gymnasium interface, setup to handle most of the routine
-    communication with a provided instance of the AlpyneClient. Usage is possible via subclassing.
+    communication with a provided instance of the AnyLogicSim.
 
-    At minimum, you will need to implement the `_calc_reward` function and
+    To use it, you'll need to either create a subclass or use the provided :func:`make_alpyne_env` function.
+
+    When subclassing, you are required to implement the `_calc_reward` function and
     extend the `__init__` function to assign the `observation_space` and `action_space` class attributes.
-
-    The provided logic contains automatic handling of wrapping/unwrapping scalars-as-values (passed by AnyLogic)
-    to lists-of-one (common requirement for RL libraries) and filtering excess fields provided
-    in the sim's observation which are not in the observation space.
 
     You may need to override the other "private" functions if their logic do not match your scenario.
     """
+
+    # TODO "The provided logic contains automatic handling of wrapping/unwrapping scalars-as-values (passed by AnyLogic)
+    #     to lists-of-one (common requirement for RL libraries) and filtering excess fields provided
+    #     in the sim's observation which are not in the observation space."
 
     def __init__(self, sim: AnyLogicSim):
         self._sim = sim
@@ -83,7 +85,7 @@ class AlpyneEnv(Env):
     def _get_config(self) -> dict | None:
         """
         Called at the start of each new episode. If a Configuration is returned, that will take highest priority.
-        Otherwise, if None is returned, it will use the default configuration (either defined by you in the client constructor or Java defaults).
+        Otherwise, if None is returned, it will use the default configuration (either defined by you in the sim constructor or Java defaults).
         """
         return None
 
@@ -110,7 +112,7 @@ class AlpyneEnv(Env):
 
     def _to_action(self, act: ActType) -> dict:
         """
-        Convert the action received by the code/library using this environment to an action instance to be passed to the alpyne client.
+        Convert the action received by the code/library using this environment to an action instance to be passed to the sim.
         """
         if not isinstance(self.action_space, spaces.Dict):
             raise NotImplementedError(
@@ -131,8 +133,8 @@ class AlpyneEnv(Env):
 
         For a simulation-based definition of finite vs infinite time horizons, see: https://rossetti.github.io/RossettiArenaBook/ch3-finiteVsInfinite.html
 
-        The default assumption is based on the value of the 'done' condition (i.e., "Simulation run stop condition" in the RL experiment)
-        or the simulation being in the "FINISHED" state (e.g., from the model having called `finish()` or the stop time/date being met).
+        The default assumption is based on the value of the 'stop' condition (i.e., "Simulation run stop condition" in the RL experiment)
+        or the simulation being in the "FINISHED" or "ERROR" state (e.g., from the model having called `finish()`, the stop time/date being met, logical error).
         """
         return status.stop or EngineState.FINISHED in status.state
 
@@ -146,7 +148,7 @@ class AlpyneEnv(Env):
 
         For a simulation-based definition of finite vs infinite time horizons, see: https://rossetti.github.io/RossettiArenaBook/ch3-finiteVsInfinite.html
 
-        The default assumption is the model is never truncated (i.e., False)
+        The default assumption is the model is never truncated (i.e., False).
         """
         return False
 
@@ -170,7 +172,7 @@ class AlpyneEnv(Env):
          or any terminating condition)."""
 
         alpyne_action = self._to_action(action)
-        # return type based on client constructor
+        # return type based on sim constructor
         status: SimStatus | None = self._sim.take_action(alpyne_action)
         if status is None:  # handle if auto_wait == False; we want the status when it's ready
             status = self._sim.lock()
