@@ -84,7 +84,7 @@ class AnyLogicSim:
             py_log_level = logging.WARNING
 
         logging.basicConfig(
-            level=py_log_level.name,
+            level=logging.getLevelName(py_log_level),
             format=f"%(asctime)s [%(name)s @ %(lineno)s][%(levelname)8s] %(message)s",
             handlers=[logging.StreamHandler()],
         )
@@ -93,7 +93,7 @@ class AnyLogicSim:
 
         self.auto_wait = auto_lock
 
-        self._last_status = None  # should be updated whenever `wait_for` is called
+        self._last_status = None  # should be updated whenever `lock` is called
         self._internal_args = kwargs
         self._proc_pids: list = []  # will store all top-level and children PIDs for killing them later
 
