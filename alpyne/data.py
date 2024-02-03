@@ -1,3 +1,4 @@
+import pprint
 import re
 import typing
 from collections import UserDict
@@ -237,6 +238,23 @@ class SimSchema:
         self.engine_settings = make_dict('engine_settings')
         self.observation = make_dict('observation')
         self.action = make_dict('action')
+
+    def __str__(self):
+        pp = pprint.PrettyPrinter(indent=4, width=120)
+
+        def pform(obj):
+            """Use PrettyPrinter's format + custom formatting to put the first container element on its own line"""
+            return pp.pformat(obj).replace("{", "{\n ").replace("}", "\n}")
+
+        out = "SimSchema\n=========\n"
+        out += f"input = {pform(self.inputs)}\n"
+        out += f"outputs = {pform(self.outputs)}\n"
+        out += f"configuration = {pform(self.configuration)}\n"
+        out += f"engine_settings = {pform(self.engine_settings)}\n"
+        out += f"observation = {pform(self.observation)}\n"
+        out += f"action = {pform(self.action)}\n"
+        return out
+
 
 class EngineSettings:
     """
