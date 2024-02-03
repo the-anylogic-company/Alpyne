@@ -1,6 +1,8 @@
 
 *.log
 Exported/
+ModelExported/
+/docs/_build/
 
 # IDE
 .idea/*
