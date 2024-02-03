@@ -1,6 +1,7 @@
-import dataclasses
+import inspect
+import typing
 from abc import abstractmethod
-from typing import Any, SupportsFloat
+from typing import Any, SupportsFloat, Callable
 
 import numpy as np
 from gymnasium import Env, spaces
@@ -8,7 +9,8 @@ from gymnasium.core import ObsType, ActType
 
 from alpyne.sim import AnyLogicSim
 from alpyne.constants import EngineState
-from alpyne.data import SimStatus, SimConfiguration, SimAction, FieldData
+from alpyne.data import SimStatus
+from alpyne.typing import EngineSettingKeys
 
 
 # def transform_observation(obs_or_field: Any, obs_space: ObsType) -> ObsType:  # TODO test this before adding it in formally
@@ -177,8 +179,13 @@ class AlpyneEnv(Env):
         return self._get_obs(status), self._get_info(status)
 
     def step(self, action: ActType) -> tuple[ObsType, SupportsFloat, bool, bool, dict[str, Any]]:
-        """ Submit an action to the simulation model and run to the next stopping point (the next call to ``takeAction``
-         or any terminating condition)."""
+        """
+        Submit an action to the simulation model and run to the next stopping point
+        (e.g., the next call to ``takeAction`` or any terminating condition).
+
+        :param action: The desired data to pass to the sim, in the format defined by your action_space
+        :return: The current observation, reward, terminal flag, truncated flag, optional information dictionary
+        """
 
         alpyne_action = self._to_action(action)
         # return type based on sim constructor
@@ -190,3 +197,42 @@ class AlpyneEnv(Env):
         return (obs, self._calc_reward(status),
                 self._is_terminal(status), self._is_truncated(status),
                 self._get_info(status))
+
+
+def make(sim: AnyLogicSim, observation_space: ObsType, action_space: ActType,
+                    _calc_reward: Callable[[SimStatus], SupportsFloat], **kwargs) -> AlpyneEnv:
+    """
+    A helper function to use in lieu of subclassing :class:`alpyne.env.AlpyneEnv`. Using this will define a class named "CustomAlpyneEnv".
+
+    :param sim: The instantiated AnyLogicSim object for the target sim
+    :param observation_space: The gymnasium definition for the observation space
+    :param action_space: The gymnasium definition for the action space
+    :param _calc_reward: A callable taking the status as input and returning the reward from the previous action
+    :param kwargs: Names of other functions from `:class:`AlpyneEnv` to callables with the respective signatures and returns
+    :return: An instantiated instance of an :class:`alpyne.env.AlpyneEnv` subclass
+    """
+    class CustomAlpyneEnv(AlpyneEnv):
+        def __init__(self, sim: AnyLogicSim):
+            super().__init__(sim)
+            self.observation_space = observation_space
+            self.action_space = action_space
+
+        def _calc_reward(self, status: SimStatus) -> SupportsFloat:
+            return _calc_reward(status)
+
+    # dynamically assign any other functions passed
+    for name, method in kwargs.items():
+        # ensure the name is correct
+        if name not in AlpyneEnv.__dict__:
+            raise AttributeError(f"Invalid kwarg name, not an overridable attribute of AlpyneEnv: {name}")
+        # ensure the value type is correct (a callable)
+        if not callable(method):
+            raise AttributeError(f"Invalid kwarg value for name {name}, not a method: {method}")
+        # ensure the callable arg count matches the function in the base environment
+        expected_num_args = len(inspect.signature(getattr(AlpyneEnv, name)).parameters)
+        actual_num_args = len(inspect.signature(method).parameters)
+        if expected_num_args != actual_num_args:
+            raise AttributeError(f"Cannot override method named '{name}', argument count does not match: {actual_num_args} in given method, expected {expected_num_args}")
+        # all checks pass, allow the value to be set
+        setattr(CustomAlpyneEnv, name, method)
+    return CustomAlpyneEnv(sim)
