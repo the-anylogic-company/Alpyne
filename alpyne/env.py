@@ -152,15 +152,24 @@ class AlpyneEnv(Env):
         """
         return False
 
-    def reset(self, *, seed: int | None = None, options: dict[str, Any] | None = None) -> tuple[
-        ObsType, dict[str, Any]]:
-        """ Resets the simulation model, advancing to the first stopping point (usually a call to `takeAction`)."""
+    def reset(self, *, seed: int | None = None, options: dict[str, Any] | None = None) -> tuple[ObsType, dict[str, Any]]:
+        """
+        Resets the simulation model, advancing to the first stopping point in the sim.
 
-        # TODO consider having the seed set the sim seed or allow passing engine updates to ``options``
-
+        :param seed: The seed that is used to initialize the PRNG (specifically the attribute `np_random`)
+        :param options: Optional settings. Keys matching those in :meth:`alpyne.typing.EngineSettingKeys`
+            will override the current sim's ``engine_settings``; all else will be ignored.
+        :return: The observation and info at the next stopping point
+        """
         super().reset(seed=seed, options=options)
 
-        # return type based on client constructor
+        if options:
+            detected_keys = typing.get_args(EngineSettingKeys)
+            for name, value in options.items():
+                if name in detected_keys:
+                    setattr(self._sim.engine_settings, name, value)
+
+        # return type based on sim constructor
         status: SimStatus | None = self._sim.reset(self._get_config())
         if status is None:  # handle if auto_wait == False; we want the status when it's ready
             status = self._sim.lock()
