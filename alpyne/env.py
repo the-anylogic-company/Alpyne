@@ -136,7 +136,7 @@ class AlpyneEnv(Env):
         The default assumption is based on the value of the 'stop' condition (i.e., "Simulation run stop condition" in the RL experiment)
         or the simulation being in the "FINISHED" or "ERROR" state (e.g., from the model having called `finish()`, the stop time/date being met, logical error).
         """
-        return status.stop or EngineState.FINISHED in status.state
+        return status.stop or EngineState.FINISHED|EngineState.ERROR in status.state
 
     def _is_truncated(self, status: SimStatus) -> bool:
         """
