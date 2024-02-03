@@ -288,7 +288,6 @@ class AnyLogicSim:
         :param data: Body to add to the request
         :return: The processed JSON output, if any (else None)
         :raises HTTPError: If there was any problem receiving or submitting the request
-        (client or server could be at fault)
         """
         try:
             if data is not None:
@@ -402,39 +401,42 @@ class AnyLogicSim:
         self._last_status = status
         return status
 
-    def outputs(self, *names: str) -> OutputType | dict[str, OutputType]:
+    def outputs(self, *names: str) -> list[OutputType] | dict[str, OutputType] | None:
         """
-        Retrieves the values of any analysis-related objects in the top-level agent (if any exist).
-
-        Specifically, this includes objects of type StatisticsDiscrete, StatisticsContinuous, DataSet,
-        HistogramSimpleData, HistogramSmartData, Histogram2DData, and Output objects.
+        Retrieves the values of any analysis-related objects in the top-level agent (if any exist), as detailed
+        further in the AnyLogic Help article `Data analysis items <https://anylogic.help/anylogic/analysis/index.html>`_
+        and its subpages.
 
         Each of the analysis-related objects have a type of the same name implemented in this library.
-        Output objects use their native python equivalent (e.g., String -> str, double -> float);
-        any with units attached make use of the custom ``UnitValue`` type.
+        Output objects for plain scalar types are converted to their natural python equivalent
+        (e.g., String -> str, double -> float); types units attached make use of the custom ``UnitValue`` type.
 
-        :param names: The names of output objects to query the current value for; passing nothing gets everything
-        :return: The direct value (when only one requested), otherwise a mapping between the output name and its value
+        :param names: The names (as defined in the sim) of objects to query the current value for;
+            passing nothing will get everything
+        :return: The desired values; provided as a list when explicit names are used (in the specified order),
+            otherwise in a dictionary keyed by the names
         """
+        # as the next step changes 'names', first record what the return should be
+        ret_as_list = bool(names)
+
         # put all names if none were provided
         if not names:
             names = list(self.schema.outputs.keys())
 
         # instant return if model has no outputs
         if not names:
-            return None
+            return list() if ret_as_list else dict()
 
         data = self._request("GET", "outputs", params=dict(names=names))
         # received data contains a list of ModelData objects so that their types are included,
         #   which allows us to pull their converted, non-raw (non-dict / typed) values out.
 
-        # when only 1 value, directly return it
-        if len(data['model_datas']) == 1:
-            return FieldData(**data['model_datas'][0]).py_value
-
-        # > 1 values; put in output dict
+        # initially store as a dict
         outputs = dict()
         for model_data in data['model_datas']:
             md = FieldData(**model_data)
             outputs[md.name] = md.py_value
+        if ret_as_list:
+            # explicitly use provided order in case values returned otherwise
+            return [outputs[name] for name in names]
         return outputs
