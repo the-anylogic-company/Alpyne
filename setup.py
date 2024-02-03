@@ -5,7 +5,7 @@ with open("README.md") as f:
 
 setup(
     name="anylogic-alpyne",
-    version="0.2.0",
+    version="1.0.0",
     author="Tyler Wolfe-Adam",
     author_email="t.wolfeadam@anylogic.com",
     description="Run AnyLogic models exported from the RL Experiment",
@@ -20,9 +20,15 @@ setup(
     ],
     packages=find_packages(),
     include_package_data=True,
-    python_requires='>=3',
+    python_requires='>=3.10',
     install_requires=[
-        "gym",
-	"numpy"
+        "gymnasium",
+	    "numpy"
     ],
+    extras_require={
+        'examples': [
+            "bayesian-optimization",
+            "stable-baselines3"
+        ]
+    }
 )
