@@ -29,6 +29,7 @@ def find_free_port() -> int:
         s.bind(('', 0))
         return s.getsockname()[1]
 
+
 class AnyLogicSim:
     """The class for connecting to, communicating with, and controlling an AnyLogic sim model
     exported via the RL Experiment."""

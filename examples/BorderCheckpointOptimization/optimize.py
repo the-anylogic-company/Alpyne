@@ -21,18 +21,22 @@ verbose = True  # include print logging
 # Setup optimizer (only change if you are experimenting / know what you're doing)
 optimizer = BayesianOptimization(
     f=None,
-    pbounds={'c': (1, 6), 'b': (1, 4)},  # allowed ranges for number of car and bus inspectors (as defined by the model logic)
+    pbounds={'c': (1, 6), 'b': (1, 4)},
+    # allowed ranges for number of car and bus inspectors (as defined by the model logic)
     random_state=1,
 )
 optimizer.set_gp_params(alpha=1e-3)  # reduced from 1e-6 to better solve for discrete nature, as per BO docs
-utility = UtilityFunction(kind="ucb", kappa=2.5, xi=0.0)  # reference: https://github.com/bayesian-optimization/BayesianOptimization/blob/master/bayes_opt/util.py#L124
+utility = UtilityFunction(kind="ucb", kappa=2.5,
+                          xi=0.0)  # reference: https://github.com/bayesian-optimization/BayesianOptimization/blob/master/bayes_opt/util.py#L124
 
 # Setup script-related objects
-sim = AnyLogicSim("ModelExported\model.jar",
-                  engine_overrides=dict(stop_time=hours_to_sim*60, seed=seed),
-                  lock_defaults=dict(flag=EngineState.FINISHED, timeout=hours_to_sim*4*2)  # ~4 sec per sim hour, doubled for added buffer
+sim = AnyLogicSim(r"ModelExported\model.jar",
+                  engine_overrides=dict(stop_time=hours_to_sim * 60, seed=seed),
+                  lock_defaults=dict(flag=EngineState.FINISHED, timeout=hours_to_sim * 4 * 2)
+                  # ~4 sec per sim hour, doubled for added buffer
                   )
 history = dict()  # recorded parameter set to objective function value
+
 
 def objective(c: Union[int, float], b: Union[int, float]) -> float:
     """
@@ -46,7 +50,8 @@ def objective(c: Union[int, float], b: Union[int, float]) -> float:
     key = (rc, rb) if round_values else (c, b)
     score = history.get(key)
     if verbose:
-        print(f"[{len(history)+1} / {num_iterations}] Attempting ({c:.2f}, {b:.2f}) == ({rc}, {rb}) ... cached score: {score}")
+        print(
+            f"[{len(history) + 1} / {num_iterations}] Attempting ({c:.2f}, {b:.2f}) == ({rc}, {rb}) ... cached score: {score}")
     if score is None:  # not yet recorded
         score = 0
         for i in range(num_replications):
@@ -57,12 +62,12 @@ def objective(c: Union[int, float], b: Union[int, float]) -> float:
             #           and slightly prefer those with less workers,
             #           with both TIS values are weighted equally.
             # (smaller values = better)
-            this_score = (status.observation['carTISMean'] + status.observation['busTISMean'])**2 * (rc + rb)
+            this_score = (status.observation['carTISMean'] + status.observation['busTISMean']) ** 2 * (rc + rb)
             score += this_score
 
             dur = time.time() - start
             if verbose:
-                print(f"\t[{i+1} / {num_replications}] {key}  ->  {this_score:.2f}  (took: {dur:.2f})")
+                print(f"\t[{i + 1} / {num_replications}] {key}  ->  {this_score:.2f}  (took: {dur:.2f})")
         # get the average value across all replications
         score /= num_replications
         # and finally negative it since this library is looking to maximum the objective
@@ -86,6 +91,6 @@ if __name__ == "__main__":
     print("\nOPTIMIZER MAX:", optimizer.max)
     print(f"TRANSLATION: For the input arrival rates (car={car_rate}, bus={bus_rate}), "
           f"\n\tthe found optimums for inspectors are: car={int(round(optimizer.max['params']['c']))}, bus={int(round(optimizer.max['params']['b']))},"
-          f"\n\tresulting in a mean TIS of {sqrt(abs(optimizer.max['target']))/60.0:.2f} hours"
+          f"\n\tresulting in a mean TIS of {sqrt(abs(optimizer.max['target'])) / 60.0:.2f} hours"
           )
-    print(f"EXPERIMENT DURATION: {time.time()-start:.3f} seconds")
+    print(f"EXPERIMENT DURATION: {time.time() - start:.3f} seconds")

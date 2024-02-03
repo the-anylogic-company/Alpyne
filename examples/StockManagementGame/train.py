@@ -5,11 +5,11 @@ from gymnasium import spaces
 from gymnasium.core import ActType, ObsType, RenderFrame
 from gymnasium.experimental.wrappers import RescaleObservationV0
 from gymnasium.experimental.wrappers.lambda_action import RescaleActionV0
-from gymnasium.wrappers import NormalizeReward, TransformObservation, RescaleAction
+from gymnasium.wrappers import NormalizeReward
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.common.monitor import Monitor
-from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
+from stable_baselines3.common.vec_env import DummyVecEnv
 
 from alpyne.data import SimStatus
 from alpyne.env import AlpyneEnv

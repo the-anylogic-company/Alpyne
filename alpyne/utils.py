@@ -11,20 +11,22 @@ from datetime import time
 from enum import Enum
 from math import inf
 from pathlib import Path
-from typing import List, Tuple, Union, Any
+from typing import List, Tuple, Union
 from warnings import warn
+
+import numpy as np
 
 import alpyne
 from alpyne.typing import Number
 
-import numpy as np
 
 def find_jar_overlap(src1: str, src2: str):
     path1, path2 = Path(src1), Path(src2)
     jars1, jars2 = path1.rglob("*.jar"), path2.rglob("*.jar")
     lookup1 = {re.match("[^\d]+", f.name).group(): f.relative_to(path1) for f in jars1}
     lookup2 = {re.match("[^\d]+", f.name).group(): f.relative_to(path2) for f in jars2}
-    overlaps = [[(v,lookup2[k]) for k,v in lookup1.items() if k in lookup2], [(lookup1[k],v) for k,v in lookup2.items() if k in lookup1]]
+    overlaps = [[(v, lookup2[k]) for k, v in lookup1.items() if k in lookup2],
+                [(lookup1[k], v) for k, v in lookup2.items() if k in lookup1]]
     return overlaps
 
 
@@ -55,6 +57,7 @@ class AlpyneJSONEncoder(json.JSONEncoder):
     To use it, pass a reference to the class to the `cls` argument of `json.dump` or `json.dumps`).
     For example, `json.dumps(my_object, cls=AlpyneJSONEncoder)`
     """
+
     def default(self, o):
         """ Overridden method to handle classes used by Alpyne. """
 
@@ -79,7 +82,7 @@ class AlpyneJSONEncoder(json.JSONEncoder):
             return o.name
         elif is_dataclass(o):
             # recursively call `default` on each of the values
-            #output = list(map(self.default, o._data.values()))
+            # output = list(map(self.default, o._data.values()))
             return asdict(o)
         elif isinstance(o, FieldData):
             return {"name": o.name, "type": o.type, "value": o.value, "units": o.units}
@@ -97,6 +100,7 @@ class AlpyneJSONEncoder(json.JSONEncoder):
         except:
             pass
         return super().default(o)
+
 
 class AlpyneJSONDecoder(json.JSONDecoder):
     """
@@ -169,7 +173,7 @@ def histogram_outputs_to_fake_dataset(lower_bound: float, interval_width: float,
     ds, bins = [], []
     for i, n in enumerate(hits):
         x = lower_bound + interval_width * i
-        ds += ([x]*n)
+        ds += ([x] * n)
         bins.append(x)
     # add one more for the closing bin
     x = lower_bound + interval_width * len(hits)
@@ -219,6 +223,7 @@ def extended_namedtuple(name, source_fields):
         except:
             new_type_fields.append(f)
     return namedtuple(name, new_type_fields)
+
 
 def parse_number(value: Union[Number, str]) -> Number:
     if isinstance(value, str):

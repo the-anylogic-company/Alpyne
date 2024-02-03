@@ -1,6 +1,7 @@
 import numpy as np
 from stable_baselines3 import PPO
 
+
 class SMGPolicyQuerier:
     def __init__(self, file: str):
         self.policy = PPO.load(file)
@@ -13,10 +14,11 @@ class SMGPolicyQuerier:
         :return: The output value, in the sim's natural action space
         """
         # the policy expects scaled inputs and produces scaled outputs, so we'll compensate for both
-        obs = np.array([input_[0]/5000.0, input_[1]/25.0])-1
+        obs = np.array([input_[0] / 5000.0, input_[1] / 25.0]) - 1
         prediction = self.policy.predict(obs)
         act = prediction[0]
-        return (act[0]+1)*25
+        return (act[0] + 1) * 25
+
 
 if __name__ == '__main__':
     querier = SMGPolicyQuerier("SMG_PPO.zip")

@@ -7,6 +7,7 @@ import time
 import numpy as np
 import random
 
+
 class PathfinderTrainer:
     # Do not change the order of these! They're based on the order of the collection in the sim
     DIRECTIONS = ["EAST", "SOUTH", "WEST", "NORTH", "NORTHEAST", "NORTHWEST", "SOUTHEAST", "SOUTHWEST"]
@@ -94,7 +95,8 @@ class PathfinderTrainer:
 
                 row, col = status.observation['pos']
                 state = row * 8 + col  # 8x8 board
-                action = self.get_action(state, episode if in_train else -1)  # use only greedy policy (-1 "episode" in testing)
+                action = self.get_action(state,
+                                         episode if in_train else -1)  # use only greedy policy (-1 "episode" in testing)
 
                 new_status = self.sim.take_action(dir=PathfinderTrainer.DIRECTIONS[action])
                 new_row, new_col = new_status.observation['pos']
@@ -108,7 +110,7 @@ class PathfinderTrainer:
 
                 if in_train:
                     self.q_table[state][action] = self.q_table[state][action] + self.lr * (
-                                reward + self.gamma * np.max(self.q_table[new_state]) - self.q_table[state][action])
+                            reward + self.gamma * np.max(self.q_table[new_state]) - self.q_table[state][action])
 
                 status = new_status
             reward_totals.append(reward_total)
@@ -122,6 +124,7 @@ class PathfinderTrainer:
 
     def test(self, n_eps, config_overrides: dict = None, **kwargs):
         return self._execute(n_eps, False, config_overrides=config_overrides, **kwargs)
+
 
 if __name__ == "__main__":
     sim = AnyLogicSim(r"ModelExported\model.jar", engine_overrides=dict(seed=147))
@@ -148,4 +151,5 @@ if __name__ == "__main__":
     print(f"Seconds to train: {time.time() - start}")
     print("Test reward results (no slipping):", Counter(trainer.test(10, config_overrides=dict(slipChance=0))))
     print("Test reward results (same config):", Counter(trainer.test(10)))
-    print("Test reward results (2x slipping):", Counter(trainer.test(10, config_overrides=dict(slipChance=config['slipChance']*2))))
+    print("Test reward results (2x slipping):",
+          Counter(trainer.test(10, config_overrides=dict(slipChance=config['slipChance'] * 2))))

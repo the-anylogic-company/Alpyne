@@ -43,6 +43,7 @@ TYPE_LOOKUP = {
 }
 """Constant mapping between simple names of Java classes to the Python equivalent"""
 
+
 class JavaLogLevel(Enum):
     """
     Represents the log level to use in the Alpyne Java application.
@@ -68,7 +69,6 @@ class JavaLogLevel(Enum):
 
     FINEST = "FINEST"
     """A highly detailed tracing message"""
-
 
     @classmethod
     def from_py_level(cls, level: str | int):
@@ -119,4 +119,3 @@ class EngineState(Flag):
     @staticmethod
     def ready():
         return EngineState.PAUSED | EngineState.FINISHED | EngineState.ERROR
-

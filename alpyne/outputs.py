@@ -22,9 +22,9 @@ class _AnalysisObject:
             if isinstance(value, str):
                 setattr(self, name, parse_number(value))
 
+
 @dataclass
 class _Statistics(_AnalysisObject):
-
     count: int = 0
     mean: float = 0.0
     confidence: float = inf
@@ -32,13 +32,16 @@ class _Statistics(_AnalysisObject):
     max: float = -inf
     deviation: float = 0.0
 
+
 @dataclass
 class StatisticsDiscrete(_Statistics):
     sum: float = 0.0
 
+
 @dataclass
 class StatisticsContinuous(_Statistics):
     integral: float = 0.0
+
 
 @dataclass
 class DataSet(_AnalysisObject):
@@ -60,6 +63,7 @@ class DataSet(_AnalysisObject):
     def y_values(self) -> list[float]:
         return [row[1] for row in self.plainDataTable]
 
+
 @dataclass
 class HistogramSmartData(_AnalysisObject):
     count: int = 0
@@ -74,10 +78,12 @@ class HistogramSmartData(_AnalysisObject):
         if isinstance(self.statistics, dict):
             self.statistics = _Statistics(**self.statistics)
 
+
 @dataclass
 class HistogramSimpleData(HistogramSmartData):
     hitsOutLow: float = 0.0
     hitsOutHigh: float = 0.0
+
 
 @dataclass
 class Histogram2DData(_AnalysisObject):
@@ -102,12 +108,15 @@ _SpaceUnitAttrs = extended_namedtuple('SpaceUnitAttrs', ['length_unit', _BaseUni
 _RateUnitAttrs = extended_namedtuple('RateUnitAttrs', ['time_unit', _BaseUnitAttrs])  # rate
 """Named tuple used to describe units with a time component; used by RateUnits"""
 
-_VelocityUnitAttrs = extended_namedtuple('VelocityUnitAttrs', ['spacial_unit', _RateUnitAttrs])  # accel, speed, flow, rotation speed
+_VelocityUnitAttrs = extended_namedtuple('VelocityUnitAttrs',
+                                         ['spacial_unit', _RateUnitAttrs])  # accel, speed, flow, rotation speed
 """Named tuple used to describe units with time and spacial components; used by units describing Acceleration, Speed, Flow, and RotationSpeed"""
+
 
 class _UnitEnum(Enum):
     """Abstract, base class inherited by other unit classes"""
-    def __init__(self, symbol = None):
+
+    def __init__(self, symbol=None):
         self.symbol = symbol or "?"
 
     @abstractmethod
@@ -312,6 +321,7 @@ class RotationSpeedUnits(_UnitEnum):
     def convert_to(self, this_amount: float, new_units: 'RotationSpeedUnits') -> float:
         return this_amount * self.modifier(new_units)
 
+
 @dataclass
 class UnitValue:
     """
@@ -331,7 +341,9 @@ class UnitValue:
         if isinstance(self.unit, str):
             # loop thru all unit types, finding the first with a member whose name matches `self.unit`,
             # then overwrite with the new value
-            for cls in (AmountUnits, TimeUnits, LengthUnits, AngleUnits, AreaUnits, RateUnits, AccelerationUnits, SpeedUnits, FlowRateUnits, RotationSpeedUnits):
+            for cls in (
+            AmountUnits, TimeUnits, LengthUnits, AngleUnits, AreaUnits, RateUnits, AccelerationUnits, SpeedUnits,
+            FlowRateUnits, RotationSpeedUnits):
                 try:
                     unit = next(filter(lambda e: e.name == self.unit, cls))
                     self.unit = unit
@@ -344,12 +356,15 @@ class UnitValue:
         if isinstance(other, (int, float)):
             return other, self.unit
         if not isinstance(other, UnitValue):
-            raise NotImplementedError(f"Can only apply an operation on a UnitValue and a number, not type {type(other)}")
+            raise NotImplementedError(
+                f"Can only apply an operation on a UnitValue and a number, not type {type(other)}")
         if type(self.unit) != type(other.unit):
-            raise NotImplementedError(f"Cannot apply operation on UnitValue objects with different unit types (this={self.unit}, other={other.unit})")
+            raise NotImplementedError(
+                f"Cannot apply operation on UnitValue objects with different unit types (this={self.unit}, other={other.unit})")
         return other.unit.convert_to(other.value, self.unit), self.unit
 
-    def _apply_operation(self, other: Number | 'UnitValue', operation: Callable[[Number | 'UnitValue', Number | 'UnitValue'], Number]):
+    def _apply_operation(self, other: Number | 'UnitValue',
+                         operation: Callable[[Number | 'UnitValue', Number | 'UnitValue'], Number]):
         other_value, unit = self._check_type_and_convert(other)
         new_value = operation(self.value, other_value)
         return UnitValue(new_value, unit)

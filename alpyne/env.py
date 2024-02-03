@@ -3,7 +3,6 @@ import typing
 from abc import abstractmethod
 from typing import Any, SupportsFloat, Callable
 
-import numpy as np
 from gymnasium import Env, spaces
 from gymnasium.core import ObsType, ActType
 
@@ -100,7 +99,7 @@ class AlpyneEnv(Env):
         if not isinstance(self.observation_space, spaces.Dict):
             raise NotImplementedError(
                 "Cannot infer the assignment for a non-Dict type (you will need to overload this function with a correct implementation)")
-        #obs = transform_observation(status.observation, self.observation_space)
+        # obs = transform_observation(status.observation, self.observation_space)
         obs = status.observation
         # fail if validation check does not pass
         if not self.observation_space.contains(obs):
@@ -119,7 +118,7 @@ class AlpyneEnv(Env):
         if not isinstance(self.action_space, spaces.Dict):
             raise NotImplementedError(
                 "Cannot infer the assignment for a non-Dict type (you will need to overload this function with a correct implementation)")
-        #return transform_action(act, self._sim.schema.action)
+        # return transform_action(act, self._sim.schema.action)
         return act
 
     def _get_info(self, status: SimStatus) -> dict[str, Any] | None:
@@ -138,7 +137,7 @@ class AlpyneEnv(Env):
         The default assumption is based on the value of the 'stop' condition (i.e., "Simulation run stop condition" in the RL experiment)
         or the simulation being in the "FINISHED" or "ERROR" state (e.g., from the model having called `finish()`, the stop time/date being met, logical error).
         """
-        return status.stop or EngineState.FINISHED|EngineState.ERROR in status.state
+        return status.stop or EngineState.FINISHED | EngineState.ERROR in status.state
 
     def _is_truncated(self, status: SimStatus) -> bool:
         """
@@ -154,7 +153,8 @@ class AlpyneEnv(Env):
         """
         return False
 
-    def reset(self, *, seed: int | None = None, options: dict[str, Any] | None = None) -> tuple[ObsType, dict[str, Any]]:
+    def reset(self, *, seed: int | None = None, options: dict[str, Any] | None = None) -> tuple[
+        ObsType, dict[str, Any]]:
         """
         Resets the simulation model, advancing to the first stopping point in the sim.
 
@@ -200,7 +200,7 @@ class AlpyneEnv(Env):
 
 
 def make(sim: AnyLogicSim, observation_space: ObsType, action_space: ActType,
-                    _calc_reward: Callable[[SimStatus], SupportsFloat], **kwargs) -> AlpyneEnv:
+         _calc_reward: Callable[[SimStatus], SupportsFloat], **kwargs) -> AlpyneEnv:
     """
     A helper function to use in lieu of subclassing :class:`alpyne.env.AlpyneEnv`. Using this will define a class named "CustomAlpyneEnv".
 
@@ -211,6 +211,7 @@ def make(sim: AnyLogicSim, observation_space: ObsType, action_space: ActType,
     :param kwargs: Names of other functions from `:class:`AlpyneEnv` to callables with the respective signatures and returns
     :return: An instantiated instance of an :class:`alpyne.env.AlpyneEnv` subclass
     """
+
     class CustomAlpyneEnv(AlpyneEnv):
         def __init__(self, sim: AnyLogicSim):
             super().__init__(sim)
@@ -232,7 +233,8 @@ def make(sim: AnyLogicSim, observation_space: ObsType, action_space: ActType,
         expected_num_args = len(inspect.signature(getattr(AlpyneEnv, name)).parameters)
         actual_num_args = len(inspect.signature(method).parameters)
         if expected_num_args != actual_num_args:
-            raise AttributeError(f"Cannot override method named '{name}', argument count does not match: {actual_num_args} in given method, expected {expected_num_args}")
+            raise AttributeError(
+                f"Cannot override method named '{name}', argument count does not match: {actual_num_args} in given method, expected {expected_num_args}")
         # all checks pass, allow the value to be set
         setattr(CustomAlpyneEnv, name, method)
     return CustomAlpyneEnv(sim)

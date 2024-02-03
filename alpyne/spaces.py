@@ -1,5 +1,7 @@
 import logging
+
 log = logging.getLogger("RLSpace")
+
 
 class RLSpace:
     """
@@ -14,7 +16,8 @@ class RLSpace:
         if args:
             names = getattr(self, '_NAME_ORDER')
             if not names:
-                raise AttributeError("Cannot use args; the name order is not set for the space type (requires passing the source or manual assignment)")
+                raise AttributeError(
+                    "Cannot use args; the name order is not set for the space type (requires passing the source or manual assignment)")
             if len(args) != len(names):
                 raise AttributeError(f"Provided {len(args)} args when {len(names)} were expected")
             kwargs = dict(zip(names, args))
@@ -72,4 +75,3 @@ class Action(RLSpace):
     """
     _NAME_ORDER = None
     pass  # no current special attributes
-        
