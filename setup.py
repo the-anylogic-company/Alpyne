@@ -23,7 +23,9 @@ setup(
     python_requires='>=3.10',
     install_requires=[
         "gymnasium",
-	    "numpy"
+        "numpy",
+        "psutil",
+        "requests"
     ],
     extras_require={
         'examples': [
