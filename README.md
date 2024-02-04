@@ -8,6 +8,8 @@ Currently, this library released as a **public beta** (so please excuse any roug
 
 Full documentation (with background information, getting started guide, and class docs) can be found @ https://t-wolfeadam.github.io/Alpyne
 
+All contributions, including new or improved example models and training scripts, are thoroughly welcomed!
+
 Installation
 ------------
 Alpyne supports Python 3.10+ and requirements the latest version of AnyLogic.
@@ -36,4 +38,11 @@ This object then gives you access to functions for interacting with the model ru
 
 You can learn more about the specifics and deeper background information from reviewing the [documentation](https://t-wolfeadam.github.io/Alpyne) or referencing the provided examples.
 
-Note that to run the examples, you will need to export them from AnyLogic.
+Note that the example "StockManagementGame" also requires you to have installed the [Pypeline library](https://github.com/t-wolfeadam/AnyLogic-Pypeline) in your AnyLogic environment.
+
+Before running the example scripts, you'll need to first export them from AnyLogic. To run them without any modifications, you'll need to do the following:
+
+1. Open the given model in AnyLogic (e.g., `examples/Pathfinder/ModelSource/Pathfinder.alp`)
+2. In the properties of its RL Experiment, click the export button at the top; save the zip file inside a folder named "ModelExported" to sit alongside the "ModelSource" folder
+3. In your file explorer, extract the contents of the zip in place (such that, e.g., the file `examples/Pathfinder/ModelExported/model.jar` is valid)
+4. Run the associated Python script
