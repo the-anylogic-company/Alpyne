@@ -369,6 +369,14 @@ class UnitValue:
         new_value = operation(self.value, other_value)
         return UnitValue(new_value, unit)
 
+    def __call__(self, *args, **kwargs) -> float:
+        if len(args) != 1 or kwargs:
+            raise TypeError("Call to unit value only accepts 1 argument for the new unit to convert to.")
+        new_unit: _UnitEnum = args[0]
+        if not isinstance(new_unit, type(self.unit)):
+            raise TypeError("Argument to unit value must be of the same type as the original units")
+        return self.unit.convert_to(self.value, new_unit)
+
     def __add__(self, other: Number | 'UnitValue'):
         return self._apply_operation(other, lambda a, b: a + b)
 
