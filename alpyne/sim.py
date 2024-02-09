@@ -39,6 +39,7 @@ class AnyLogicSim:
 
     def __init__(self, model_path: str, port: int = 0,
                  py_log_level: int | str | bool = logging.WARNING, java_log_level: int | str | bool = logging.WARNING,
+                 log_id: str = None,
                  auto_lock: bool = True,
                  auto_finish: bool = False,
                  engine_overrides: dict[EngineSettingKeys, Number | datetime | TimeUnits] = None,
@@ -58,6 +59,9 @@ class AnyLogicSim:
           - True defaults to INFO, False to WARNING; defaults to WARNING
         :param java_log_level: verboseness of java-side logging (writes to alpyne.log); expressed as levels from the
           ``logging`` library or a boolean - True defaults to INFO, False to WARNING; defaults to WARNING
+        :param log_id: An identifier to put between the log file name and the '.log' extension,
+          useful if you do not want log files to be overridden by subsequent or parallel runs;
+          you can use $p for the port number, $n for a unique number (starts from 1); defaults to None (empty string)
         :param auto_lock: whether to automatically wait for a 'ready' state after each call to reset or take_action and
           return the subsequent RL status instead of None; defaults to False
         :param auto_finish: whether to automatically force the model into a FINISH state once the stop condition
@@ -99,7 +103,7 @@ class AnyLogicSim:
         self._proc_pids: list = []  # will store all top-level and children PIDs for killing them later
 
         try:
-            self._proc = self._start_app(model_path, port, java_log_level, auto_finish)
+            self._proc = self._start_app(model_path, port, java_log_level, log_id, auto_finish)
             self._base_url = f"http://127.0.0.1:{port}"
             self._session = requests.Session()
 
@@ -126,6 +130,7 @@ class AnyLogicSim:
         self._lock_defaults.setdefault("timeout", 30)
 
     def _start_app(self, model_path: str, port: int, java_log_level: int | str | bool | JavaLogLevel,
+                   log_id: str,
                    auto_finish: bool) -> subprocess.Popen:
         """
         Execute the backend app with the desired preferences.
@@ -133,6 +138,7 @@ class AnyLogicSim:
         :param model_path:
         :param port:
         :param java_log_level:
+        :param log_id:
         :param auto_finish
         """
         # get the directory for the model, optionally extracting it to a temp dir if necessary
@@ -170,18 +176,23 @@ class AnyLogicSim:
             # python logging type (or compatible arg) -> java logging type
             java_log_level = JavaLogLevel.from_py_level(java_log_level)
 
+        # preliminary list of arguments
         cmdline_args = ["java",
                         "-cp", class_path,
                         "com.anylogic.alpyne.AlpyneServer",
                         "-p", f"{port}",
                         "-l", java_log_level.name,
-                        "-d", initdir,
-                        "."
+                        "-d", initdir
                         ]
+        # handle adding conditional arguments
+        if log_id is not None and len(log_id) > 0:
+            # only include log id flag if non-default
+            cmdline_args.extend(["-i", log_id])
         if auto_finish:
-            # flag without arguments; only add if requested
-            # put before the final, non-flag arugment
-            cmdline_args.insert(-1, "-f")
+            # flag without arguments
+            cmdline_args.append("-f")
+        # add in final argument
+        cmdline_args.append(".")
 
         self.log.debug(f"Executing:\n{' '.join(cmdline_args)}\n")
 
