@@ -198,13 +198,24 @@ class FieldData:
     @property
     def py_value(self):
         if self.py_type == datetime:
-            if isinstance(self.value, int):
-                return datetime.fromtimestamp(int(self.value / 1000))  # java gives ms; python expects secs
-            elif isinstance(self.value, str):
-                for pat, fmt in DATE_PATTERN_LOOKUP.items():
-                    if re.match(pat, self.value):
-                        return datetime.strptime(self.value, fmt)
-                raise ValueError(f"Could not find a match for the given date pattern ({self.value}")
+            if not isinstance(self.value, str):  # as of v1.0.0, only accept strings
+                raise TypeError(f"Unexpected type for value: {type(self.value)}")
+
+            value = self.value  # don't modify original
+
+            # handle for py < 3.12 not having '%:z' directive,
+            # allowing for compatible ISO 8601 format for tz with colons
+            if sys.version_info < (3, 12):
+                pattern = r"^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{1,6}[-+])(\d+):*(\d+)*:*(\d+)*(\.\d+)*"
+                match = re.match(pattern, self.value)
+                if match is not None:
+                    # contains the base string plus up to 4 parts of the timezone or None if it doesn't have it
+                    value = ''.join(i for i in match.groups() if i is not None)
+
+            for pat, fmt in DATE_PATTERN_LOOKUP.items():
+                if re.match(pat, value):
+                    return datetime.strptime(value, fmt)
+            raise ValueError(f"Could not find a match for the given date pattern ({self.value})")
         if self.units is not None and isinstance(self.value, (int, float)):
             return UnitValue(self.value, self.units)
         elif isinstance(self.value, dict) and self.py_type != dict:
