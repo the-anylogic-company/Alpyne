@@ -1,15 +1,19 @@
+import logging
 import pprint
 import re
+import sys
 import typing
 from collections import UserDict
 from dataclasses import dataclass, InitVar
 from datetime import datetime, timedelta
+from math import inf
 from typing import Any, Optional
 
 from alpyne.errors import NotAFieldException
 from alpyne.typing import EngineSettingKeys, Number
 from alpyne.constants import EngineState, TYPE_LOOKUP, DATE_PATTERN_LOOKUP
 from alpyne.outputs import TimeUnits, UnitValue
+from alpyne.utils import parse_number
 
 
 class _SimRLSpace(UserDict):
@@ -19,11 +23,18 @@ class _SimRLSpace(UserDict):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # fill any missing values with their defaults
         subschema = self._schema
         for key in subschema:
-            if key not in self:
+            if key not in self:  # check for if this class (treated like a dict) has the field named 'key'
+                # when it's missing, use the default
                 self[key] = self.__missing__(key)
+            elif not isinstance(self[key], subschema[key].py_type):  # check if converted to the intended type
+                # currently only auto-handle for when numeric types are infinity; TODO move to decoder?
+                if isinstance(self[key], str) and subschema[key].py_type in (int, float):
+                    self[key] = parse_number(self[key])
+                else:
+                    logging.getLogger(__name__).warning(f"{self.SUBSCHEMA_KEY}.{key} = {self[key]} ({type(self[key])}) "
+                                                        f"was not parsed to the expected type ({subschema[key].py_type})")
 
     def __missing__(self, key):
         # when a given key is not found, lookup its default value
@@ -199,7 +210,12 @@ class FieldData:
         elif isinstance(self.value, dict) and self.py_type != dict:
             # assume py_type is an analysis object type
             return self.py_type(**self.value)
+        elif self.py_type in (int, float):
+            return parse_number(self.value)
+        elif self.py_type == TimeUnits:
+            return TimeUnits[self.value]
         # assume already intended data type
+        assert isinstance(self.value, self.py_type), "Unhandled type conversion"
         return self.value
 
 
