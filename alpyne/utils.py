@@ -1,5 +1,6 @@
 import itertools
 import json
+import logging
 import os
 import re
 import tempfile
@@ -12,7 +13,6 @@ from enum import Enum
 from math import inf
 from pathlib import Path
 from typing import List, Tuple, Union
-from warnings import warn
 
 import numpy as np
 
@@ -144,7 +144,7 @@ def resolve_model_jar(model_loc: str) -> Tuple[Path, tempfile.TemporaryDirectory
         day_ratio = int((dt.now() - dt.combine(dt.now().date(), time())).total_seconds() / 864 * 1000)
         temp_dir = tempfile.TemporaryDirectory(prefix=f"alpyne_{day_ratio:05d}_")
 
-        warn(f"Unzipping to temporary directory ({temp_dir.name})")
+        logging.getLogger(__name__).info(f"Unzipping to temporary directory ({temp_dir.name})")
 
         with zipfile.ZipFile(path, 'r') as zip_ref:
             zip_ref.extractall(temp_dir.name)
