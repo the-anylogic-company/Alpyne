@@ -936,7 +936,7 @@ poly.setLineColor(prevColor);]]></Action>
 						<Name><![CDATA[dir]]></Name>
 						<Type><![CDATA[CellDirection]]></Type>
 					</Parameter>
-					<Body><![CDATA[if (!main.VALID_DIRECTIONS.contains(dir)) {
+					<Body><![CDATA[if (!main.ignoreInvalidActions && !main.VALID_DIRECTIONS.contains(dir)) {
 	error("Cannot move in '%s'; invalid direction.", dir);
 	return;
 }
@@ -950,6 +950,8 @@ if (main.ignoreInvalidActions && !getSpace().isNextCellInsideSpace(actualDir)) {
 	// ignoring...
 } else {
 	Agent a = getSpace().getAgentNextToMe(actualDir);
+	// note: the following will throw a null pointer exception when
+	//	attempting to move outside the board (as were not ignoring invalids)
 	setSpace(a);
 }]]></Body>
 				</Function>
@@ -2051,7 +2053,7 @@ create_ResetVisibility(0.5, arrow, wasVisible, poly, prevColor);]]></Body>
 		<ActiveObjectClass>
 			<Id>1702510125506</Id>
 			<Name><![CDATA[Main]]></Name>
-			<AdditionalClassCode><![CDATA[public Random slipRNG = new Random();
+			<AdditionalClassCode><![CDATA[public Random slipRNG;
 
 public static int argmax(double[] array) {
         double maxVal = array[0];
@@ -2071,7 +2073,10 @@ import java.io.File;
 import java.util.stream.IntStream;
 import pathfinder.PathfindingBrain.Configuration;
 import pathfinder.PathfindingBrain.Observation;]]></Import>
-			<StartupCode><![CDATA[if (mode == 3) { // use qtable, load from file
+			<StartupCode><![CDATA[// initialize the RNG for the slip chance, defined in Addtl class code below
+slipRNG = slipChanceSeed == null ? new Random() : new Random(slipChanceSeed);
+
+if (mode == 3) { // use qtable, load from file
 	try {
 		qTable = new ObjectMapper().readValue(new File(qtableFile), double[][].class);
 	} catch (Exception e) {
@@ -2246,14 +2251,14 @@ initializeIndicators();]]></StartupCode>
 							</PredefParamValue>
 							<PredefParamValue>
 								<Id>0</Id>
-								<Name><![CDATA[RL]]></Name>
+								<Name><![CDATA[Random]]></Name>
 								<Value Class="CodeValue">
 									<Code><![CDATA[1]]></Code>
 								</Value>
 							</PredefParamValue>
 							<PredefParamValue>
 								<Id>0</Id>
-								<Name><![CDATA[Random]]></Name>
+								<Name><![CDATA[RL]]></Name>
 								<Value Class="CodeValue">
 									<Code><![CDATA[2]]></Code>
 								</Value>
@@ -2274,7 +2279,7 @@ initializeIndicators();]]></StartupCode>
 				<Variable Class="Parameter">
 					<Id>1702510125529</Id>
 					<Name><![CDATA[numHoles]]></Name>
-					<X>-150</X><Y>190</Y>
+					<X>-150</X><Y>210</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2298,7 +2303,7 @@ initializeIndicators();]]></StartupCode>
 				<Variable Class="Parameter">
 					<Id>1702514230752</Id>
 					<Name><![CDATA[minStepsRequired]]></Name>
-					<X>-150</X><Y>160</Y>
+					<X>-150</X><Y>180</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2348,7 +2353,7 @@ initializeIndicators();]]></StartupCode>
 				<Variable Class="Parameter">
 					<Id>1702515873436</Id>
 					<Name><![CDATA[ignoreInvalidActions]]></Name>
-					<X>-150</X><Y>220</Y>
+					<X>-150</X><Y>240</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2427,6 +2432,39 @@ initializeIndicators();]]></StartupCode>
 						</ParameterEditor>
 					</Properties>                 
 				</Variable>
+				<Variable Class="Parameter">
+					<Id>1707429867852</Id>
+					<Name><![CDATA[slipChanceSeed]]></Name>
+					<X>-130</X><Y>150</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[Long]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[null]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1707429867850</Id>
+							<Label><![CDATA[Random action seed]]></Label>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<HideCondition>
+								<Id>1707429867849</Id>
+								<ParameterId>1703013136214</ParameterId>
+								<Operation>NOT_EQUALS</Operation>
+								<Value Class="CodeValue">
+									<Code><![CDATA[0]]></Code>
+								</Value>
+							</HideCondition>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
 				<Variable Class="CollectionVariable">
 					<Id>1702514366143</Id>
 					<Name><![CDATA[VALID_DIRECTIONS]]></Name>
@@ -2476,24 +2514,29 @@ initializeIndicators();]]></StartupCode>
 						</RecurrenceCode>
 						<Condition><![CDATA[false]]></Condition>
 					</Properties>
-					<Action><![CDATA[if (mode == 0) {
-	self.reset();
-	return;
-} else if (mode == 2) { // random
-	agent.tryMove(randomFrom(VALID_DIRECTIONS, new Random()));
-	if (PathfindingBrain.checkEpisodeStopCondition(this)) {
-		finishSimulation();
-	}
-} else if (mode == 3) { // qtable
-	Agent a = agent.getSpace();
-	int idx = argmax(qTable[a.getR()*spaceColumns()+a.getC()]); // argmax defined in addtl class code
-	
-	agent.tryMove(VALID_DIRECTIONS.get(idx));
-	if (PathfindingBrain.checkEpisodeStopCondition(this)) {
-		finishSimulation();
-	}
-} else { // mode == 1 or default
-	PathfindingBrain.takeAction(this);
+					<Action><![CDATA[switch (mode) {
+	case 0: // user or unrecognized
+	default:
+		self.reset();
+		break;
+	case 1: // random
+		agent.tryMove(randomFrom(VALID_DIRECTIONS, new Random()));
+		if (PathfindingBrain.checkEpisodeStopCondition(this)) {
+			finishSimulation();
+		}
+		break;
+	case 2: // train
+		PathfindingBrain.takeAction(this);
+		break;
+	case 3: // test via qtable
+		Agent a = agent.getSpace();
+		int idx = argmax(qTable[a.getR()*spaceColumns()+a.getC()]); // argmax defined in addtl class code
+		
+		agent.tryMove(VALID_DIRECTIONS.get(idx));
+		if (PathfindingBrain.checkEpisodeStopCondition(this)) {
+			finishSimulation();
+		}
+		break;
 }]]></Action>
 				</Event>
 			</Events>
@@ -2568,6 +2611,7 @@ return -1;]]></Body>
 	return;
 }
 
+// make sure the agent can even reach the goal from where it starts
 int steps = stepsToReach();
 int swaps = 0;
 while (steps < 0) { // no path found
@@ -3474,6 +3518,9 @@ IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[ignoreInvalidActions]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[false]]></Code>
+					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[qtableFile]]></ParameterName>
@@ -3482,6 +3529,12 @@ IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 
 					<ParameterName><![CDATA[slipChance]]></ParameterName>
 					<ParameterValue Class="CodeValue">
 						<Code><![CDATA[sc]]></Code>
+					</ParameterValue>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[slipChanceSeed]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[1L]]></Code>
 					</ParameterValue>
 				</Parameter>
 			</Parameters>			
@@ -3550,6 +3603,10 @@ pos = new int[]{root.agent.getSpace().getR(), root.agent.getSpace().getC()};]]><
 				<Type><![CDATA[double]]></Type>
 			</ConfigurationField>
 			<ConfigurationField>
+				<Name><![CDATA[slipChanceSeed]]></Name>
+				<Type><![CDATA[Long]]></Type>
+			</ConfigurationField>
+			<ConfigurationField>
 				<Name><![CDATA[numHoles]]></Name>
 				<Type><![CDATA[int]]></Type>
 			</ConfigurationField>
@@ -3564,6 +3621,7 @@ pos = new int[]{root.agent.getSpace().getR(), root.agent.getSpace().getC()};]]><
 			<ConfigurationCode><![CDATA[root.mode = 1;
 root.useMooreNeighbors = useMooreNeighbors;
 root.slipChance = slipChance;
+root.slipChanceSeed = slipChanceSeed;
 root.numHoles = numHoles;
 root.minStepsRequired = minStepsRequired;
 root.ignoreInvalidActions = !throwOnInvalidActions;]]></ConfigurationCode>
