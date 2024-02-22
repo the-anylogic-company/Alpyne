@@ -267,11 +267,20 @@ class SimSchema:
         self.action = make_dict('action')
 
     def __str__(self):
-        pp = pprint.PrettyPrinter(indent=4, width=120)
+        pp = pprint.PrettyPrinter(indent=4, width=120, depth=2)
 
         def pform(obj):
             """Use PrettyPrinter's format + custom formatting to put the first container element on its own line"""
-            return pp.pformat(obj).replace("{", "{\n ").replace("}", "\n}")
+            output = pp.pformat(obj)
+
+            # put the first key/val pair on its own line, similar to subsequent pairs;
+            # an extra space is needed too to compensate for how pp formats the first entry
+            output = re.sub(r"^{", r"{\n ", output)
+
+            # put the final curly bracket on its own line
+            output = re.sub(r"}$", r"\n}", output)
+
+            return output
 
         out = "SimSchema\n=========\n"
         out += f"input = {pform(self.inputs)}\n"
