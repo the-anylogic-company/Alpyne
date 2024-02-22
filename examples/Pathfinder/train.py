@@ -1,11 +1,16 @@
-import json
-from collections import Counter
-from copy import deepcopy
+"""
+Train a policy to navigate a specific board configuration using Q-learning
+"""
 
-from alpyne.sim import AnyLogicSim
+import json
 import time
 import numpy as np
 import random
+
+from collections import Counter
+from copy import deepcopy
+from alpyne.sim import AnyLogicSim
+from interactive import print_board
 
 
 class PathfinderTrainer:
@@ -31,18 +36,6 @@ class PathfinderTrainer:
         self.min_epsilon = min_epsilon
         self.decay_rate = decay_rate
         self.q_table = np.zeros((64, 8 if config_kwargs.get('useMooreNeighbors') else 4))
-
-    def print_board(self, status=None):
-        if status is None:
-            status = self.sim.reset(**self.config_kwargs)
-
-        obs = status.observation
-        board = [["■" if i == -1 else ("⌂" if i == 1 else " ") for i in row] for row in obs['cells']]
-        board[obs['pos'][0]][obs['pos'][1]] = "☺"
-
-        border = "- " * len(obs['cells'][0])
-        body = "\n".join(" ".join(row) for row in board)
-        print(f"{border}{status.observation['pos']}\n{body}\n{border}{str(status.stop)[0]}")
 
     def get_epsilon(self, episode: int):
         return self.min_epsilon + (self.max_epsilon - self.min_epsilon) * np.exp(-self.decay_rate * episode)
@@ -73,14 +66,14 @@ class PathfinderTrainer:
             status = self.sim.reset(**this_config)
 
             if episode == 0 and print_initial_board:
-                self.print_board(status)
+                print_board(status)
 
             reward_total = 0
 
             for step in range(self.max_steps):
                 if do_log:
                     if verbose_log:
-                        self.print_board(status)
+                        print_board(status)
                     else:
                         print(f"\tSTEP {step:2d} | {str(status.stop):5s} | {str(status.observation['pos']):7s}")
 
