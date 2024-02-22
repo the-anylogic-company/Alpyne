@@ -20,6 +20,7 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 		<ActiveObjectClass>
 			<Id>1347625978602</Id>
 			<Name><![CDATA[Main]]></Name>
+			<Import><![CDATA[import stock_management_game1.RLExperiment.Observation;]]></Import>
 			<StartupCode><![CDATA[viewUserScreen.navigateTo();
 
 if (mode == 3) {
@@ -156,45 +157,6 @@ if (mode == 3) {
 					</Properties>
 				</Variable>
 				<Variable Class="PlainVariable">
-					<Id>1699919933057</Id>
-					<Name><![CDATA[lastStock]]></Name>
-					<ExcludeFromBuild>true</ExcludeFromBuild>
-					<X>1050</X><Y>1050</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1699919939107</Id>
-					<Name><![CDATA[lastSold]]></Name>
-					<ExcludeFromBuild>true</ExcludeFromBuild>
-					<X>1050</X><Y>1080</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1699919943232</Id>
-					<Name><![CDATA[lastWasted]]></Name>
-					<ExcludeFromBuild>true</ExcludeFromBuild>
-					<X>1050</X><Y>1110</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
 					<Id>1706226023452</Id>
 					<Name><![CDATA[assignedRate]]></Name>
 					<X>60</X><Y>160</Y>
@@ -207,6 +169,18 @@ if (mode == 3) {
 						<InitialValue Class="CodeValue">
 							<Code><![CDATA[25]]></Code>
 						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1707423773419</Id>
+					<Name><![CDATA[stockAtLastAction]]></Name>
+					<X>300</X><Y>460</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
 					</Properties>
 				</Variable>
 				<Variable Class="AuxVariable">
@@ -233,7 +207,7 @@ if (mode == 3) {
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties External="false" Constant="false" Array="false">
-						<Formula><![CDATA[smooth(assignedRate, acquisitionLag, assignedRate)]]></Formula>
+						<Formula><![CDATA[delay(assignedRate, acquisitionLag, assignedRate)]]></Formula>
 						<Value><![CDATA[0]]></Value>
 						<Color/>
 					</Properties>
@@ -483,7 +457,7 @@ if (mode == 3) {
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[5]]></Code>
+							<Code><![CDATA[0.5]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1706226989004</Id>
@@ -680,24 +654,30 @@ if (mode == 3) {
 		switch (autoMode) {
 			case 0:
 			default:
-				// do nothing
+				// pass the same assignment
+				updateAssignedRate(assignedRate);
 				break;
 			case 1:
-				assignedRate = uniform(0, 50);
-				setRatesStats.add(OrderRate);
+				updateAssignedRate(uniform(0, 50));
 				break;
 			case 2:
-				assignedRate = getHeuristicRate();
-				setRatesStats.add(OrderRate);
+				updateAssignedRate(getHeuristicRate());
 				break;
 		}
+		break;
 	case 2:
 		// training
 		RLExperiment.takeAction(this);
 		break;
 	case 3:
-		// test policy
-		assignedRate = pyCom.runResults(double.class, "querier.query([%s, %s])", Stock, OrderRate);
+		// test policy;
+		// create and pass an observation in JSON format 
+		Observation o = RLExperiment.createObservation();
+		RLExperiment.getObservation(this, o);
+		String oJson = pyCom.toJson(o);
+		updateAssignedRate(
+			pyCom.runResults(double.class, "querier.query('%s')", oJson)
+		);
 		break;
 }]]></Action>
 					<Logging>false</Logging>
@@ -731,70 +711,24 @@ if (mode == 3) {
 						</RecurrenceCode>
 						<Condition><![CDATA[false]]></Condition>
 					</Properties>
-					<Action><![CDATA[//Demand = limit(0, Demand + uniform( -1, 1 ), 50);
-
-//mod = probability that the value will decrease next turn
-double mod = 0.5;
-if (Demand > 45)
-	mod = 0.8;
-if (Demand < 5)
-	mod = 0.2;
-double dir = uniform() >= mod ? 1 : -1;
-
-//maxToAdd = max amount that the value can change
-double maxToAdd = (50.0 - 0.0) * volatility / 100.0;
-Demand += (uniform() * maxToAdd * dir);
-
-//value can't be 0 -- random low number
-if (Demand < 0) Demand = uniform(0, 5);]]></Action>
+					<Action><![CDATA[// cyclic pattern with noise
+final double P1 = 24,
+			 P2 = 24*7; // periods
+double i = getDayOfYear(date());
+double beta1 = -.5 + (i/366.),
+		sin1 = sin(2*PI*i/P1),
+		beta2 = .5 + (i/366.),
+		cos1 = cos(2*PI*i/P1),
+		sin2 = sin(2*PI*i/P2),
+		cos2 = cos(2*PI*i/P2),
+		noise = normal(volatility, 0);
+// in approx range [-1, 1]
+double normDemand = (beta1*sin1 + beta2*cos1 + sin2 + cos2 + noise) / 2.;
+// rescale to [0, 50]
+Demand = limitMin(0, (normDemand + 1)*25);]]></Action>
 				</Event>
 			</Events>
 			<Functions>
-				<Function AccessType="default" StaticFunction="false">
-					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1699919947676</Id>
-					<Name><![CDATA[get_dStock]]></Name>
-					<ExcludeFromBuild>true</ExcludeFromBuild>
-					<X>1150</X><Y>1050</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[double d = Stock - lastStock;
-lastStock = Stock;
-return d;]]></Body>
-				</Function>
-				<Function AccessType="default" StaticFunction="false">
-					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1699919977572</Id>
-					<Name><![CDATA[get_dSold]]></Name>
-					<ExcludeFromBuild>true</ExcludeFromBuild>
-					<X>1150</X><Y>1080</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[double d = Sold - lastSold;
-lastSold = Sold;
-return d;]]></Body>
-				</Function>
-				<Function AccessType="default" StaticFunction="false">
-					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1699919978796</Id>
-					<Name><![CDATA[get_dWasted]]></Name>
-					<ExcludeFromBuild>true</ExcludeFromBuild>
-					<X>1150</X><Y>1110</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[double d = Wasted - lastWasted;
-lastWasted = Wasted;
-return d;]]></Body>
-				</Function>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
@@ -819,6 +753,25 @@ else if (Stock >= hiLimit)
 newRate = limit(0, newRate, 50);
 return newRate;]]></Body>
 				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1707423915461</Id>
+					<Name><![CDATA[updateAssignedRate]]></Name>
+					<X>140</X><Y>1230</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[value]]></Name>
+						<Type><![CDATA[double]]></Type>
+					</Parameter>
+					<Body><![CDATA[// centralized function for all methods of updating to use
+assignedRate = value;
+assignedRatesHD.add(value);
+stockAtLastAction = Stock;]]></Body>
+				</Function>
 			</Functions>
 			<AnalysisData>
     			<DataSet>
@@ -842,7 +795,7 @@ return newRate;]]></Body>
 					</RecurrenceCode>
 					<FreezeXAxis>true</FreezeXAxis>
 					<VerticalAxisExpression><![CDATA[Demand]]></VerticalAxisExpression>
-					<SamplesToKeep>31</SamplesToKeep>
+					<SamplesToKeep>366</SamplesToKeep>
 				</DataSet>
     			<Histogram2DData>
 					<Id>1704409652275</Id>
@@ -877,28 +830,6 @@ return newRate;]]></Body>
 					<Envelope>0.75</Envelope>
 				</Histogram2DData>
     			<Statistics>
-					<Id>1704409717367</Id>
-					<Name><![CDATA[setRatesStats]]></Name>
-					<X>300</X><Y>390</Y>
-					<Label><X>15</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<AutoUpdate>false</AutoUpdate>
-					<OccurrenceAtTime>true</OccurrenceAtTime>
-					<OccurrenceDate>1704441600000</OccurrenceDate>
-					<OccurrenceTime Class="CodeUnitValue">
-						<Code><![CDATA[0]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
-					</OccurrenceTime>
-					<RecurrenceCode Class="CodeUnitValue">
-						<Code><![CDATA[1]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
-					</RecurrenceCode>
-					<Discrete>true</Discrete>
-					<ValueCode><![CDATA[OrderRate]]></ValueCode>
-				</Statistics>
-    			<Statistics>
 					<Id>1706220371718</Id>
 					<Name><![CDATA[stockAmountStats]]></Name>
 					<X>300</X><Y>420</Y>
@@ -920,6 +851,37 @@ return newRate;]]></Body>
 					<Discrete>true</Discrete>
 					<ValueCode><![CDATA[Stock]]></ValueCode>
 				</Statistics>
+    			<HistogramData>
+					<Id>1707427521010</Id>
+					<Name><![CDATA[assignedRatesHD]]></Name>
+					<X>300</X><Y>390</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<AutoUpdate>false</AutoUpdate>
+					<OccurrenceAtTime>true</OccurrenceAtTime>
+					<OccurrenceDate>1707465600000</OccurrenceDate>
+					<OccurrenceTime Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+					</OccurrenceTime>
+					<RecurrenceCode Class="CodeUnitValue">
+						<Code><![CDATA[1]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+					</RecurrenceCode>
+					<Value><![CDATA[]]></Value>
+					<NumberOfIntervals>10</NumberOfIntervals>
+					<MinMaxAutodetect>false</MinMaxAutodetect>
+					<RangeMinExpression><![CDATA[0]]></RangeMinExpression>
+					<RangeMaxExpression><![CDATA[50]]></RangeMaxExpression>
+					<InitialIntervalSize><![CDATA[0.1]]></InitialIntervalSize>
+					<CalculateCDF>true</CalculateCDF>
+					<CalculatePercentiles>false</CalculatePercentiles>
+					<LowPercent>10</LowPercent>
+					<HighPercent>10</HighPercent>
+					<Title><![CDATA[]]></Title>
+				</HistogramData>
 			</AnalysisData>
 			<AgentLinks>
 				<AgentLink>
@@ -1199,7 +1161,8 @@ return newRate;]]></Body>
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<Color>-12156236</Color>
-					<Text><![CDATA[Make decision and click]]></Text>
+					<Text><![CDATA[Make decision
+]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>14</Size>
@@ -1242,39 +1205,17 @@ return newRate;]]></Body>
                         <EmbeddedIcon>false</EmbeddedIcon>	
 						<Enabled>true</Enabled>
 						<EnableExpression><![CDATA[mode == 0 && (getEngine().getState() == Engine.PAUSED || !autopause)]]></EnableExpression>
-						<ActionCode><![CDATA[setRatesStats.add(value);
-]]></ActionCode>
+						<ActionCode><![CDATA[updateAssignedRate(value);
+runSimulation();]]></ActionCode>
 					</BasicProperties>
 					<ExtendedProperties>
-						<DefaultValueCode><![CDATA[0]]></DefaultValueCode>
+						<DefaultValueCode><![CDATA[assignedRate]]></DefaultValueCode>
 						<Orientation>HORIZONTAL</Orientation>
 						<MinValue><![CDATA[0]]></MinValue>
 						<MaxValue><![CDATA[50]]></MaxValue>
 						<Step><![CDATA[1]]></Step>
-						<LinkTo>true</LinkTo>
+						<LinkTo>false</LinkTo>
 						<Link>assignedRate</Link>
-					</ExtendedProperties>
-				</Control>
-				<Control Type="Button">
-				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>1347629422092</Id>
-					<Name><![CDATA[button]]></Name>
-					<X>230</X><Y>1133</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<BasicProperties Width="70" Height="30">
-                        <EmbeddedIcon>false</EmbeddedIcon>	
-						<TextColor/>
-						<Enabled>true</Enabled>
-						<EnableExpression><![CDATA[mode == 0 && getEngine().getState() == Engine.PAUSED]]></EnableExpression>
-						<ActionCode><![CDATA[runSimulation();]]></ActionCode>
-					</BasicProperties>
-					<ExtendedProperties>
-						<Font Name="Dialog" Size="12" Style="1"/>
-						<LabelText><![CDATA[Done]]></LabelText>
 					</ExtendedProperties>
 				</Control>
     			<TimeStackChart>
@@ -1497,7 +1438,7 @@ return newRate;]]></Body>
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
 					<Id>1699919705187</Id>
 					<Name><![CDATA[checkbox]]></Name>
-					<X>310</X><Y>1130</Y>
+					<X>220</X><Y>1130</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1612,6 +1553,21 @@ return newRate;]]></Body>
 						<Type><![CDATA[double]]></Type>        
 						<InitialValue Class="CodeValue">
 							<Code><![CDATA[1]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1707422566720</Id>
+					<Name><![CDATA[recurrence]]></Name>
+					<X>-200</X><Y>240</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[30]]></Code>
 						</InitialValue>
 					</Properties>
 				</Variable>
@@ -1831,13 +1787,80 @@ and is modeled as randomly changing.]]></Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text>
+				<Text>
+					<Id>1707422551341</Id>
+					<Name><![CDATA[text2]]></Name>
+					<X>430</X><Y>220</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Recurrence]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>RIGHT</Alignment>
+				</Text>
+				<Control Type="EditBox">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1707422558389</Id>
+					<Name><![CDATA[editbox1]]></Name>
+					<X>440</X><Y>210</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="60" Height="30">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<FillColor/>
+						<TextColor/>
+						<Enabled>true</Enabled>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="14" Style="0"/>
+						<DefaultValueCode><![CDATA["7"]]></DefaultValueCode>
+						<MinValue><![CDATA[1]]></MinValue>
+						<MaxValue><![CDATA[366]]></MaxValue>
+						<LinkTo>true</LinkTo>
+						<Link>recurrence</Link>
+					</ExtendedProperties>
+				</Control>
+				<Text>
+					<Id>1707422560478</Id>
+					<Name><![CDATA[text5]]></Name>
+					<X>505</X><Y>225</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[days]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>12</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
 			</Presentation>
 
 			<Parameters>			
 				<Parameter>
 					<ParameterName><![CDATA[mode]]></ParameterName>
 					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[3]]></Code>
+						<Code><![CDATA[1]]></Code>
 					</ParameterValue>
 				</Parameter>
 				<Parameter>
@@ -1849,18 +1872,21 @@ and is modeled as randomly changing.]]></Text>
 				<Parameter>
 					<ParameterName><![CDATA[acquisitionLag]]></ParameterName>
 					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[editbox.getDoubleValue()]]></Code>
+						<Code><![CDATA[lag]]></Code>
 					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[actionRecurrence]]></ParameterName>
 					<ParameterValue Class="CodeUnitValue">
-						<Code><![CDATA[]]></Code>
+						<Code><![CDATA[recurrence]]></Code>
 						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
 					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[volatility]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[stopConditionLimits]]></ParameterName>
@@ -1905,32 +1931,34 @@ and is modeled as randomly changing.]]></Text>
 				<FinalTime><![CDATA[731.0]]></FinalTime>	
 			</ModelTimeProperties>
 			<ObservationField>
-				<Name><![CDATA[stock_amount]]></Name>
+				<Name><![CDATA[stock]]></Name>
+				<Type><![CDATA[double]]></Type>
+			</ObservationField>
+			<ObservationField>
+				<Name><![CDATA[last_stock]]></Name>
+				<Type><![CDATA[double]]></Type>
+			</ObservationField>
+			<ObservationField>
+				<Name><![CDATA[order_rate]]></Name>
 				<Type><![CDATA[double]]></Type>
 			</ObservationField>
 			<ObservationField>
 				<Name><![CDATA[demand]]></Name>
 				<Type><![CDATA[double]]></Type>
 			</ObservationField>
-			<ObservationField>
-				<Name><![CDATA[current_rate]]></Name>
-				<Type><![CDATA[double]]></Type>
-			</ObservationField>
-			<ObservationCode><![CDATA[// the primary metric for the policy to react based on
-stock_amount = root.Stock;
+			<ObservationCode><![CDATA[stock = root.Stock;
+last_stock = root.stockAtLastAction;
+order_rate = root.OrderRate;
 
 // technically hidden information; provided for user monitoring during training,
 //	but not intended to be passed to the policy
-demand = root.Demand;
-current_rate = root.OrderRate;]]></ObservationCode>
+demand = root.Demand;]]></ObservationCode>
 			<StopCondition><![CDATA[root.stockAmountStats.min() < root.stopConditionLimits[0] || root.stockAmountStats.max() > root.stopConditionLimits[1]]]></StopCondition>
 			<ActionField>
 				<Name><![CDATA[order_rate]]></Name>
 				<Type><![CDATA[double]]></Type>
 			</ActionField>
-			<ActionCode><![CDATA[root.assignedRate = order_rate;
-
-root.setRatesStats.add(order_rate);]]></ActionCode>
+			<ActionCode><![CDATA[root.updateAssignedRate(limit(0, order_rate, 50));]]></ActionCode>
 			<ConfigurationField>
 				<Name><![CDATA[acquisition_lag_days]]></Name>
 				<Type><![CDATA[int]]></Type>
@@ -1966,10 +1994,6 @@ if (stop_condition_limits == null || stop_condition_limits.length != 2) {
 }
 root.stopConditionLimits = stop_condition_limits;
 
-if (demand_volatility < 0.5) {
-	root.warning("Provided demand volatility (%s) cannot be < 0.5; setting at its default", demand_volatility);
-	demand_volatility = 5;
-}
 root.volatility = demand_volatility;
 
 // make sure `takeAction` will execute
@@ -2006,9 +2030,9 @@ root.mode = 1; ]]></ConfigurationCode>
     </RequiredLibraryReference>
     <RequiredLibraryReference>
 		<LibraryName><![CDATA[com.anylogic.libraries.pypeline]]></LibraryName>
-		<VersionMajor>0</VersionMajor>
-		<VersionMinor>0</VersionMinor>
-		<VersionBuild>0</VersionBuild>
+		<VersionMajor>1</VersionMajor>
+		<VersionMinor>9</VersionMinor>
+		<VersionBuild>5</VersionBuild>
     </RequiredLibraryReference>
 </Model>
 </AnyLogicWorkspace>
