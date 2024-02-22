@@ -33,7 +33,7 @@ class StockGameEnv(AlpyneEnv):
         order_rate      0       50.0        per day
 
     Reward:
-        1 if stock amount at 5000; falls off quartically, reaching 0 at +- 3500 and bottoming out at -1 by +- ~4000
+        1 if stock amount at 5000; falls off quartically
 
     Episode termination:
         If the stock amount falls beyond the configured limits
