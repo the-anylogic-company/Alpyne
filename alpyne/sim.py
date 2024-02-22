@@ -76,7 +76,7 @@ class AnyLogicSim:
 
         .. warning:: For ``engine_overrides``: (1) do not override the model time units unless ensuring the model
           does not have ambiguous, unit-generic logic (e.g., calls to ``time()``),
-          as this can affect the logic or outputs; (2) when setting a stop time *and* date, only the later value
+          as this can affect the logic or outputs; (2) when setting a stop time *and* date, only the last set value
           will be used.
 
         """
@@ -237,7 +237,7 @@ class AnyLogicSim:
         try:
             self._session.delete(f"{self._base_url}/")
         except RequestsConnectionError:
-            self.log.warning(
+            self.log.debug(
                 "Failed to request self-destruct from server due to connection error. Attempting other methods.")
 
         try:
@@ -247,15 +247,15 @@ class AnyLogicSim:
                 self.log.debug(f"Uncaught output from app's stdout: {stdout.decode()}")
             if stderr:
                 self.log.debug(f"Uncaught output from app's stderr: {stderr.decode()}")
-        except Exception as e:
-            self.log.error(f"Failed to communicate: {e}")
+        except subprocess.TimeoutExpired:
+            self.log.debug(f"Timed out waiting to send shutdown signal; may already be dead")
 
         # ensure the server self-quit, otherwise attempt to force it
         try:
             rcode = self._proc.wait(1)
             self.log.info(f"Quit with return code {rcode}")
-        except Exception as e:
-            self.log.error(f"Force killing app; server did not quit as expected: {e}")
+        except subprocess.TimeoutExpired:
+            self.log.debug(f"Force killing app; server did not quit as expected")
             self._proc.kill()
 
             for pid in self._proc_pids:
@@ -407,7 +407,7 @@ class AnyLogicSim:
             timeout = self._lock_defaults["timeout"]
 
         names = [state.name for state in EngineState if flag & state]
-        data = self._request("GET", "lock", params=dict(state=names, timeout=timeout * 1000))
+        data = self._request("GET", "lock", params=dict(state=names, timeout=int(timeout * 1000)))
         # received data is a dict matching the ModelStatus attributes
         status = SimStatus(**data)
         self._last_status = status
