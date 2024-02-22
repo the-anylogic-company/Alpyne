@@ -17,7 +17,7 @@ from psutil import NoSuchProcess
 from alpyne.utils import resolve_model_jar, \
     get_wildcard_paths, shorten_by_relativeness, get_resources_path, AlpyneJSONEncoder, AlpyneJSONDecoder
 from alpyne.constants import EngineState, JavaLogLevel
-from alpyne.outputs import TimeUnits
+from alpyne.outputs import TimeUnits, UnitValue
 from alpyne.typing import EngineSettingKeys, Number, OutputType
 from alpyne.data import SimSchema, EngineStatus, EngineSettings, SimStatus, FieldData, \
     SimConfiguration, SimAction, SimObservation
@@ -42,7 +42,7 @@ class AnyLogicSim:
                  log_id: str = None,
                  auto_lock: bool = True,
                  auto_finish: bool = False,
-                 engine_overrides: dict[EngineSettingKeys, Number | datetime | TimeUnits] = None,
+                 engine_overrides: dict[EngineSettingKeys, Number | datetime | TimeUnits | UnitValue] = None,
                  config_defaults: dict[str, Any] = None,
                  lock_defaults: dict = None,
                  **kwargs):

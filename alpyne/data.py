@@ -298,7 +298,7 @@ class EngineSettings:
     time units, start/stop time/date, and RNG seed.
     """
 
-    def __init__(self, **override_kwargs: dict[EngineSettingKeys, datetime | TimeUnits | Number | None]):
+    def __init__(self, **override_kwargs: dict[EngineSettingKeys, datetime | TimeUnits | Number | UnitValue | TimeUnits | None]):
         """
         :param override_kwargs: Desired mapping between setting name and value to override in the sim's RL experiment
         """
@@ -307,12 +307,26 @@ class EngineSettings:
         self._using_stop_time = True
         self._stop_arg: Number | datetime = subschema['stop_time'].py_value
 
+        # Define the initial values based on the schema
         self.units: TimeUnits = subschema['units'].py_value  # The time units used by the model and its engine
         self.start_time: Number = subschema['start_time'].py_value  # The time (in the units) to start the sim's runs at
         self.start_date: datetime = subschema['start_date'].py_value  # The date to start the sim's runs at
         self.seed: Optional[int] = subschema['seed'].py_value  # The seed for the engine's RNG; None implies random
 
         if override_kwargs:
+            # to handle cases such as wanting to override the start time and units,
+            #   make sure it's done in an order that allows conversion of start time to a number.
+            if override_kwargs.get('units'):
+                self.units = override_kwargs.get('units')
+            # convert any times provided to numbers
+            if isinstance(override_kwargs.get('start_time'), UnitValue):
+                prev_val: UnitValue = override_kwargs.get('start_time')
+                new_val = prev_val(self.units)
+                override_kwargs['start_time'] = new_val
+            if isinstance(override_kwargs.get('stop_time'), UnitValue):
+                prev_val: UnitValue = override_kwargs.get('stop_time')
+                new_val = prev_val(self.units)
+                override_kwargs['stop_time'] = new_val
             # include validation that only correct engine settings keys are used
             valid_args = typing.get_args(EngineSettingKeys)
             for key, val in override_kwargs.items():
@@ -339,18 +353,23 @@ class EngineSettings:
         return TimeUnits.SECOND.convert_to(tdelta, self.units)
 
     @stop_time.setter
-    def stop_time(self, value: Number):
+    def stop_time(self, new_value: Number | UnitValue):
         """Assign a time-based stop condition to the model (in its units),
         overriding the previous stop conditions, if any were set."""
         self._using_stop_time = True
-        self._stop_arg = value
+        if isinstance(new_value, UnitValue):
+            # convert to a number in the model's time units
+            new_value = new_value.unit.convert_to(new_value.value, self.units)
+        self._stop_arg = new_value
 
     @property
-    def stop_date(self) -> datetime:
+    def stop_date(self) -> datetime | None:
         """The date to set the model's engine to a FINISHED state,
         preventing further events or actions from being taken."""
         if not self._using_stop_time:
             return self._stop_arg
+        if self.stop_time == inf:
+            return None
         tdelta = self.units.convert_to(self.stop_time - self.start_time, TimeUnits.SECOND)
         return self.start_date + timedelta(seconds=tdelta)
 
