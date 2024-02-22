@@ -3,18 +3,21 @@ from datetime import datetime
 from enum import Enum, Flag, auto
 
 from alpyne.outputs import DataSet, StatisticsDiscrete, StatisticsContinuous, HistogramSimpleData, \
-    HistogramSmartData, Histogram2DData
+    HistogramSmartData, Histogram2DData, TimeUnits
 
 DATE_PATTERN_LOOKUP = {  # TODO confirm these work as expected
-    r"\d{4}-\d{2}-\d{2}": "%Y-%m-%d",
-    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}": "%Y-%m-%dT%H:%M:%S",
-    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{1,6}": "%Y-%m-%dT%H:%M:%S.%f",
-    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{1,6}[-+]\d{2,4}": "%Y-%m-%dT%H:%M:%S.%f%z",
-    r"[A-Za-z]{3}, \d{2} [A-Za-z]{3} \d{4} \d{2}:\d{2}:\d{2}[ A-Z]{0,4}": "%a, %d %b %Y %H:%M:%S %Z"
+    r"^\d{4}-\d{2}-\d{2}$": "%Y-%m-%d",
+    r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$": "%Y-%m-%dT%H:%M:%S",
+    r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{1,6}$": "%Y-%m-%dT%H:%M:%S.%f",
+    r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{1,6}[-+]\d{2,6}\.*\d*$": "%Y-%m-%dT%H:%M:%S.%f%z",
+    r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{1,6}[-+](?:\d{2}:*)+(?:\.\d+)*$": "%Y-%m-%dT%H:%M:%S.%f%:z",  # only for 3.12+
+    r"^[A-Za-z]{3}, \d{2} [A-Za-z]{3} \d{4} \d{2}:\d{2}:\d{2}[ A-Z]{0,4}$": "%a, %d %b %Y %H:%M:%S %Z"
 }
 """Constant mapping between a regex for valid date/time pattern and the equivalent datetime.strftime/strptime pattern"""
 
 TYPE_LOOKUP = {
+    "long": int,
+    "Long": int,
     "int": int,
     "Integer": int,
     "double": float,
@@ -33,6 +36,7 @@ TYPE_LOOKUP = {
     "LinkedHashSet": list,  # all sets are interpreted as lists due to JSON conversion
     "HashSet": list,
     "TreeSet": list,
+    "TimeUnits": TimeUnits,
     "Date": datetime,
     "DataSet": DataSet,
     "StatisticsDiscrete": StatisticsDiscrete,
