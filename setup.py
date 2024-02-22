@@ -29,8 +29,11 @@ setup(
     ],
     extras_require={
         'examples': [
+            "pandas",
             "bayesian-optimization",
-            "stable-baselines3"
+            "stable-baselines3",
+            "openpyxl",
+            "tabulate"
         ]
     }
 )
