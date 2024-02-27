@@ -1,9 +1,12 @@
+import os
 import numpy as np
 from stable_baselines3 import PPO
 
 
 class SMGPolicyQuerier:
     def __init__(self, file: str):
+        if not os.path.exists(file):
+            raise FileNotFoundError(f"Cannot create a querier object, policy file '{file}' not found!")
         self.policy = PPO.load(file)
 
     def query(self, input_: list) -> float:
