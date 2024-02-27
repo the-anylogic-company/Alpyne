@@ -24,6 +24,7 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 			<StartupCode><![CDATA[viewUserScreen.navigateTo();
 
 if (mode == 3) {
+	// import and create the class from the local script file
 	pyCom.run("from policy_querier import SMGPolicyQuerier",
 		      "querier = SMGPolicyQuerier('" + aiModelFile + "')");
 }]]></StartupCode>
@@ -183,6 +184,36 @@ if (mode == 3) {
 						<Type><![CDATA[double]]></Type>        
 					</Properties>
 				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1709069446837</Id>
+					<Name><![CDATA[lastUpdateTime]]></Name>
+					<X>60</X><Y>210</Y>
+					<Label><X>-55</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1709069520731</Id>
+					<Name><![CDATA[lastAssignedRate]]></Name>
+					<X>60</X><Y>260</Y>
+					<Label><X>-40</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
 				<Variable Class="AuxVariable">
 					<Id>1347626783909</Id>
 					<Name><![CDATA[Demand]]></Name>
@@ -201,13 +232,13 @@ if (mode == 3) {
 				<Variable Class="AuxVariable">
 					<Id>1706226040482</Id>
 					<Name><![CDATA[actualRate]]></Name>
-					<X>150</X><Y>160</Y>
-					<Label><X>-25</X><Y>15</Y></Label>
+					<X>150</X><Y>180</Y>
+					<Label><X>-15</X><Y>15</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties External="false" Constant="false" Array="false">
-						<Formula><![CDATA[delay(assignedRate, acquisitionLag, assignedRate)]]></Formula>
+						<Formula><![CDATA[lastAssignedRate + ramp((assignedRate - lastAssignedRate)/acquisitionLag, lastUpdateTime, lastUpdateTime+acquisitionLag)]]></Formula>
 						<Value><![CDATA[0]]></Value>
 						<Color/>
 					</Properties>
@@ -288,7 +319,7 @@ if (mode == 3) {
 				<Variable Class="Parameter">
 					<Id>1619545330246</Id>
 					<Name><![CDATA[mode]]></Name>
-					<X>100</X><Y>280</Y>
+					<X>100</X><Y>370</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -341,7 +372,7 @@ if (mode == 3) {
 				<Variable Class="Parameter">
 					<Id>1703125442728</Id>
 					<Name><![CDATA[autoMode]]></Name>
-					<X>100</X><Y>300</Y>
+					<X>100</X><Y>390</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -420,7 +451,7 @@ if (mode == 3) {
 				<Variable Class="Parameter">
 					<Id>1706220457830</Id>
 					<Name><![CDATA[actionRecurrence]]></Name>
-					<X>100</X><Y>260</Y>
+					<X>100</X><Y>350</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -447,7 +478,7 @@ if (mode == 3) {
 				<Variable Class="Parameter">
 					<Id>1706226989006</Id>
 					<Name><![CDATA[volatility]]></Name>
-					<X>100</X><Y>320</Y>
+					<X>100</X><Y>410</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -472,7 +503,7 @@ if (mode == 3) {
 				<Variable Class="Parameter">
 					<Id>1706220702493</Id>
 					<Name><![CDATA[stopConditionLimits]]></Name>
-					<X>100</X><Y>340</Y>
+					<X>100</X><Y>430</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -505,7 +536,7 @@ if (mode == 3) {
 				<Variable Class="Parameter">
 					<Id>1706992775788</Id>
 					<Name><![CDATA[aiModelFile]]></Name>
-					<X>100</X><Y>360</Y>
+					<X>100</X><Y>450</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -570,7 +601,7 @@ if (mode == 3) {
 				<Link SourceId="1347629990592" TargetId="1706226040482" Polarity="null">
 					<Height>8.105</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-60</X><Y>10</Y></Direction>
+					<Direction><X>-60</X><Y>30</Y></Direction>
 					<Id>1347629982899</Id>
 					<Name><![CDATA[acquisitionLag - actualRate]]></Name>
 					<X>210</X><Y>150</Y>
@@ -583,12 +614,12 @@ if (mode == 3) {
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1706226040482" TargetId="1347626016285" Polarity="null">
-					<Height>20.0</Height>
+					<Height>0.0</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>20</X><Y>-60</Y></Direction>
+					<Direction><X>20</X><Y>-80</Y></Direction>
 					<Id>1706226078959</Id>
 					<Name><![CDATA[actualRate - OrderRate]]></Name>
-					<X>150</X><Y>160</Y>
+					<X>150</X><Y>180</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -598,13 +629,43 @@ if (mode == 3) {
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1706226023452" TargetId="1706226040482" Polarity="null">
-					<Height>0.0</Height>
+					<Height>9.588</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>90</X><Y>0</Y></Direction>
+					<Direction><X>90</X><Y>20</Y></Direction>
 					<Id>1706226082688</Id>
 					<Name><![CDATA[assignedRate - actualRate]]></Name>
 					<X>60</X><Y>160</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color/>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
+				</Link>
+				<Link SourceId="1709069520731" TargetId="1706226040482" Polarity="null">
+					<Height>10.82</Height>
+					<PolarityPosition>0.95</PolarityPosition>
+					<Direction><X>90</X><Y>-80</Y></Direction>
+					<Id>1709069816469</Id>
+					<Name><![CDATA[lastAssignedRate - actualRate]]></Name>
+					<X>60</X><Y>260</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color/>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
+				</Link>
+				<Link SourceId="1709069446837" TargetId="1706226040482" Polarity="null">
+					<Height>6.962</Height>
+					<PolarityPosition>0.95</PolarityPosition>
+					<Direction><X>90</X><Y>-30</Y></Direction>
+					<Id>1709069817973</Id>
+					<Name><![CDATA[lastUpdateTime - actualRate]]></Name>
+					<X>60</X><Y>210</Y>
+					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
@@ -634,7 +695,7 @@ if (mode == 3) {
 						<OccurrenceAtTime>true</OccurrenceAtTime>
 						<OccurrenceDate>1580515200000</OccurrenceDate>
 						<OccurrenceTime Class="CodeUnitValue">
-							<Code><![CDATA[0]]></Code>
+							<Code><![CDATA[actionRecurrence(DAY)]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
 						</OccurrenceTime>
 						<RecurrenceCode Class="CodeUnitValue">
@@ -671,12 +732,9 @@ if (mode == 3) {
 		break;
 	case 3:
 		// test policy;
-		// create and pass an observation in JSON format 
-		Observation o = RLExperiment.createObservation();
-		RLExperiment.getObservation(this, o);
-		String oJson = pyCom.toJson(o);
+		// function expects list of raw values
 		updateAssignedRate(
-			pyCom.runResults(double.class, "querier.query('%s')", oJson)
+			pyCom.runResults(double.class, "querier.query([%s, %s])", Stock, actualRate)
 		);
 		break;
 }]]></Action>
@@ -768,6 +826,8 @@ return newRate;]]></Body>
 						<Type><![CDATA[double]]></Type>
 					</Parameter>
 					<Body><![CDATA[// centralized function for all methods of updating to use
+lastAssignedRate = assignedRate;
+lastUpdateTime = time();
 assignedRate = value;
 assignedRatesHD.add(value);
 stockAtLastAction = Stock;]]></Body>
@@ -1860,7 +1920,7 @@ and is modeled as randomly changing.]]></Text>
 				<Parameter>
 					<ParameterName><![CDATA[mode]]></ParameterName>
 					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[1]]></Code>
+						<Code><![CDATA[3]]></Code>
 					</ParameterValue>
 				</Parameter>
 				<Parameter>
@@ -1997,7 +2057,7 @@ root.stopConditionLimits = stop_condition_limits;
 root.volatility = demand_volatility;
 
 // make sure `takeAction` will execute
-root.mode = 1; ]]></ConfigurationCode>
+root.mode = 2; ]]></ConfigurationCode>
 		</ReinforcementLearningExperiment>
 	</Experiments>
 	<ModelResources>
@@ -2013,11 +2073,6 @@ root.mode = 1; ]]></ConfigurationCode>
 		</Resource>
 		<Resource>
 			<Path><![CDATA[AnyLogic model logo dark.png]]></Path>
-			<ReferencedFromUserCode>false</ReferencedFromUserCode>
-			<Location>FILE_SYSTEM</Location>
-		</Resource>
-		<Resource>
-			<Path><![CDATA[state_dataset.xlsx]]></Path>
 			<ReferencedFromUserCode>false</ReferencedFromUserCode>
 			<Location>FILE_SYSTEM</Location>
 		</Resource>
