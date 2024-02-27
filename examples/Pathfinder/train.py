@@ -3,6 +3,7 @@ Train a policy to navigate a specific board configuration using Q-learning
 """
 
 import json
+import os
 import time
 import numpy as np
 import random
@@ -120,6 +121,8 @@ class PathfinderTrainer:
 
 
 if __name__ == "__main__":
+    assert os.path.exists(r"ModelExported\model.jar"), r"Missing file 'ModelExported\model.jar'. To fix, create the folder if it does not exist and export/unzip in-place."
+
     sim = AnyLogicSim(r"ModelExported\model.jar", engine_overrides=dict(seed=147))
 
     print(sim.schema)

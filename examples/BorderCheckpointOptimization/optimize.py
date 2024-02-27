@@ -8,7 +8,7 @@ Each shift has its own AnyLogicSim object and instance of the optimizer so that 
 can have the runs executing in parallel. To help facilitate the logic, a custom class is used to consolidate settings
 and behaviors.
 """
-
+import os
 from typing import Callable
 
 from openpyxl import load_workbook
@@ -193,6 +193,8 @@ def optimize(shifts: list[tuple[datetime, datetime]],
 
 
 if __name__ == '__main__':
+    assert os.path.exists(r"ModelExported\BorderCheckpointOptimization.zip"), r"Missing file 'ModelExported\BorderCheckpointOptimization.zip'. To fix, create the folder if it does not exist and export with the specified name."
+
     def objective(num_car_inspectors, num_bus_inspectors, car_tis, bus_tis, car_queue, bus_queue):
         # initial score definition based on penalties; i.e., smaller values == better
         score = (car_tis**2 + bus_tis**2)  # TIS has most relevance
