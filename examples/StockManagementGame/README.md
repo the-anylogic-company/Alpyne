@@ -6,7 +6,7 @@ The goal is to learn a policy which is able to control the order rate such that 
 
 ## Usage
 
-⚠️To export the model without compile-time errors and without changing the source, you'll need to at least add the Pypeline library to your AnyLogic environment ([on GitHub](https://github.com/t-wolfeadam/AnyLogic-Pypeline)). For running inferences on the trained policy, you will need to configure the PyCommunicator object in your model to point to your desired Python environment.
+⚠️To export the model without compile-time errors and without changing the source, you'll need to at least add the Pypeline library to your AnyLogic environment ([on GitHub](https://github.com/t-wolfeadam/AnyLogic-Pypeline)). For running inferences on the trained policy, you will need to configure the PyCommunicator object in the model to point to your desired Python environment.
 
 The model's Main agent has a "mode" parameter that can be in one of four operational modes:
 
