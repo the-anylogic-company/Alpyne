@@ -25,9 +25,10 @@ class StockGameEnv(AlpyneEnv):
     Observation:
         Type: Box(1)
         Name            Min     Max         Notes
-        stock_amount    0.0     10000.0
+        stock           0.0     10000.0
+        last_stock      0.0     10000.0     Stock at last action
         demand          0.0     50.0        (Provided by the sim but not intended to be trained with)
-        current_rate    0.0     50.0
+        order_rate      0.0     50.0
 
     Actions:
         Type: Box(1)
@@ -54,13 +55,13 @@ class StockGameEnv(AlpyneEnv):
 
     def _get_obs(self, status: SimStatus) -> ObsType:
         return np.clip(
-            np.array([status.observation['stock_amount'], status.observation['current_rate']]),
+            np.array([status.observation['stock'], status.observation['order_rate']]),
             self.observation_space.low,
             self.observation_space.high
         )
 
     def _calc_reward(self, status: SimStatus) -> SupportsFloat:
-        return max(-1.0, -((status.observation['stock_amount']-5000)/2500)**4+1)
+        return max(-1.0, -((status.observation['stock']-5000)/2500)**4+1)
 
     def _to_action(self, act: ActType) -> dict:
         return dict(order_rate=act[0])
