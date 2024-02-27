@@ -7,7 +7,7 @@
 <AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.8.6.202312140435" AlpVersion="8.8.3">
 <Model>
 	<Id>1476194976766</Id>
-	<Name><![CDATA[Border Checkpoint Optimization1]]></Name>
+	<Name><![CDATA[Border Checkpoint Optimization]]></Name>
 	<Description><![CDATA[This sample model represents the process of crossing an international border at an official checkpoint. Passport control and vehicle inspection processes are separated for tourists arriving by buses and those who travel by car. Border checkpoint has one bus lane and three car lanes. Each lane can be used to inspect three vehicles at a time. The queue of vehicles is managed by the  streetlights. Tourists that arrive by car have their documents checked at one of the six border guard modules. Later on the car is inspected allowing tourists to leave the checkpoint if everything is all right. Suspicious cars can be also sent to the full car inspection box. All tourists that arrive by bus get off it in a special area in the immediate vicinity of the border checkpoint. They form a queue at the border guard office where two border guards check their documents while the bus is being inspected. Tourists who have passed border control return to their bus, the inspection of which must be finished by that time. When all tourists are back in the bus, it leaves the checkpoint.]]></Description>
 	<EngineVersion>6</EngineVersion>
 	<JavaPackageName><![CDATA[border_checkpoint_optimization]]></JavaPackageName>
