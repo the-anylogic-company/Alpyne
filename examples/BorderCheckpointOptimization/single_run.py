@@ -8,9 +8,9 @@ from alpyne.sim import AnyLogicSim
 
 
 if __name__ == '__main__':
-    assert os.path.exists(r"ModelExported\BorderCheckpointOptimization.zip"), r"Missing file 'ModelExported\BorderCheckpointOptimization.zip'. To fix, create the folder if it does not exist and export with the specified name."
+    assert os.path.exists(r"ModelExported/BorderCheckpointOptimization.zip"), r"Missing file 'ModelExported/BorderCheckpointOptimization.zip'. To fix, create the folder if it does not exist and export with the specified name."
 
-    sim = AnyLogicSim(r"ModelExported\BorderCheckpointOptimization.zip",
+    sim = AnyLogicSim(r"ModelExported/BorderCheckpointOptimization.zip",
                       engine_overrides=dict(start_date=datetime(2024, 1, 1),
                                             stop_date=datetime(2024, 1, 2),
                                             seed=1),

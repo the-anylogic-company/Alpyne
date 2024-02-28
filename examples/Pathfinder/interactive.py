@@ -1,5 +1,6 @@
 import logging
 import os
+from pathlib import Path
 
 from tabulate import tabulate
 
@@ -31,10 +32,10 @@ def print_board(status):
     print(f"{border}{status.observation['pos']}\n{body}\n{border}{str(status.stop)[0]}")
 
 if __name__ == '__main__':
-    assert os.path.exists(r"ModelExported\model.jar"), r"Missing file 'ModelExported\model.jar'. To fix, create the folder if it does not exist and export/unzip in-place."
+    assert os.path.exists(r"ModelExported/model.jar"), r"Missing file 'ModelExported/model.jar'. To fix, create the folder if it does not exist and export/unzip in-place."
 
     # the seed determines the board configuration
-    sim = AnyLogicSim(r"ModelExported\model.jar", engine_overrides=dict(seed=147))
+    sim = AnyLogicSim(r"ModelExported/model.jar", engine_overrides=dict(seed=147))
 
     # predefine the configuration each run will use
     config = dict(numHoles=6, minStepsRequired=4, useMooreNeighbors=True, slipChance=0.0, throwOnInvalidActions=False)

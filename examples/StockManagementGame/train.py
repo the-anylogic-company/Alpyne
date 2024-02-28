@@ -93,9 +93,9 @@ class StockGameEnv(AlpyneEnv):
 
 
 if __name__ == '__main__':
-    assert os.path.exists(r"ModelExported\model.jar"), r"Missing file 'ModelExported\model.jar'. To fix, create the folder if it does not exist and export/unzip in-place."
+    assert os.path.exists(r"ModelExported/model.jar"), r"Missing file 'ModelExported/model.jar'. To fix, create the folder if it does not exist and export/unzip in-place."
     sim = AnyLogicSim(
-        r"ModelExported\model.jar",
+        r"ModelExported/model.jar",
         config_defaults=dict(acquisition_lag_days=1, action_recurrence_days=30, stop_condition_limits=[500, 9500], demand_volatility=5),)
 
     # wrap sim in our custom gym environment, then in other transformative wrappers

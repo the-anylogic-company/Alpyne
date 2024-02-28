@@ -121,9 +121,9 @@ class PathfinderTrainer:
 
 
 if __name__ == "__main__":
-    assert os.path.exists(r"ModelExported\model.jar"), r"Missing file 'ModelExported\model.jar'. To fix, create the folder if it does not exist and export/unzip in-place."
+    assert os.path.exists(r"ModelExported/model.jar"), r"Missing file 'ModelExported/model.jar'. To fix, create the folder if it does not exist and export/unzip in-place."
 
-    sim = AnyLogicSim(r"ModelExported\model.jar", engine_overrides=dict(seed=147))
+    sim = AnyLogicSim(r"ModelExported/model.jar", engine_overrides=dict(seed=147))
 
     print(sim.schema)
     print("---------")
@@ -140,7 +140,7 @@ if __name__ == "__main__":
 
     rewards_per_eps = trainer.train(100, log_every=50, verbose_log=False, print_initial_board=True)
 
-    with open(r"ModelSource\qTable.json", "w") as f:  # point to/move this file in the model to have it be loaded
+    with open(r"ModelSource/qTable.json", "w") as f:  # point to/move this file in the model to have it be loaded
         json.dump(trainer.q_table.tolist(), f)
 
     print("Count of reward occurrence:", Counter(rewards_per_eps))
