@@ -9,6 +9,8 @@ from datetime import datetime, timedelta
 from math import inf
 from typing import Any, Optional
 
+import numpy as np
+
 from alpyne.errors import NotAFieldException
 from alpyne.typing import EngineSettingKeys, Number
 from alpyne.constants import EngineState, TYPE_LOOKUP, DATE_PATTERN_LOOKUP
@@ -29,9 +31,13 @@ class _SimRLSpace(UserDict):
                 # when it's missing, use the default
                 self[key] = self.__missing__(key)
             elif not isinstance(self[key], subschema[key].py_type):  # check if converted to the intended type
-                # currently only auto-handle for when numeric types are infinity; TODO move to decoder?
+                # TODO move these cases to decoder?
                 if isinstance(self[key], str) and subschema[key].py_type in (int, float):
+                    # auto-handle for when numeric types are infinity;
                     self[key] = parse_number(self[key])
+                elif isinstance(self[key], (np.integer, np.floating)):
+                    # ignore when value is a numpy type and `py_type` is the plain python equivalent (the latter assumed)
+                    pass
                 else:
                     logging.getLogger(__name__).warning(f"{self.SUBSCHEMA_KEY}.{key} = {self[key]} ({type(self[key])}) "
                                                         f"was not parsed to the expected type ({subschema[key].py_type})")
