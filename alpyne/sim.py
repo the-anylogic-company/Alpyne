@@ -106,14 +106,24 @@ class AnyLogicSim:
         try:
             self._temp_dir = None  # only populated if passed as zip
             self._proc = self._start_app(model_path, port, java_log_level, log_id, auto_finish)
-            self._base_url = f"http://127.0.0.1:{port}"
-            self._session = requests.Session()
-
-            AnyLogicSim.schema = SimSchema(
-                self._session.get(f"{self._base_url}/version").json()
-            )
         except:
             raise ModelError(f"Failed to properly start the app. Check the logs.")
+
+        self._base_url = f"http://127.0.0.1:{port}"
+        self._session = requests.Session()
+
+        # may need more than fraction of time in `_start_app` for the server to be set up
+        set_schema, time_start = False, time.time()
+        while not set_schema and (time.time() - time_start <= 2):
+            try:
+                AnyLogicSim.schema = SimSchema(
+                    self._session.get(f"{self._base_url}/version").json()
+                )
+                set_schema = True
+            except:
+                time.sleep(0.5)
+        if not set_schema:
+            raise ModelError(f"The underlying application failed to start. Check the logs.")
 
         # setup the `engine_settings` instance variable to store the desired values to use
         if engine_overrides is None:
