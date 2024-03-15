@@ -8,7 +8,7 @@ from gymnasium.core import ObsType, ActType
 
 from alpyne.sim import AnyLogicSim
 from alpyne.constants import EngineState
-from alpyne.data import SimStatus
+from alpyne.data import SimStatus, SimConfiguration
 from alpyne.typing import EngineSettingKeys
 
 
@@ -98,13 +98,13 @@ class AlpyneEnv(Env):
         """
         if not isinstance(self.observation_space, spaces.Dict):
             raise NotImplementedError(
-                "Cannot infer the assignment for a non-Dict type (you will need to overload this function with a correct implementation)")
+                "Cannot infer the assignment for a non-Dict type (you will need to overload this function - `_get_obs` - with a correct implementation)")
         # obs = transform_observation(status.observation, self.observation_space)
         obs = status.observation
         # fail if validation check does not pass
         if not self.observation_space.contains(obs):
             raise NotImplementedError(
-                f"The processed observation does not fit within the observation space (you will need to overload this function with a correct implementation): {obs}")
+                f"The processed observation does not fit within the observation space (you will need to overload this function - `_get_obs` - with a correct implementation): {obs}")
         return obs
 
     @abstractmethod
@@ -160,19 +160,31 @@ class AlpyneEnv(Env):
 
         :param seed: The seed that is used to initialize the PRNG (specifically the attribute `np_random`)
         :param options: Optional settings. Keys matching those in :meth:`alpyne.typing.EngineSettingKeys`
-            will override the current sim's ``engine_settings``; all else will be ignored.
+            will override the current sim's ``engine_settings`` and keys matching ones in the configuration
+            will override the values in both the default configuration settings and ``_get_config()``.
         :return: The observation and info at the next stopping point
         """
         super().reset(seed=seed, options=options)
 
+        # start config will default values (either java or ones defined in AnyLogicSim constructor)
+        config = SimConfiguration()
+        # override with anything defined in the subclass implementation
+        config.update(**(self._get_config() or dict()))
+
         if options:
+
             detected_keys = typing.get_args(EngineSettingKeys)
             for name, value in options.items():
+                # redefine engine settings fields with the ones in the settings
                 if name in detected_keys:
                     setattr(self._sim.engine_settings, name, value)
 
+                # override the current planned config
+                if name in config:
+                    config[name] = value
+
         # return type based on sim constructor
-        status: SimStatus | None = self._sim.reset(self._get_config())
+        status: SimStatus | None = self._sim.reset(config)
         if status is None:  # handle if auto_wait == False; we want the status when it's ready
             status = self._sim.lock()
 
