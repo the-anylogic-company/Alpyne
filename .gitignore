@@ -4,7 +4,7 @@ model*.log*
 
 # Anything in the ModelExported that isn't a README
 **/ModelExported/*
-!**/ModelExported/README.md
+!**/ModelExported/.gitkeep
 
 # Model exports or trained policies
 *.zip
