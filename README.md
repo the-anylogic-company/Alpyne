@@ -6,6 +6,8 @@ This is a Python library for interactively running models exported from the RL e
 
 Currently, this library released as a **public beta** (so please excuse any rough edges). If you have problems or bugs, please file them in the `Issues` tab. For general talk or questions, there's the `Discussions` tab.
 
+**UPDATE (Oct 2023):** An overhaul to the backend is currently an active WIP. Estimated release is EOY (likely sooner though).
+
 Full documentation (with background information, getting started guide, and class docs) can be found @ https://t-wolfeadam.github.io/Alpyne
 
 All contributions, including new or improved example models and training scripts, are thoroughly welcomed!

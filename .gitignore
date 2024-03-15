@@ -88,3 +88,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+# macOS
+.DS_Store
