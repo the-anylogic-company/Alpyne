@@ -89,10 +89,11 @@ class AnyLogicSim:
             py_log_level = logging.WARNING
 
         logging.basicConfig(
-            level=logging.getLevelName(py_log_level),
+            #level=logging.getLevelName(py_log_level),
             format=f"%(asctime)s [%(name)s @ %(lineno)s][%(levelname)8s] %(message)s",
             handlers=[logging.StreamHandler()],
         )
+        logging.getLogger("alpyne").setLevel(logging.getLevelName(py_log_level))
 
         self.log = logging.getLogger(__name__)
 
