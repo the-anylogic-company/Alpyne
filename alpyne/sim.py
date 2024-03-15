@@ -104,6 +104,7 @@ class AnyLogicSim:
         self._proc_pids: list = []  # will store all top-level and children PIDs for killing them later
 
         try:
+            self._temp_dir = None  # only populated if passed as zip
             self._proc = self._start_app(model_path, port, java_log_level, log_id, auto_finish)
             self._base_url = f"http://127.0.0.1:{port}"
             self._session = requests.Session()
@@ -143,7 +144,7 @@ class AnyLogicSim:
         :param auto_finish
         """
         # get the directory for the model, optionally extracting it to a temp dir if necessary
-        model_jar, temp_dir = resolve_model_jar(model_path)
+        model_jar, self._temp_dir = resolve_model_jar(model_path)
         model_dir = str(model_jar.parent.absolute())
 
         # temporarily change to the exported model folder's directory for starting purposes
@@ -222,16 +223,13 @@ class AnyLogicSim:
 
         self.log.info(f"Started app | PID(s) = {self._proc_pids}")
 
-        atexit.register(self._quit_app, temp_dir)
+        atexit.register(self._quit_app)
 
         return proc
 
-    def _quit_app(self, temp_dir: TemporaryDirectory = None):
+    def _quit_app(self):
         """
         Trigger app's self-destruct, killing any active runs, in addition to cleaning up any temporary files
-
-        :param temp_dir: The location of the temporary unzipped model, or None if the app was started with a \
-            non-temporary model
         """
 
         # Trigger self-destruct, killing the active run
@@ -285,11 +283,11 @@ class AnyLogicSim:
         # final cleanup
         self._session.close()
 
-        if temp_dir:
-            temp_dir.cleanup()
-            self.log.info(f"Deleted temporary directory: {temp_dir.name}")
+        if self._temp_dir:
+            self._temp_dir.cleanup()
+            self.log.info(f"Deleted temporary directory: {self._temp_dir.name}")
 
-        self.log.debug("Quit app logic concluded.")
+        self.log.info("Completed cleanup successfully")
 
     def _request(self, method: str, endpoint: str, params: dict = None, data: dict = None) -> dict | None:
         """
