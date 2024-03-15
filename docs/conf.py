@@ -17,14 +17,14 @@ sys.path.insert(0, '..')
 # -- Project information -----------------------------------------------------
 
 project = "Alpyne"
-copyright = "2021, AnyLogic North America, LLC"
+copyright = "2024, AnyLogic North America, LLC"
 author = "Tyler Wolfe-Adam"
 
 # The short X.Y version
-version = "0.1"
+version = "1.0"
 
 # The full version, including alpha/beta/rc tags
-release = "b0.1.0"
+release = "1.0.0"
 
 
 # -- General configuration ---------------------------------------------------
@@ -36,7 +36,9 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
     'sphinx_rtd_theme',
-    'sphinx.ext.githubpages'
+    'sphinx.ext.githubpages',
+    'enum_tools.autoenum',
+    'rst2pdf.pdfbuilder'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -71,9 +73,32 @@ html_logo = "./_static/alpyne_logo_3.png"
 
 # -- Extension configuration -------------------------------------------------
 
+## rst2pdf settings
+pdf_documents = [('index', u'alpyne-doc', u'Alpyne Documentation', u'Tyler Wolfe-Adam'),]
+pdf_toc_depth = 2
+# If false, no index is generated, default True.
+pdf_use_index = True
+# If false, no modindex is generated, default True.
+pdf_use_modindex = False
+# If false, no coverpage is generated, default True.
+pdf_use_coverpage = False
+pdf_stylesheets = ['sphinx', 'a4']
+pdf_style_path = ['.', '_styles']
+
+## Autodoc settings
 autodoc_default_options = {
     'member-order': 'bysource',
 }
+
+autodoc_typehints = 'both'
+
+autodoc_type_aliases = {
+    'EngineSettingKeys': 'alpyne.typing.EngineSettingKeys',
+    'Number': 'alpyne.typing.Number',
+    'OutputType': 'alpyne.typing.OutputType'
+}
+
+autoclass_content = 'both'
 
 ## Sphinx_RTD_Theme settings
 ## https://sphinx-rtd-theme.readthedocs.io/en/latest/configuring.html

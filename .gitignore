@@ -1,13 +1,20 @@
+# This lib's logging files
+alpyne*.log*
+model*.log*
 
-*.log
-Exported/
+# Anything in the ModelExported that isn't a README
+**/ModelExported/*
+!**/ModelExported/.gitkeep
+
+# Model exports or trained policies
+*.zip
+
+# built docs
+/docs/_build/
 
 # IDE
 .idea/*
 */.idea/*
-
-# built docs
-#docs/_build
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

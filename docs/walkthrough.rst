@@ -2,53 +2,142 @@
 High-level walkthrough
 ======================
 
-The following explains the general workflow in a way that doesn't require (extensive) referencing to the API documentation. It assumes you have an exported model and are generally familiar with Python programming.
+.. note:: The following explains the general workflow in a way that doesn't require (extensive) referencing to the API documentation; the final sub-section contains some sample code. Explanations assume you have an exported model and are generally familiar with Python programming.
 
-Creating the Alpyne Client object
+
+Creating the AnyLogicSim object
 ---------------------------------
 
-The ``AlpyneClient`` object serves as the parent object which individual runs spawn from and which has general model-level information. Except in advanced use cases, you only need to have a single instance of it.
+The ``AnyLogicSim`` object serves as the connection to a single instance of your model. If you want to run multiple, parallel runs, you will need to create multiple instances of the ``AnyLogicSim`` object.
 
-The constructor of the client object takes the following arguments, some of which are explained further below:
+The constructor of the sim object requires, at minimum, the path to your AnyLogic model exported from the RL Experiment.
+There are several others for configuring logging, behavioral handling of the model, definitions of overrides and default values, and more.
+A list of all options can be seen in the constructor's signature. The following sub-sections also explain the concepts in further detail; note that some examples reference functions or concepts explored by the subsequent sections.
 
-- The path to your exported model
-- Whether to enable blocking (default False)
-- The port to run the app on (default 51150)
-- Whether to enable verbose logging for the server (default False)
+model path argument
+~~~~~~~~~~~~~~~~~~~
 
-**model path argument**
+When you export from the RL experiment, it saves as a zip file. You have two choices regarding how to reference it:
 
-When you export from the RL experiment, it saves as a zip file. You have two choices regarding this:
+1. Pass a path to the zip file. Alpyne will extract the contents to a temporary directory which should self-delete on the termination of your Python script. The specific location will depend on your system setup and the logic of the tempfile module; when logging is set to INFO, the log file will contain the specific path used.
 
-1. Pass a path to the zip file
+- Pros: Less time consuming to set up (as the extraction is automated)
+- Cons: Potential for temporary directory to not self-delete if the process is forcibly quit; no access to model's input/output files
 
-- Alpyne will extract the contents to a temporary directory.
+2. Extract the contents of the zip file, then pass a path to the "model.jar" file.
 
-- For a list of candidates, see: https://github.com/python/cpython/blob/3.9/Lib/tempfile.py#L157
+- Pros: Gives you access to any input/output files your model may utilize
+- Cons: Requires an extra step after exporting the model
 
-2. Extract the contents of the zip file, then pass a path to the ``model.jar`` file
+.. important:: Option #1 is **required** when your model has *both* an internal database and your are running multiple parallel instances of the ``AnyLogicSim`` object. This is because the database has a lock whenever one process (i.e., the running model) is using it.
 
-Option #1 is only recommended for testing your model. Option #2 requires another step after exporting, but gives you convenient access to any input/output files your model might use or to the the Alpyne log (when enabled), and will write to the hard drive less.
+logging
+~~~~~~~
 
-**blocking**
+You can customize the log level for output from Python (in the terminal of your Python script) and from Java (from the underlying Alpyne executable used to run your model) via the ``py_log_level`` and ``java_log_level`` arguments, respectively.
+Each take either a value from Python's built-in logging module or a boolean (with True providing basic info logs and False providing only warnings or errors).
 
-Some simple operations - such as querying a run's status or getting input/output templates - execute so quickly that the app provide a near instantaneous response. Other more complex operations, however, are potentially time consuming - such as advancing a run to the next step. While the run is processing, you cannot query the observation or submit further actions until the run gets to the next event. Here you have a choice:
+- The Python log level controls how verbose the output is in your terminal when you run your Python script. This mostly relates to the requests sent and received to the underlying Alpyne server.
 
-1. If ``blocking`` is ``True``, the app will consume your request and not allow the active thread to continue until the request is completed (i.e., when the model is ready for the next request).
+- The Java log level controls how verbose the output is to the file "alpyne.log" which includes information about the control, status, and timing of the execution of your sim.
 
-2. If ``blocking`` is ``False``, the app will consume your request and immediately return. You then need to manually setup a periodic query of the run's status (calling ``wait_for_completion`` or ``get_state`` with a delay in a loop).
+Regardless of the option you set, you will also see a "model.log" file which has any and all text from your model's standard output and error (e.g., ``traceln`` calls, model error tracebacks).
 
-Option #1 is only recommended when you're executing a single run at a time (since there are no other threads having their time wasted while waiting). Option #2 is generally recommended for most usage.
+Both log files are by default overridden each time a new ``AnyLogicSim`` object is created. If you want to prevent this, or are running multiple parallel instances, set a value for the ``log_id``; this will append a separator and your ID to the log names.
 
-To see how this effects the way you communicate with runs, the examples have both usages of this argument.
-  
-**server logging**
+locking
+~~~~~~~
 
-Regardless of what you set this to, the app will create a ``alpyne.log`` file in your exported model's directory with at least basic information (e.g., the process ID, any errors encountered, or trace statements from your model). If verbose is set to ``True``, it will also include many debug statements.
-  
-Creating model runs from the client
------------------------------------
-When creating a new model run, you'll pass in the initial inputs (i.e., configuration) to execute the first episode with. A template for the inputs can be obtained with the ``create_default_rl_inputs`` method or the ``configuration_template`` attribute of the client object (they are synonymous with one another). This will return a Configuration object which allows you to directly set the values of both your configuration fields and engine-level settings.
+For monitoring the state of your model in its execution, the state of the AnyLogic engine (the object actually executing the events in the simulation model) is used. Alpyne has replicated the same set of states in its ``EngineState`` flag-typed enum (it being a flag means bitwise operators are supported when wanting to specify multiple options - the usefulness of which will be apparent shortly).
+
+For waiting until the completion of time consuming requests (namely the ``reset`` and ``take_action`` functions), the AnyLogicSim has ``lock`` function which two inputs: a flag for engine state(s) and a timeout. The function will wait up to the number of seconds expressed by the timeout for the underlying sim to be in the state(s) specified by the flag. It will return the sim's status if the flag is met, otherwise it'll throw an error.
+
+.. code-block:: python
+
+    # will wait up to 30 seconds for the engine to be PAUSED *or* FINISHED *or* ERROR state
+    # note: this example is also showing the default values used if you call `lock` without arguments
+    status = sim.lock(flag=EngineState.PAUSED|EngineState.FINISHED|EngineState.ERROR, timeout=30)
+
+.. tip:: The ``EngineState.ready()`` function is a shorthand for any of the three states that require some user/code action (i.e., PAUSED, FINISHED, ERROR)
+
+.. note:: The returned status has a "state" attribute you can use to see which specific state the engine is currently in
+
+If you want to change the default values used by the lock function, the AnyLogicSim's ``lock_defaults`` constructor argument allows you to pass a dictionary with keys matching the keyword names of the lock function and the desired default value.
+
+.. code-block:: python
+
+    # note: some notable kwargs are missing from this constructor for brevity
+    sim = AnyLogicSim("export.zip", lock_defaults=dict(flag=EngineState.PAUSED, timeout=10), ...)
+    sim.reset()
+    # will wait up to 10 seconds for the engine to be in the PAUSED state
+    status = sim.lock()
+    # ...
+    sim.take_action(...)
+    # will wait up to 10 seconds for the engine to be in either the PAUSED, FINISHED, or ERROR state
+    status = sim.lock(flag=EngineState.ready())
+
+
+As, for common usage, you will always want to call ``lock`` to wait for some time consuming action to finish, there is the AnyLogicSim's ``auto_lock`` constructor argument. Having this enabled - the default - will automatically call the lock function whenever you call reset or take_action; having this enabled also causes the aforementioned functions to return the status object given from the lock call.
+
+.. code-block:: python
+
+    # specifying `auto_lock=True` here is redundant but shown for demo purposes
+    sim = AnyLogicSim("export.zip", auto_lock=True)
+    # will use the `lock_default` values when internally calling lock
+    status = sim.reset()
+    # ...
+    status = sim.take_action(...)
+
+.. note::
+    You'll typically only disable the auto lock when wanting to run multiple parallel AnyLogicSim objects in a single process.
+
+    .. code-block:: python
+
+        sims = [AnyLogicSim("export.zip", auto_lock=False) for _ in range(3)]
+        # the following will execute nearly instantly,
+        #   as each call to reset will return once the request is accepted
+        for sim in sims:
+            sim.reset()
+        # now synchronize the runs, getting all their statuses
+        statuses = [sim.lock() for sim in sims]
+
+
+engine settings
+~~~~~~~~~~~~~~~
+
+If you do not pass any specific settings, the model will execute each run based on the time/date/seed settings you designated in your RL experiment.
+You can optionally pass a dictionary to the ``engine_overrides`` constructor argument with settings to override, the keys for which are the names in snake case (e.g., start_time, seed) and are defined in ``alpyne.typing.EngineSettingKeys``.
+
+Some important behaviors to be aware of:
+
+- Setting a stop time or date will override the last stop value that was set; passing both will use whichever is processed last
+
+- The numeric value for start or stop time uses whatever the model's time units are set to. To allow setting times agnostic of this, Alpyne also allows you to pass a ``UnitValue`` object - the class typically used by Outputs which stores a numeric value and a unit. Alpyne has enum classes for each of the units used by AnyLogic which all share the same names (e.g., alpyne.outputs.TimeUnits.MINUTE); you can also pass the time units as an appropriate string name.
+
+- Any of the values can be set to a no-argument function which returns the expected type. This is particularly useful for the "seed", in case you want each run to be unique but use known values.
+
+.. code-block:: python
+
+    # each call to reset now uses a random seed in the specified range and run the sim for 8 hours (assuming the default start time is 0)
+    sim = AnyLogicSim("model.jar", engine_overrides=dict(stop_time=UnitValue(8, "HOUR"), seed=lambda: random.randint(-1e9, 1e9)))
+
+    # each call to reset now starts the seed at 0 and increments by one each time,
+    #   using the provided helper function (alpyne.utils.next_num)
+    sim = AnyLogicSim("model.jar", engine_overrides=dict(seed=next_num)
+
+automatic finish
+~~~~~~~~~~~~~~~~
+
+The status object (containing a set of information about the current status of your simulation model) has an attribute called "stop" - a boolean evaluated from the RL Experiment's "Simulation run stop condition". When it is true, it's meant to indicate the simulation has reached some terminal condition and the model should be reset.
+
+However, this is intended as merely an *indicator* and thus does not inherently force the simulation model to stop executing, preventing further actions from taking place. To allow control over this, there is the AnyLogicSim's ``auto_finish`` constructor argument.
+
+By default, it's set to False, causing only conditions internal to the model to set the engine to its FINISHED state (namely, when it reaches a stop time/date or the model logic calls the ``finish`` function. When set to True, the stop attribute will also set the engine to be set to FINISHED.
+
+Resetting the run
+-----------------
+
+When creating a new model run, you'll pass in the initial inputs (i.e., configuration) to execute the first episode with. This is done by the sim's ``reset`` function which takes keyword arguments for the configuration space.
 
 For example, say your model has the following configuration space:
 
@@ -60,40 +149,75 @@ rate_per_sec  double
 machine_types String[]
 ============= ========
 
+The Python code would look like:
+
+.. code-block:: python
+
+    sim = AnyLogicSim("export.zip")
+    sim.reset(num_workers=10, rate_per_sec=3.14, machine_types=["A", "A", "B"])
+
+	
+.. warning:: If you do not set explicit values of your defined configuration fields, they will be set to their Java defaults (0 for number types, null for object types). This may cause model errors if your Configuration code does not account for this or if you do not pass the desired defaults as part of the ``config_defaults`` constructor argument in the AlpyneSim object's creation.
+
+.. tip:: In addition to setting fixed values, you can also no-argument callables; these will retrieve the next value every time they're accessed.
+
+.. code-block:: python
+
+    sim = AnyLogicSim("export.zip", config_defaults=dict(num_workers=10))
+    # for 'num_workers' passes 10 (as defined by the defaults above)
+    # for 'rate_per_sec' and 'machine_types' passes 0 and None/null, respectively (not defined above; the Java defaults)
+    sim.reset()
+
+Submitting actions
+------------------
+Whenever the model is in a PAUSED state, you can submit requests to take some action based on your action space definition. When Alpyne consumes your request, it will apply it to the simulation and allow it to continue running.
+In practice, this works exactly the same way as resetting with the configuration does, but using the ``take_action`` function with your action space. This function takes a dictionary or keyword arguments matching the action space.
+
+For example, say your model has the following action space:
+
+====================== ========
+ Name                    Type
+====================== ========
+machine_speeds         double[]
+====================== ========
+
 The Python code could look like:
 
-::
+.. code-block:: python
 
-	app = AlpyneClient(...)
-	
-	config = app.configuration_template
-	config.num_workers = 10
-	config.rate_per_sec = 3.14
-	config.machine_types = ["A", "A", "B"]
-	config.engine_seed = 1 # fixed seed
-	config.engine_stop_time = 1000 # override value in the RL exp.
-	
-**Warning**: If you do not set explicit values of your defined configuration fields, they will be set to their Java defaults (0 for number types, null for object types). This may cause model errors if your Configuration code does not account for this.
+    sim.take_action(machine_speeds=[0.1, 0.85, 0.9])
 
-- Note: In contrast, the engine settings will default to whatever value you set in the RL experiment.
+.. warning:: If you do not set explicit values of your defined action fields, they will be set to their Java defaults (0 for number types, null for object types). This may cause model errors if your Action code does not account for this.
 
-**Warning**: To avoid conflict, do not name your configuration fields the same as any of the ``engine_`` settings.
+Experiment status + observation
+-------------------------------
+The ``SimStatus`` object contains a variety of information about your sim, including the current time (in model units), date, progress (decimal percent, if a stop time/date was specified), value of the sim engine's state, observation (as a dictionary-like object), and counters.
 
-**Tip**: In addition to setting fixed values, you can also pass tuples consisting of (start, stop, step) or no-argument callables; these will retrieve the next value every time they're accessed.
+This object is returned by an explicit call to the AnyLogicSim object's ``status()`` function and also by the ``reset(...)`` and ``take_action(...)`` functions when the ``auto_lock`` constructor argument is set to True (the default).
 
-After building the configuration object, pass it into a call to the ``create_reinforcement_learning`` method of the client object. The returned value is an instance of a ``ModelRun`` object.
+.. important:: By manually controlling the locking behavior (i.e., ``auto_lock=False``), it is possible to get the status while the simulation is in a RUNNING state. Assume the information you receive in this case is transient; don't rely on it for getting reproducible snapshots, but this may be useful for monitoring progress or debugging models.
 
-Interacting with model runs
----------------------------
-After creating a new model run object, you will need to call its ``run`` method to begin execution. Depending on what you set ``block`` to, the thread will either be locked until the run reaches its first step (= True) or return immediately (= False). 
+When you see the 'state' being reported from Alpyne, it's referring to the state of the underlying AnyLogic engine. There are 6 different states it can be in:
 
-If the app was not setup with blocking, you'll need to call either ``wait_for_completion`` or ``get_state`` until the run is waiting for input.
+- IDLE: Just started, waiting for the configuration
 
-Note: ``get_state`` returns two values - A constant representing the engine status (one of the ``RunStatus`` values) and a dictionary with more detailed information.
+- PAUSED = Mid-run, waiting for action and open to observation and output querying
 
-You can take observations, check if the terminal condition is true, or get outputs if the status is one of the following: ``PAUSED``, ``COMPLETED``, ``STOPPED``, ``FAILED``. Actions can only be taken while the run holds the ``PAUSED`` status.
+- RUNNING = The model is being actively executed
 
-To get an observation, you can call the run's ``get_observation`` method. This will return an Observation object where you can retrieve specific field values by either accessing the name directly or via the ``get_input`` method. 
+- FINISHED = The model execution has reached a stopping point and will no longer advance simulated time
+
+- ERROR = Some internal model error has occurred
+
+- PLEASE_WAIT = The model is in the process of executing an uninterruptible command (calling `pause()`, `stop()`, `step()` from the AnyLogic model)
+
+Alpyne has a flag-based enum class -- ``EngineState`` -- that allows you to pass one or more of these states to pass to the ``lock`` function or the ``lock_defaults`` constructor argument, in addition to the maximum amount of time you want to wait for the condition to be fulfilled (after which a Python error will be thrown).
+
+For example, ``sim.lock(EngineState.PAUSED | EngineState.FINISHED | EngineState.ERROR, 30)`` will submit a request to wait up to 30 seconds for the engine to be in the PAUSED or FINISHED or ERROR state. As this is the default, you can also just do ``sim.lock()``.
+
+.. tip:: The EngineState enum has a ``ready()`` function which is a shorthand for the above code (i.e., ``sim.lock(EngineState.ready(), 30)``) -- "ready" as in, "ready for some interaction". This is the default for the function.
+
+The AnyLogicSim object also has a ``observation()`` function which is a shorthand for getting the RL status and referencing the observation attribute (i.e., ``sim.status().observation``).
 
 For example, say your model has the following observation space:
 
@@ -104,74 +228,109 @@ mean_service_time      double
 per_worker_utilization double[]
 ====================== ========
 
-Printing out information about the current observation in your Python code may look like:
+Code to retrieve these could look like:
 
-::
+.. code-block:: python
 
-	obs = run1.get_observation()
-	print(f"Mean service time = {obs.mean_service_time}")
-	n_workers = len(obs.per_worker_utilization)
-	print(f"Mean worker utilization = {sum(obs.per_worker_utilization) / n_workers}")
-	
-The ``is_terminal`` method of the run will return a boolean value based on a combination of the "done" condition in the RL experiment and the assigned stop time/date.
-	
-Taking an action in the run involves creating an Action object from the client's ``action_template`` attribute, filling it as desired, then passing it to the ``take_action`` method. 
+    status = sim.lock()  # paused, finished, or error; up to 30 seconds
+    print(status.observation['mean_service_time'], status.observation['per_worker_utilization'])
 
-After calling ``take_action``, your model will apply the action and then continue until the next step. 
 
-Lastly, whenever your model is not actively processing, you can get any (analytical) outputs present in your top-level agent. 
+Retrieving outputs
+------------------
 
-**Tip**: You can check the names of the objects available from the ``output_names`` attirubte of the client object. 
+Alpyne also allows you to query the current status of any analysis or Output objects on your top-level agent via the ``outputs`` function.
 
-To retrieve the values, call the ``get_outputs`` method of the run. You can pass names of specific objects, or pass no arguments if you'd like them all. This will return a ``SingleRunOutputs`` object which operates similarly to the other objects: you can retrieve values by directly passing names as attributes or by ``value`` method.
+Passing no arguments will return a dictionary mapping all output names to their values. Passing one or more strings corresponding to output names will return a tuple of those values in the order you list them.
 
-For example, if your model had an Output object named "amount_sold" and a DataSet named "demand_log", your Python code could look like the following:
+The types of the values will be the natural Python type when relevant (e.g., Output object whose type is int); for other types, Alpyne has AnyLogic-specific classes (e.g., DataSet) whose attributes follow the same structure as the AnyLogic equivalent.
 
-::
+For example, say you had the following objects in your top-level agent:
 
-	outputs = run1.get_outputs()
-	print(f"Amount sold = {outputs.amount_sold}")
-	print(f"Demand Xs = {outputs.demand_log['dataX']}")
-	print(f"Demand Ys = {outputs.demand_log['dataY']}")
+====================== ===================
+ Name                    Type
+====================== ===================
+productsSold           Output(type=int)
+productsTISStats       StatisticsDiscrete
+====================== ===================
 
-Note that the values of complex output types, such as HistogramData and DataSet, work exactly like they do on AnyLogic Cloud. 
+Your code could look like this following:
 
-For more details about all of these objects and what attributes/methods they possess, see the relevant API pages.
+.. code-block:: python
 
-Multi-runs and RL training
----------------------------
+    outputs = sim.outputs()
+    for name, value in outputs.items():
+        print(name, type(value).__name__, value)
+    # productsSold int 75779
+    # productsTISStats StatisticsDiscrete StatisticsDiscrete(count=75779, mean=19.981, confidence=0.03, min=6.062, max=29.981, deviation=0.036, sum=1514107.338)
 
-Alpyne has two "base" (abstract) classes which you can extend depending on your desired uses:
+    # ALTERNATIVE:
+    products_sold, tis_stats = sim.outputs("productsSold", "productsTISStats")
 
-1. ``BaseMultiRun``
-	- Used to easily execute batches of multiple simultaneous model runs
-	- Desirable when testing trained policies or pre-defined heuristics
-	- Requires functions to be implemented for getting configuration and actions for a given run
-	- Has additional callbacks for extra logic on step events and at the end of a run
-	
-2. ``BaseAlpyneEnv``
-	- Follows the OpenAI Gym interface
-	- Desirable when using RL libraries that support custom Gym environments (e.g., stable baselines, tensorflow)
-	- Requires functions to be implemented for defining your observation and action space, and for converting Alpyne types to/from typical Python types.
-	- Has an additional, optinonal method for defining any alternative terminal conditions.
-	
-To extend the classes, define a new class and pass the base class as the desired superclass. Required methods can be implemented - and optional methods overridden or extended - by defining them with the same name/arguments/return type. 
+Training an AI policy
+---------------------
 
-Most Python IDEs should provide an option to easily perform either of these tasks too. Examples of the simplicity of this can be seen using PyCharm in the images below.
+How you decide to train some kind of AI - from a Bayesian optimization to an RL policy or anything else - is entirely dependent on the desired libraries and use case.
 
-.. list-table::
+Alpyne does not contain any inherent logic that restricts it to one library versus another. For this reason, the examples provided are designed to cover a wide range of different libraries.
 
-	* - .. figure:: _static/py_base_method_implement.png
-		   :scale: 70 %
-		   :alt: PyCharm with builtin ability to implement methods
-   
-	  - .. figure:: _static/py_base_method_override.png
-		   :scale: 50 %
-		   :alt: PyCharm with builtin ability to override methods
-		   
-	* - Easily implement missing abstract methods
-	
-	  - Simple dialog to override base methods
+In general, it's recommended to only construct the ``AnyLogicSim`` object once per script (assuming non-parallel scenarios), then make use of its ability to run indefinite episodes throughout your code.
+For example, if you want to run an episode of the simulation within a function, create the ``AnyLogicSim`` object first, passing it as input to the function, which then may be called by some optimizer library.
 
-	   
-.. note:: Optional methods can be *extended* by calling ``super().METHOD_NAME(METHOD_ARGS)`` anywhere desirable in the body of the overriden method.
+Testing a policy within the AnyLogic model
+------------------------------------------
+
+Just as the "training" instructions were ambiguous, these "testing" ones will be as well. To embed the results of your training process back into the AnyLogic model will be entirely dependent on your approach to training or the specific use case.
+
+For example, if using Bayesian Optimization, you only need to open AnyLogic and use the values returned by the optimization to the model.
+
+Due to numerous RL libraries, each with their own specific framework and rules for saving/loading policies, it's extremely difficult to create some sort of general-purpose connector.
+For this reason, it's recommended to make use of the Pypeline library, which you can use to interact with Python code dynamically over the simulation run.
+Additionally, if your RL library supports exporting to the ONNX framework, you can make use of the ONNX Helper Library for AnyLogic; with this, you can run inferences on the policy with minimal code.
+
+The provided examples also make use of a variety of ways of querying the trained models. Some may require you to add libraries to your AnyLogic environment (e.g., Pypeline, ONNX Helper) and/or adjust various properties for it to work on your specific system. These are specified further in each example's README.
+
+As of AnyLogic 8.8, you can also call each of the RL Experiment's functions from within the simulation model. This means that if you choose to host your RL policy on some HTTP endpoint, you can use the jetty library (shipped with AnyLogic) and the ObjectMapper object from the Jackson library (also shipped with AnyLogic) to get and apply these actions to your model.
+
+Complete sample code
+--------------------
+
+The following code uses the spaces defined in the sections above and is meant for demo purposes only.
+
+.. code-block:: python
+
+    import numpy as np
+
+    from alpyne.constants import EngineState
+    from alpyne.outputs import StatisticsDiscrete
+    from alpyne.sim import AnyLogicSim
+    from alpyne.utils import next_num
+
+    sim = AnyLogicSim("Exported/model.jar",
+                      auto_finish=True,  # sets engine to FINISHED if stop condition is met
+                      engine_overrides=dict(stop_time=1000, seed=next_num),
+                      config_defaults=dict(rate_per_sec=1.5, machine_types=["A", "A", "A"]))
+
+    # test doing random machine speeds using a varying number of workers
+    # ("workers" as in, worker agents in the simulation model)
+    num_workers_trials = list(range(1, 11))
+
+    # track mean time in system stats and whether it prematurely ended
+    # (due to stop condition) per num workers
+    results: dict[int, (StatisticsDiscrete, bool)] = dict()
+    for num_workers in num_workers_trials:
+        # start a new episode and continue running it until hitting the end
+        status = sim.reset(num_workers=num_workers)  # omitted values use the defaults above
+        while EngineState.FINISHED not in status.state:
+            status = sim.take_action(
+                machine_speeds=np.random.random((3,))*10  # setting per machine, range [0, 10]
+            )
+
+        # specifying the output name(s) returns an iterable of values
+        (tis_stats, ) = sim.outputs("productsTISStats")
+        # put the outputs in the dictionary describing the outcome
+        results[num_workers] = (tis_stats, status.stop)
+
+    # visualize the results (e.g., colored bar with range intervals)
+    # ...
+
