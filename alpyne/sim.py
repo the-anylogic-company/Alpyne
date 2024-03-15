@@ -11,7 +11,7 @@ import socket
 
 import psutil as psutil
 import requests
-from requests.exceptions import ConnectionError as RequestsConnectionError
+from requests.exceptions import ConnectionError as RequestsConnectionError, HTTPError
 from psutil import NoSuchProcess
 
 from alpyne.utils import resolve_model_jar, \
@@ -318,8 +318,14 @@ class AnyLogicSim:
             response = self._session.request(method, f"{self._base_url}/{endpoint.strip('/')}", params=params,
                                              data=data)
             self.log.debug(f"Response: {response.status_code} | {response.content}")
-            response.raise_for_status()
-            if response.content:
+            if 400 <= response.status_code < 600:
+                source = "Client" if response.status_code < 500 else "Server"
+                reason = response.reason
+                if isinstance(reason, bytes):
+                    reason = reason.decode("utf-8")
+                error_msg = f"{response.status_code} {source} Error: {reason} for url {response.url} -- check alpyne.log for more info"
+                raise HTTPError(error_msg)
+            elif response.content:
                 return response.json(cls=AlpyneJSONDecoder)
         except KeyboardInterrupt:
             # reraise an exception so that any calling function will end itself and trigger the on-exit logic
