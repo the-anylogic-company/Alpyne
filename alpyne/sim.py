@@ -109,7 +109,8 @@ class AnyLogicSim:
         except:
             raise ModelError(f"Failed to properly start the app. Check the logs.")
 
-        self._base_url = f"http://127.0.0.1:{port}"
+        # support for "hidden" arguments for host; meant for debugging or testing purposes (may include a dedicated arg if deemed useful)
+        self._base_url = f"{kwargs.get('host') or 'http://127.0.0.1'}:{port}"
         self._session = requests.Session()
 
         # may need more than fraction of time in `_start_app` for the server to be set up
