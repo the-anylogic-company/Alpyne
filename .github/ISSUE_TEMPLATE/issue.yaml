@@ -1,0 +1,45 @@
+name: Issue
+description: File a bug/issue
+title: "<title>"
+body:
+- type: textarea
+  attributes:
+    label: Problematic Behavior
+    description: A concise description of what you're experiencing and why it's an issue.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Models + Scripts used
+    description: |
+      Describe or provide the AnyLogic models and Python scripts used. If your model is confidential, please try replicating the issue in a test model.
+
+      Providing this will *vastly* increase the chance of your problem being solved.
+
+      Tip: You can attach files by clicking this area to highlight it and then dragging files in.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Log files
+    description: |
+      Provide the log files, console output, etc.
+
+      Tip: You can attach log files by clicking this area to highlight it and then dragging files in.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Environment
+    description: |
+      examples:
+        - **OS**: Ubuntu 20.04
+        - **Python**: 3.11
+        - **AnyLogic**: 8.8.6
+    value: |
+        - OS:
+        - Python:
+        - Environment:
+    render: markdown
+  validations:
+    required: true
