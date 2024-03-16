@@ -1,1 +1,4 @@
 sphinx-rtd-theme==2.0.0
+enum-tools==0.11.0
+sphinx-toolbox==3.5.0
+rst2pdf==0.101
