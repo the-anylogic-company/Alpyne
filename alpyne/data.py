@@ -232,7 +232,7 @@ class FieldData:
         elif self.py_type == TimeUnits:
             return TimeUnits[self.value]
         # assume already intended data type
-        assert isinstance(self.value, self.py_type), "Unhandled type conversion"
+        assert isinstance(self.value, self.py_type), f"Unhandled type conversion: value of type {type(self.value)} not instance of {self.py_type}"
         return self.value
 
 
