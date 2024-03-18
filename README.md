@@ -8,7 +8,7 @@ Currently, this library released as a **public beta** (so please excuse any roug
 
 Full documentation (with background information, getting started guide, and class docs) can be found @ https://t-wolfeadam.github.io/Alpyne
 
-All contributions, including new or improved example models and training scripts, are thoroughly welcomed!
+All contributions, including new or improved example models and training scripts, are thoroughly welcomed! See the note at the end for more specifics.
 
 Installation
 ------------
@@ -29,8 +29,8 @@ You will need to setup your model with the following components.
 
 To export the model, navigate to the properties of your RL experiment and click the export button at the top.
 
-Basic usage
------------
+Basic idea/usage
+----------------
 In your Python code, you will create a single AnyLogicSim object which represents a connection to a single instance of your simulation model.
 
 In creating the AnyLogicSim, you pass a reference to where your exported model is located, in addition to options for log level, engine settings, and other behavioral options.
@@ -38,11 +38,26 @@ This object then gives you access to functions for interacting with the model ru
 
 You can learn more about the specifics and deeper background information from reviewing the [documentation](https://t-wolfeadam.github.io/Alpyne) or referencing the provided examples.
 
-Note that the example "StockManagementGame" also requires you to have installed the [Pypeline library](https://github.com/t-wolfeadam/AnyLogic-Pypeline) in your AnyLogic environment.
+Note that some examples require additional libraries to be added in your AnyLogic environment; see their individual READMEs for more details.
 
 Before running the example scripts, you'll need to first export them from AnyLogic. To run them without any modifications, you'll need to do the following:
 
 1. Open the given model in AnyLogic (e.g., `examples/Pathfinder/ModelSource/Pathfinder.alp`)
 2. In the properties of its RL Experiment, click the export button at the top; save the zip file inside a folder named "ModelExported" to sit alongside the "ModelSource" folder
-3. In your file explorer, extract the contents of the zip in place (such that, e.g., the file `examples/Pathfinder/ModelExported/model.jar` is valid)
+3. Most examples are setup expecting the zip file to be unpacked in-place (such that the file `ModelExported/model.jar` is valid); see the individual models' README for more specifics.
 4. Run the associated Python script
+
+Contributing
+------------
+Feel free to submit contributions (in the library, its documentation, or the example models or scripts) via pull requests.
+
+General guidelines for examples:
+
+- Training scripts should, by default, be able to run in 10 minutes or less and be able to produce results that are better than random
+  - Having commandline arguments for longer / more robust training is completely acceptable
+- Simpler, semi-realistic models are best; more complex ones are OK if they are understandable by people from different industries
+- Models should ideally have implementations/toggles for running in non-RL, training, and testing "modes" (the specific terminology is not important); others can be freely added (e.g., heuristic)
+- Models and scripts should be reasonably organized or structured (e.g., for models: aligned elements, clean flowchart connectors)
+- Use standard conventions where relevant (e.g., TitledClassNames, camelCaseJavaVariables, snake_case_python_variables)
+
+⚠ It's suggested to make a discussion post before spending too much time on an idea to avoid chancing it being rejected down the line
