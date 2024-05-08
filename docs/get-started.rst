@@ -10,7 +10,7 @@ Preparing an AnyLogic model
 ---------------------------
 You can use *any* edition of AnyLogic (PLE, University, or Professional) with this library. However, be aware that limitations of the edition will still apply. For example, PLE users executing models which utilize industry-specific libraries have their runs limited to 1-hour simulation time.
 
-You will need to setup your model with the following components. For more specifics on each entry, see the following section, `Components of an RL-ready model <intro_components.html>`_ and/or the official AnyLogic `RL Experiment Help Article <https://anylogic.help/anylogic/experiments/rl-experiment.html>`_.
+You will need to setup your model with the following components. For more specifics on each entry, see the following section, `Components of an RL-ready model <components-rlready-model.html>`_ and/or the official AnyLogic `RL Experiment Help Article <https://anylogic.help/anylogic/experiments/rl-experiment.html>`_.
 
 1. RL experiment, with the Configuration, Observation, Action, and stopping conditions filled out, as per your specifications
 2. A call to the RL experiment's ``takeAction`` method, at the time you wish an action to be taken
