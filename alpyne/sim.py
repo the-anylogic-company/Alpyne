@@ -345,6 +345,10 @@ class AnyLogicSim:
             self._temp_dir.cleanup()
             self.log.info(f"Deleted temporary directory: {self._temp_dir.name}")
 
+        # bug in java app: even on clean close, the lck file does not get removed; handle that here for now
+        for file in Path(os.getcwd()).glob("*.log.lck"):
+            file.unlink(missing_ok=True)  # in case it does delete it but face a race condition
+
         self.log.info("Completed cleanup successfully")
 
     def _request(self, method: str, endpoint: str, params: dict = None, data: dict = None) -> dict | None:
