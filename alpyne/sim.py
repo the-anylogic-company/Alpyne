@@ -47,6 +47,7 @@ class AnyLogicSim:
                  config_defaults: dict[str, Any] = None,
                  lock_defaults: dict = None,
                  java_exe: str = None,
+                 startup_delay: float = 0.1,
                  **kwargs):
         """
         Initialize a connection to the simulation model, with arguments for defining the model setup
@@ -74,6 +75,9 @@ class AnyLogicSim:
         :param lock_defaults: default values to use when calling ``lock``;
           flag arg defaults to ``EngineState.ready()``, timeout to 30
         :param java_exe: Path to Java executable; if None, uses whatever is associated with the 'java' command
+        :param startup_delay: Seconds to wait between launching the application and
+          sending the first request to verify it's alive. Too small and it may incorrectly detect as not started up;
+          too large and it adds to startup overhead. Default 0.1
         :param kwargs: Internal arguments
         :raises ModelError: if the app fails to start
 
@@ -110,7 +114,8 @@ class AnyLogicSim:
 
         try:
             self._temp_dir = None  # only populated if passed as zip
-            self._proc = self._start_app(java_exe_path, model_path, port, java_log_level, log_id, auto_finish)
+            self._proc = self._start_app(java_exe_path, model_path, port, java_log_level, log_id,
+                                         auto_finish, startup_delay)
         except:
             raise ModelError(f"Failed to properly start the app. Check the logs.")
 
@@ -181,9 +186,9 @@ class AnyLogicSim:
         return str(java_exe_path)
 
 
-    def _start_app(self, java_exe_path: str, model_path: str, port: int, java_log_level: int | str | bool | JavaLogLevel,
-                   log_id: str,
-                   auto_finish: bool) -> subprocess.Popen:
+    def _start_app(self, java_exe_path: str, model_path: str, port: int,
+                   java_log_level: int | str | bool | JavaLogLevel, log_id: str,
+                   auto_finish: bool, startup_delay: float = 0.1) -> subprocess.Popen:
         """
         Execute the backend app with the desired preferences.
 
@@ -192,7 +197,8 @@ class AnyLogicSim:
         :param port:
         :param java_log_level:
         :param log_id:
-        :param auto_finish
+        :param auto_finish:
+        :param startup_delay:
         """
         # get the directory for the model, optionally extracting it to a temp dir if necessary
         model_jar, self._temp_dir = resolve_model_jar(model_path)
@@ -266,7 +272,7 @@ class AnyLogicSim:
             raise EnvironmentError(f"Process returned code: {returncode}; message: {err_message}")
 
         # Give the previous command a moment to realize
-        time.sleep(0.1)
+        time.sleep(startup_delay)
 
         # Store the IDs from both the active process and any subprocesses spawned from it,
         # for later confirming the finality of it.
