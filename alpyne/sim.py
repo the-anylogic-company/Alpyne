@@ -8,6 +8,7 @@ from datetime import datetime
 from tempfile import TemporaryDirectory
 from typing import Any
 import socket
+from pathlib import Path
 
 import psutil as psutil
 import requests
@@ -45,6 +46,7 @@ class AnyLogicSim:
                  engine_overrides: dict[EngineSettingKeys, Number | datetime | TimeUnits | UnitValue] = None,
                  config_defaults: dict[str, Any] = None,
                  lock_defaults: dict = None,
+                 java_exe: str = None,
                  **kwargs):
         """
         Initialize a connection to the simulation model, with arguments for defining the model setup
@@ -71,6 +73,7 @@ class AnyLogicSim:
         :param config_defaults: desired default values for the Configuration values; defaults to None
         :param lock_defaults: default values to use when calling ``lock``;
           flag arg defaults to ``EngineState.ready()``, timeout to 30
+        :param java_exe: Path to Java executable; if None, uses whatever is associated with the 'java' command
         :param kwargs: Internal arguments
         :raises ModelError: if the app fails to start
 
@@ -103,9 +106,11 @@ class AnyLogicSim:
         self._internal_args = kwargs
         self._proc_pids: list = []  # will store all top-level and children PIDs for killing them later
 
+        java_exe_path = self._validate_java(java_exe)
+
         try:
             self._temp_dir = None  # only populated if passed as zip
-            self._proc = self._start_app(model_path, port, java_log_level, log_id, auto_finish)
+            self._proc = self._start_app(java_exe_path, model_path, port, java_log_level, log_id, auto_finish)
         except:
             raise ModelError(f"Failed to properly start the app. Check the logs.")
 
@@ -142,12 +147,47 @@ class AnyLogicSim:
         self._lock_defaults.setdefault("flag", EngineState.ready())
         self._lock_defaults.setdefault("timeout", 30)
 
-    def _start_app(self, model_path: str, port: int, java_log_level: int | str | bool | JavaLogLevel,
+
+    def _validate_java(self, java_exe: str) -> str:
+        """
+        :param java_exe: Java command or path to executable
+        :return: The full path to the executable file
+        """
+        # set some default value
+        if java_exe is None:
+            java_exe = "java"
+
+        # assign initial path value and resolve as needed
+        java_exe_path = Path(java_exe)
+        if java_exe_path.exists():
+            # file or directory
+            target_file = "java" + ".exe" if os.name == "nt" else ""
+            if os.path.isdir(java_exe):  # look for java[.exe] in the bin folder
+                try:
+                    java_exe_path = next(java_exe_path.rglob(target_file))
+                except StopIteration:
+                    raise RuntimeError(f"Could not find {target_file} in {java_exe}")
+            elif java_exe_path.name != target_file:
+                raise ValueError(f"Passed executable ({java_exe_path}) does not have the expected filename ({target_file})")
+        else:
+            # assume java_exe is referring to a command
+            locate_cmd = "where" if os.name == "nt" else "which"
+            proc = subprocess.run(f"{locate_cmd} {java_exe}", capture_output=True, shell=True)
+            if proc.returncode != 0:
+                logs = [proc.stdout.decode().strip(), proc.stderr.decode().strip()]
+                logs = [log for log in logs if log]  # remove empty strings
+                raise RuntimeError(f"Failed to find path to java executable via {locate_cmd} {java_exe}. Return code: {proc.returncode}; message: {' | '.join(logs)}")
+            java_exe_path = proc.stdout.decode().strip()
+        return str(java_exe_path)
+
+
+    def _start_app(self, java_exe_path: str, model_path: str, port: int, java_log_level: int | str | bool | JavaLogLevel,
                    log_id: str,
                    auto_finish: bool) -> subprocess.Popen:
         """
         Execute the backend app with the desired preferences.
 
+        :param java_exe_path:
         :param model_path:
         :param port:
         :param java_log_level:
@@ -167,6 +207,7 @@ class AnyLogicSim:
         # get the directory for the alpyne server library
         alpyne_path = self._internal_args.get('alpyne_path', str(get_resources_path()))
 
+        self.log.debug(f"Using Java executable {java_exe_path}")
         self.log.debug(f"Loading server from {alpyne_path}")
         self.log.debug(f"Launching using model in {model_dir}")
 
@@ -190,7 +231,7 @@ class AnyLogicSim:
             java_log_level = JavaLogLevel.from_py_level(java_log_level)
 
         # preliminary list of arguments
-        cmdline_args = ["java",
+        cmdline_args = [java_exe_path,
                         "-cp", class_path,
                         "com.anylogic.alpyne.AlpyneServer",
                         "-p", f"{port}",
