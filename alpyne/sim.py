@@ -9,6 +9,7 @@ from tempfile import TemporaryDirectory
 from typing import Any
 import socket
 from pathlib import Path
+from warnings import warn
 
 import psutil as psutil
 import requests
@@ -435,6 +436,23 @@ class AnyLogicSim:
         """
         return self.status().observation
 
+    def _to_status(self, data: dict) -> SimStatus:
+        """
+        A centralized location for the logic to handle the response from a status request
+            - whether from calling `status` or `lock`.
+
+        :param data: The output from GET /status
+        :return: The SimStatus object
+        """
+        # all attributes in data should match those in the SimStatus object
+        status = SimStatus(**data)
+
+        # when the message it passed, assume some important, but non-halting issue
+        if status.message:  # TODO throw runtime error instead?
+            warn(status.message)
+        return status
+
+
     def status(self) -> SimStatus:
         """
         Queries the current status of the model, regardless of its current state
@@ -443,9 +461,7 @@ class AnyLogicSim:
         :return: The current model status
         """
         data = self._request("GET", "status")
-        # received data is a dict matching the SimStatus attributes
-        status = SimStatus(**data)
-        return status
+        return self._to_status(data)
 
     def _engine(self) -> EngineStatus:  # TODO remove me? rename?
         """
@@ -475,8 +491,7 @@ class AnyLogicSim:
 
         names = [state.name for state in EngineState if flag & state]
         data = self._request("GET", "lock", params=dict(state=names, timeout=int(timeout * 1000)))
-        # received data is a dict matching the ModelStatus attributes
-        status = SimStatus(**data)
+        status = self._to_status(data)
         self._last_status = status
         return status
 
