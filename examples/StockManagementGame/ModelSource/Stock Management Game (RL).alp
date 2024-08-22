@@ -4,14 +4,23 @@
 	         AnyLogic Project File 
 *************************************************	         
 -->
-<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.8.6.202312140435" AlpVersion="8.8.3">
+<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.9.0.202404161156" AlpVersion="8.9.0">
 <Model>
 	<Id>1347625978601</Id>
 	<Name><![CDATA[Stock Management Game (RL)]]></Name>
-	<Description><![CDATA[This is a simple game, or a flight simulator – an interactive model that exposes its output to the user as the simulation is being performed and allows the user to make decisions, for example, to change parameters in a running model, and observe the effect.
+	<Description><![CDATA[The modifications from the original model include introducing a lag period to the changes in the order rate. 
+
+Through this experiment, there are 3 ways to run the model: user control, automatic, and RL testbed. 
+In automatic mode, you can choose 'static', 'random', or 'heuristic'.
+
+The intended training uses reinforcement learning algorithm to vary the re-supply rate 
+such that the stock is kept at a balanced level, avoiding running out and overstocking. 
+To load the trained policy back into the original model, the Pypeline library is used (numpy and stable-baselines required).
+
+Original Model Description:
+This is a simple game, or a flight simulator – an interactive model that exposes its output to the user as the simulation is being performed and allows the user to make decisions, for example, to change parameters in a running model, and observe the effect.
 The game works in step-pause mode: the model executes for a certain period, then it is put in the paused state, the user observes the output, makes decisions, and starts simulation for the next period. 
-The model is a very simple supply chain. The user is to manage the stock by controlling the order rate. The sales rate is exogenous and is modeled as randomly changing.
-]]></Description>
+The model is a very simple supply chain. The user is to manage the stock by controlling the order rate. The sales rate is exogenous and is modeled as randomly changing.\]]></Description>
 	<EngineVersion>6</EngineVersion>
 	<JavaPackageName><![CDATA[stock_management_game1]]></JavaPackageName>
 	<ModelTimeUnit><![CDATA[Day]]></ModelTimeUnit>
@@ -168,7 +177,7 @@ if (mode == 3) {
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[double]]></Type>        
 						<InitialValue Class="CodeValue">
-							<Code><![CDATA[25]]></Code>
+							<Code><![CDATA[initialAssignedRate]]></Code>
 						</InitialValue>
 					</Properties>
 				</Variable>
@@ -417,6 +426,31 @@ if (mode == 3) {
 									<Code><![CDATA[2]]></Code>
 								</Value>
 							</PredefParamValue>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1721337473427</Id>
+					<Name><![CDATA[initialAssignedRate]]></Name>
+					<X>100</X><Y>470</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[double]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[25]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1721337473425</Id>
+							<Label><![CDATA[Initial assigned rate]]></Label>
+							<EditorContolType>TEXT_BOX</EditorContolType>
 							<MinSliderValue><![CDATA[0]]></MinSliderValue>
 							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
 							<DelimeterType>NO_DELIMETER</DelimeterType>
@@ -1517,6 +1551,48 @@ runSimulation();]]></ActionCode>
 						<Link>autopause</Link>
 	 				</ExtendedProperties>
 				</Control>
+				<Text>
+					<Id>1721337114038</Id>
+					<Name><![CDATA[text7]]></Name>
+					<X>10</X><Y>30</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-65536</Color>
+					<Text><![CDATA[Requires 64 bit Python 3+ with the libraries numpy and stable-baselines]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>14</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1721337114040</Id>
+					<Name><![CDATA[text10]]></Name>
+					<X>10</X><Y>10</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-65536</Color>
+					<Text><![CDATA[For inferencing, this model uses the Pypeline add-on library for AnyLogic (https://git.io/al_py)]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>14</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
 			</Presentation>
 
 				</Level>
@@ -1607,7 +1683,7 @@ runSimulation();]]></ActionCode>
 					<X>-200</X><Y>200</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[double]]></Type>        
@@ -1622,12 +1698,72 @@ runSimulation();]]></ActionCode>
 					<X>-200</X><Y>240</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[double]]></Type>        
 						<InitialValue Class="CodeValue">
 							<Code><![CDATA[30]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1721337327639</Id>
+					<Name><![CDATA[mode]]></Name>
+					<X>-200</X><Y>100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1721337382420</Id>
+					<Name><![CDATA[automode]]></Name>
+					<X>-200</X><Y>130</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1721337389132</Id>
+					<Name><![CDATA[autoStaticValue]]></Name>
+					<X>-200</X><Y>160</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[25]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1721337593655</Id>
+					<Name><![CDATA[policyFile]]></Name>
+					<X>-200</X><Y>270</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[String]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA["SMG_PPO.zip"]]></Code>
 						</InitialValue>
 					</Properties>
 				</Variable>
@@ -1646,7 +1782,7 @@ runSimulation();]]></ActionCode>
 					<EmbeddedIcon>false</EmbeddedIcon>
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
-					<Color>-16777216</Color>
+					<Color>-8355712</Color>
 					<Text><![CDATA[This is a simple game, or a flight simulator –
 an interactive model that exposes its output
 to the user as the simulation is being 
@@ -1674,7 +1810,7 @@ and is modeled as randomly changing.]]></Text>
 				<Image>
 					<Id>1347974502454</Id>
 					<Name><![CDATA[image1]]></Name>
-					<X>310</X><Y>300</Y>
+					<X>650</X><Y>370</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1763,7 +1899,7 @@ and is modeled as randomly changing.]]></Text>
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
 					<Id>1619543676676</Id>
 					<Name><![CDATA[editbox]]></Name>
-					<X>440</X><Y>175</Y>
+					<X>440</X><Y>425</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1808,7 +1944,7 @@ and is modeled as randomly changing.]]></Text>
 				<Text>
 					<Id>1632153182000</Id>
 					<Name><![CDATA[text]]></Name>
-					<X>400</X><Y>180</Y>
+					<X>430</X><Y>430</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1824,12 +1960,12 @@ and is modeled as randomly changing.]]></Text>
 						<Size>18</Size>
 						<Style>0</Style>
 					</Font>
-					<Alignment>LEFT</Alignment>
+					<Alignment>RIGHT</Alignment>
 				</Text>
 				<Text>
 					<Id>1632153222001</Id>
 					<Name><![CDATA[text1]]></Name>
-					<X>505</X><Y>190</Y>
+					<X>505</X><Y>440</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1850,7 +1986,7 @@ and is modeled as randomly changing.]]></Text>
 				<Text>
 					<Id>1707422551341</Id>
 					<Name><![CDATA[text2]]></Name>
-					<X>430</X><Y>220</Y>
+					<X>430</X><Y>470</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1872,7 +2008,7 @@ and is modeled as randomly changing.]]></Text>
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
 					<Id>1707422558389</Id>
 					<Name><![CDATA[editbox1]]></Name>
-					<X>440</X><Y>210</Y>
+					<X>440</X><Y>460</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1896,7 +2032,7 @@ and is modeled as randomly changing.]]></Text>
 				<Text>
 					<Id>1707422560478</Id>
 					<Name><![CDATA[text5]]></Name>
-					<X>505</X><Y>225</Y>
+					<X>505</X><Y>475</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1914,19 +2050,238 @@ and is modeled as randomly changing.]]></Text>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text>
+				<Text>
+					<Id>1721336838518</Id>
+					<Name><![CDATA[text7]]></Name>
+					<X>50</X><Y>155</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Original Description:]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>10</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1721336867710</Id>
+					<Name><![CDATA[text8]]></Name>
+					<X>320</X><Y>160</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[The modifications from the original model include introducing a lag period to the changes in the order rate. 
+
+Through this experiment, there are 3 ways to run the model: user control, automatic, and RL testbed. 
+In automatic mode, you can choose 'static', 'random', or 'heuristic'.
+
+The intended training uses reinforcement learning algorithm to vary the re-supply rate 
+such that the stock is kept at a balanced level, avoiding running out and overstocking. 
+To load the trained policy back into the original model, the Pypeline library is used (numpy and stable-baselines required).]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>12</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1721337308812</Id>
+					<Name><![CDATA[text9]]></Name>
+					<X>430</X><Y>300</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Mode]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>18</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>RIGHT</Alignment>
+				</Text>
+				<Control Type="RadioButtons">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1721337339524</Id>
+					<Name><![CDATA[radio]]></Name>
+					<X>440</X><Y>300</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="110" Height="80">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor/>
+						<Enabled>true</Enabled>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<Orientation>VERTICAL</Orientation>
+						<Button><![CDATA[User-controlled]]></Button>
+						<Button><![CDATA[Automatic]]></Button>
+						<Button><![CDATA[Testbed]]></Button>
+						<LinkTo>true</LinkTo>
+						<Link>mode</Link>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="RadioButtons">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1721337365158</Id>
+					<Name><![CDATA[radio1]]></Name>
+					<X>540</X><Y>300</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="90" Height="80">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor/>
+						<VisibleCode><![CDATA[mode == 1]]></VisibleCode>
+						<Enabled>true</Enabled>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<Orientation>VERTICAL</Orientation>
+						<Button><![CDATA[Static]]></Button>
+						<Button><![CDATA[Random]]></Button>
+						<Button><![CDATA[Heuristic]]></Button>
+						<LinkTo>true</LinkTo>
+						<Link>automode</Link>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="EditBox">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1721337413430</Id>
+					<Name><![CDATA[editbox2]]></Name>
+					<X>610</X><Y>300</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="60" Height="20">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<FillColor/>
+						<TextColor/>
+						<VisibleCode><![CDATA[mode == 1 && automode == 0]]></VisibleCode>
+						<Enabled>true</Enabled>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="14" Style="0"/>
+						<DefaultValueCode><![CDATA["7"]]></DefaultValueCode>
+						<MinValue><![CDATA[0]]></MinValue>
+						<MaxValue><![CDATA[50]]></MaxValue>
+						<LinkTo>true</LinkTo>
+						<Link>autoStaticValue</Link>
+					</ExtendedProperties>
+				</Control>
+				<Group>
+					<Id>1721337634928</Id>
+					<Name><![CDATA[group]]></Name>
+					<X>505</X><Y>380</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<VisibleCode><![CDATA[mode == 2]]></VisibleCode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<Text>
+					<Id>1721337536452</Id>
+					<Name><![CDATA[text10]]></Name>
+					<X>-50</X><Y>-5</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-8355712</Color>
+					<Text><![CDATA[policy file]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>12</Size>
+						<Style>2</Style>
+					</Font>
+					<Alignment>RIGHT</Alignment>
+				</Text>
+				<Control Type="EditBox">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1721337614182</Id>
+					<Name><![CDATA[editbox3]]></Name>
+					<X>-45</X><Y>-10</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="140" Height="20">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<FillColor/>
+						<TextColor/>
+						<Enabled>true</Enabled>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="14" Style="0"/>
+						<DefaultValueCode><![CDATA["7"]]></DefaultValueCode>
+						<MinValue><![CDATA[0]]></MinValue>
+						<MaxValue><![CDATA[50]]></MaxValue>
+						<LinkTo>true</LinkTo>
+						<Link>policyFile</Link>
+					</ExtendedProperties>
+				</Control>
+			</Presentation>
+
+				</Group>
 			</Presentation>
 
 			<Parameters>			
 				<Parameter>
 					<ParameterName><![CDATA[mode]]></ParameterName>
 					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[3]]></Code>
+						<Code><![CDATA[mode == 2 ? 3 : mode
+// testbed corresponds to 3 in the model logic, but 2 is here
+//	since there's not a training mode]]></Code>
 					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[autoMode]]></ParameterName>
 					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[2]]></Code>
+						<Code><![CDATA[automode]]></Code>
+					</ParameterValue>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[initialAssignedRate]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[autoStaticValue]]></Code>
 					</ParameterValue>
 				</Parameter>
 				<Parameter>
@@ -1954,7 +2309,7 @@ and is modeled as randomly changing.]]></Text>
 				<Parameter>
 					<ParameterName><![CDATA[aiModelFile]]></ParameterName>
 					<ParameterValue Class="CodeValue">
-						<Code><![CDATA["SMG_PPO.zip"]]></Code>
+						<Code><![CDATA[policyFile]]></Code>
 					</ParameterValue>
 				</Parameter>
 			</Parameters>			

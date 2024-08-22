@@ -4,11 +4,15 @@
 	         AnyLogic Project File 
 *************************************************	         
 -->
-<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.8.6.202312140435" AlpVersion="8.8.3">
+<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.9.0.202404161156" AlpVersion="8.9.0">
 <Model>
 	<Id>1476194976766</Id>
 	<Name><![CDATA[Border Checkpoint Optimization]]></Name>
-	<Description><![CDATA[This sample model represents the process of crossing an international border at an official checkpoint. Passport control and vehicle inspection processes are separated for tourists arriving by buses and those who travel by car. Border checkpoint has one bus lane and three car lanes. Each lane can be used to inspect three vehicles at a time. The queue of vehicles is managed by the  streetlights. Tourists that arrive by car have their documents checked at one of the six border guard modules. Later on the car is inspected allowing tourists to leave the checkpoint if everything is all right. Suspicious cars can be also sent to the full car inspection box. All tourists that arrive by bus get off it in a special area in the immediate vicinity of the border checkpoint. They form a queue at the border guard office where two border guards check their documents while the bus is being inspected. Tourists who have passed border control return to their bus, the inspection of which must be finished by that time. When all tourists are back in the bus, it leaves the checkpoint.]]></Description>
+	<Description><![CDATA[This sample model represents the process of crossing an international border at an official checkpoint. Passport control and vehicle inspection processes are separated for tourists arriving by buses and those who travel by car. Border checkpoint has one bus lane and three car lanes. Each lane can be used to inspect three vehicles at a time. The queue of vehicles is managed by the  streetlights. Tourists that arrive by car have their documents checked at one of the six border guard modules. Later on the car is inspected allowing tourists to leave the checkpoint if everything is all right. Suspicious cars can be also sent to the full car inspection box. All tourists that arrive by bus get off it in a special area in the immediate vicinity of the border checkpoint. They form a queue at the border guard office where two border guards check their documents while the bus is being inspected. Tourists who have passed border control return to their bus, the inspection of which must be finished by that time. When all tourists are back in the bus, it leaves the checkpoint.
+
+In this modified version of the "Border Checkpoint" model, the schedule for inspectors and arrivals of busses and cars are parameterized from an Excel file.
+The model parameters allow a choice to override any of these schedules with a constant value; this can also be changed during runtime.
+With this change, you can optimize for the inputs during any one of the shifts.]]></Description>
 	<EngineVersion>6</EngineVersion>
 	<JavaPackageName><![CDATA[border_checkpoint_optimization]]></JavaPackageName>
 	<ModelTimeUnit><![CDATA[Minute]]></ModelTimeUnit>
@@ -32396,6 +32400,128 @@ if ( checkPoint.id < checkpoints.size() )
 			<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
 			<VmArgs><![CDATA[]]></VmArgs>
 			<LoadRootFromSnapshot>false</LoadRootFromSnapshot>
+			<Variables>
+				<Variable Class="PlainVariable">
+					<Id>1721340383873</Id>
+					<Name><![CDATA[carInspectorsMode]]></Name>
+					<X>-350</X><Y>300</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1721340395977</Id>
+					<Name><![CDATA[busInspectorsMode]]></Name>
+					<X>-350</X><Y>330</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1721340405522</Id>
+					<Name><![CDATA[carRateMode]]></Name>
+					<X>-350</X><Y>390</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1721340409708</Id>
+					<Name><![CDATA[busRateMode]]></Name>
+					<X>-350</X><Y>420</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1721340414763</Id>
+					<Name><![CDATA[carInspectorsValue]]></Name>
+					<X>-170</X><Y>300</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[6]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1721340424752</Id>
+					<Name><![CDATA[busInspectorsValue]]></Name>
+					<X>-170</X><Y>330</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[4]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1721340431320</Id>
+					<Name><![CDATA[carRateValue]]></Name>
+					<X>-170</X><Y>390</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[5]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1721340442451</Id>
+					<Name><![CDATA[busRateValue]]></Name>
+					<X>-170</X><Y>420</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[1]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+			</Variables>
 
 			<Presentation>
 				<Image>
@@ -32437,7 +32563,7 @@ if ( checkPoint.id < checkpoints.size() )
 					<LineColor/>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
-					<Width>250</Width>
+					<Width>390</Width>
 					<Height>50</Height>
 					<Rotation>0.0</Rotation>
 					<FillColor>-14774017</FillColor>
@@ -32456,7 +32582,7 @@ if ( checkPoint.id < checkpoints.size() )
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<Color>-1</Color>
-					<Text><![CDATA[Border Checkpoint]]></Text>
+					<Text><![CDATA[Border Checkpoint Optimization]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>26</Size>
@@ -32467,7 +32593,7 @@ if ( checkPoint.id < checkpoints.size() )
 				<Rectangle>
 					<Id>1476740869304</Id>
 					<Name><![CDATA[rectangle8]]></Name>
-					<X>250</X><Y>0</Y>
+					<X>390</X><Y>0</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -32480,7 +32606,7 @@ if ( checkPoint.id < checkpoints.size() )
 					<LineColor/>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
-					<Width>950</Width>
+					<Width>810</Width>
 					<Height>50</Height>
 					<Rotation>0.0</Rotation>
 					<FillColor>-8272897</FillColor>
@@ -32505,13 +32631,13 @@ if ( checkPoint.id < checkpoints.size() )
 					<Width>280</Width>
 					<Height>650</Height>
 					<Rotation>0.0</Rotation>
-					<FillColor>-1476395009</FillColor>
+					<FillColor>-922746881</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle>
 				<Text>
 					<Id>1476744225019</Id>
 					<Name><![CDATA[text]]></Name>
-					<X>950</X><Y>70</Y>
+					<X>950</X><Y>100</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -32562,7 +32688,7 @@ interoperate:
 					<Font>
 						<Name>Serif</Name>
 						<Size>12</Size>
-						<Style>1</Style>
+						<Style>0</Style>
 					</Font>
 					<Alignment>LEFT</Alignment>
 				</Text>
@@ -32589,43 +32715,494 @@ interoperate:
 					</ImageFiles>
 					<OriginalSize>false</OriginalSize>
 				</Image>
+				<Text>
+					<Id>1721339598439</Id>
+					<Name><![CDATA[text1]]></Name>
+					<X>950</X><Y>70</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Original model description:]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>14</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Rectangle>
+					<Id>1721339618091</Id>
+					<Name><![CDATA[rectangle1]]></Name>
+					<X>0</X><Y>170</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor/>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>820</Width>
+					<Height>380</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-922746881</FillColor>
+					<FillMaterial>null</FillMaterial>
+				</Rectangle>
+				<Text>
+					<Id>1721339625259</Id>
+					<Name><![CDATA[text2]]></Name>
+					<X>20</X><Y>190</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[In this modified version of the "Border Checkpoint" model, the schedule for inspectors and arrivals of busses and cars are parameterized from an Excel file.
+The model parameters allow a choice to override any of these schedules with a constant value; this can also be changed during runtime.
+With this change, you can optimize for the inputs during any one of the shifts]]></Text>
+					<Font>
+						<Name>Serif</Name>
+						<Size>12</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Control Type="RadioButtons">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1721340465683</Id>
+					<Name><![CDATA[radio]]></Name>
+					<X>100</X><Y>340</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="90" Height="50">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor/>
+						<Enabled>true</Enabled>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<Orientation>VERTICAL</Orientation>
+						<Button><![CDATA[Schedule]]></Button>
+						<Button><![CDATA[Value]]></Button>
+						<LinkTo>true</LinkTo>
+						<Link>carInspectorsMode</Link>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="RadioButtons">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1721340496429</Id>
+					<Name><![CDATA[radio1]]></Name>
+					<X>205</X><Y>340</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="90" Height="50">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor/>
+						<Enabled>true</Enabled>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<Orientation>VERTICAL</Orientation>
+						<Button><![CDATA[Schedule]]></Button>
+						<Button><![CDATA[Value]]></Button>
+						<LinkTo>true</LinkTo>
+						<Link>busInspectorsMode</Link>
+					</ExtendedProperties>
+				</Control>
+				<Text>
+					<Id>1721340507682</Id>
+					<Name><![CDATA[text3]]></Name>
+					<X>130</X><Y>310</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Car]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>14</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>CENTER</Alignment>
+				</Text>
+				<Text>
+					<Id>1721340523160</Id>
+					<Name><![CDATA[text4]]></Name>
+					<X>240</X><Y>310</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Bus]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>14</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>CENTER</Alignment>
+				</Text>
+				<Text>
+					<Id>1721340527383</Id>
+					<Name><![CDATA[text5]]></Name>
+					<X>80</X><Y>360</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Inspectors]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>14</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>RIGHT</Alignment>
+				</Text>
+				<Text>
+					<Id>1721340535620</Id>
+					<Name><![CDATA[text6]]></Name>
+					<X>80</X><Y>450</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Arrival
+Rate]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>14</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>RIGHT</Alignment>
+				</Text>
+				<Control Type="RadioButtons">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1721340543632</Id>
+					<Name><![CDATA[radio2]]></Name>
+					<X>100</X><Y>450</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="90" Height="50">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor/>
+						<Enabled>true</Enabled>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<Orientation>VERTICAL</Orientation>
+						<Button><![CDATA[Schedule]]></Button>
+						<Button><![CDATA[Value]]></Button>
+						<LinkTo>true</LinkTo>
+						<Link>carRateMode</Link>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="RadioButtons">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1721340545243</Id>
+					<Name><![CDATA[radio3]]></Name>
+					<X>205</X><Y>450</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="90" Height="50">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor/>
+						<Enabled>true</Enabled>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<Orientation>VERTICAL</Orientation>
+						<Button><![CDATA[Schedule]]></Button>
+						<Button><![CDATA[Value]]></Button>
+						<LinkTo>true</LinkTo>
+						<Link>busRateMode</Link>
+					</ExtendedProperties>
+				</Control>
+				<Line>
+					<Id>1721340558308</Id>
+					<Name><![CDATA[line]]></Name>
+					<X>90</X><Y>310</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<BeginArrowSize>1</BeginArrowSize>
+					<BeginArrowStyle>0</BeginArrowStyle>
+					<EndArrowSize>1</EndArrowSize>
+					<EndArrowStyle>0</EndArrowStyle>
+					<Dx>0</Dx>
+					<Dy>240</Dy>
+					<Dz>0</Dz>
+				</Line>
+				<Line>
+					<Id>1721340563449</Id>
+					<Name><![CDATA[line1]]></Name>
+					<X>0</X><Y>330</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<BeginArrowSize>1</BeginArrowSize>
+					<BeginArrowStyle>0</BeginArrowStyle>
+					<EndArrowSize>1</EndArrowSize>
+					<EndArrowStyle>0</EndArrowStyle>
+					<Dx>295</Dx>
+					<Dy>0</Dy>
+					<Dz>0</Dz>
+				</Line>
+				<Line>
+					<Id>1721340595377</Id>
+					<Name><![CDATA[line2]]></Name>
+					<X>0</X><Y>430</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>DASHED</LineStyle>
+					<BeginArrowSize>1</BeginArrowSize>
+					<BeginArrowStyle>0</BeginArrowStyle>
+					<EndArrowSize>1</EndArrowSize>
+					<EndArrowStyle>0</EndArrowStyle>
+					<Dx>300</Dx>
+					<Dy>0</Dy>
+					<Dz>0</Dz>
+				</Line>
+				<Line>
+					<Id>1721340621426</Id>
+					<Name><![CDATA[line3]]></Name>
+					<X>190</X><Y>310</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>DASHED</LineStyle>
+					<BeginArrowSize>1</BeginArrowSize>
+					<BeginArrowStyle>0</BeginArrowStyle>
+					<EndArrowSize>1</EndArrowSize>
+					<EndArrowStyle>0</EndArrowStyle>
+					<Dx>0</Dx>
+					<Dy>240</Dy>
+					<Dz>0</Dz>
+				</Line>
+				<Control Type="EditBox">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1721340669992</Id>
+					<Name><![CDATA[editbox]]></Name>
+					<X>100</X><Y>390</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="70" Height="30">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<FillColor/>
+						<TextColor/>
+						<VisibleCode><![CDATA[carInspectorsMode == 1]]></VisibleCode>
+						<Enabled>true</Enabled>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<MinValue><![CDATA[0]]></MinValue>
+						<LinkTo>true</LinkTo>
+						<Link>carInspectorsValue</Link>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="EditBox">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1721340689037</Id>
+					<Name><![CDATA[editbox1]]></Name>
+					<X>205</X><Y>390</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="70" Height="30">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<FillColor/>
+						<TextColor/>
+						<VisibleCode><![CDATA[busInspectorsMode == 1]]></VisibleCode>
+						<Enabled>true</Enabled>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<MinValue><![CDATA[0]]></MinValue>
+						<LinkTo>true</LinkTo>
+						<Link>busInspectorsValue</Link>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="EditBox">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1721340710315</Id>
+					<Name><![CDATA[editbox2]]></Name>
+					<X>205</X><Y>500</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="70" Height="30">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<FillColor/>
+						<TextColor/>
+						<VisibleCode><![CDATA[busRateMode == 1]]></VisibleCode>
+						<Enabled>true</Enabled>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<MinValue><![CDATA[0]]></MinValue>
+						<LinkTo>true</LinkTo>
+						<Link>busRateValue</Link>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="EditBox">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1721340731663</Id>
+					<Name><![CDATA[editbox3]]></Name>
+					<X>100</X><Y>500</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="70" Height="30">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<FillColor/>
+						<TextColor/>
+						<VisibleCode><![CDATA[carRateMode == 1]]></VisibleCode>
+						<Enabled>true</Enabled>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<MinValue><![CDATA[5]]></MinValue>
+						<LinkTo>true</LinkTo>
+						<Link>carRateValue</Link>
+					</ExtendedProperties>
+				</Control>
 			</Presentation>
 
 			<Parameters>			
 				<Parameter>
 					<ParameterName><![CDATA[useCarInspectorsSchedule]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[carInspectorsMode == 0]]></Code>
+					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[overriddenCarInspectors]]></ParameterName>
 					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[6]]></Code>
+						<Code><![CDATA[carInspectorsValue]]></Code>
 					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[useBusInspectorsSchedule]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[busInspectorsMode == 0]]></Code>
+					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[overriddenBusInspectors]]></ParameterName>
 					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[4]]></Code>
+						<Code><![CDATA[busInspectorsValue]]></Code>
 					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[useCarRateSchedule]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[carRateMode == 0]]></Code>
+					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[overriddenCarRate]]></ParameterName>
 					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[1]]></Code>
+						<Code><![CDATA[carRateValue]]></Code>
 					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[useBusRateSchedule]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[busRateMode == 0]]></Code>
+					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[overriddenBusRate]]></ParameterName>
 					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[1]]></Code>
+						<Code><![CDATA[busRateValue]]></Code>
 					</ParameterValue>
 				</Parameter>
 			</Parameters>			
@@ -32644,275 +33221,7 @@ interoperate:
 				<FinalDate><![CDATA[1476230400000]]></FinalDate>	
 				<FinalTime><![CDATA[1440.0]]></FinalTime>	
 			</ModelTimeProperties>
-			<BypassInitialScreen>true</BypassInitialScreen>
-		</SimulationExperiment>
-		<!--   =========   Simulation Experiment   ========  -->
-		<SimulationExperiment ActiveObjectClassId="1476194976771">
-			<Id>1707502145583</Id>
-			<Name><![CDATA[Simulation1]]></Name>
-			<CommandLineArguments><![CDATA[]]></CommandLineArguments>
-			<MaximumMemory>512</MaximumMemory>
-			<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
-			<CustomGeneratorCode>new Random()</CustomGeneratorCode>
-			<SeedValue>1</SeedValue>
-			<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
-			<VmArgs><![CDATA[]]></VmArgs>
-			<LoadRootFromSnapshot>false</LoadRootFromSnapshot>
-
-			<Presentation>
-				<Image>
-					<Id>1707502145585</Id>
-					<Name><![CDATA[image]]></Name>
-					<X>0</X><Y>0</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<Lock>true</Lock>
-					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Width>1200</Width>
-					<Height>700</Height>
-					<Rotation>0.0</Rotation>
-					<ImageFiles>
-						<ImageResourceReference>
-							<PackageName><![CDATA[border_checkpoint_optimization]]></PackageName>
-							<ClassName><![CDATA[checkpoint2.jpg]]></ClassName>
-						</ImageResourceReference>
-					</ImageFiles>
-					<OriginalSize>false</OriginalSize>
-				</Image>
-				<Rectangle>
-					<Id>1707502145587</Id>
-					<Name><![CDATA[rectangle6]]></Name>
-					<X>0</X><Y>0</Y>
-					<Label><X>10</X><Y>10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<ZHeight>10</ZHeight>
-					<LineWidth>1</LineWidth>
-					<LineColor/>
-					<LineMaterial>null</LineMaterial>
-					<LineStyle>SOLID</LineStyle>
-					<Width>250</Width>
-					<Height>50</Height>
-					<Rotation>0.0</Rotation>
-					<FillColor>-14774017</FillColor>
-					<FillMaterial>null</FillMaterial>
-				</Rectangle>
-				<Text>
-					<Id>1707502145589</Id>
-					<Name><![CDATA[text14]]></Name>
-					<X>10</X><Y>10</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-					<Color>-1</Color>
-					<Text><![CDATA[Border Checkpoint]]></Text>
-					<Font>
-						<Name>SansSerif</Name>
-						<Size>26</Size>
-						<Style>0</Style>
-					</Font>
-					<Alignment>LEFT</Alignment>
-				</Text>
-				<Rectangle>
-					<Id>1707502145591</Id>
-					<Name><![CDATA[rectangle8]]></Name>
-					<X>250</X><Y>0</Y>
-					<Label><X>10</X><Y>10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<ZHeight>10</ZHeight>
-					<LineWidth>1</LineWidth>
-					<LineColor/>
-					<LineMaterial>null</LineMaterial>
-					<LineStyle>SOLID</LineStyle>
-					<Width>950</Width>
-					<Height>50</Height>
-					<Rotation>0.0</Rotation>
-					<FillColor>-8272897</FillColor>
-					<FillMaterial>null</FillMaterial>
-				</Rectangle>
-				<Rectangle>
-					<Id>1707502145593</Id>
-					<Name><![CDATA[rectangle]]></Name>
-					<X>920</X><Y>50</Y>
-					<Label><X>10</X><Y>10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<ZHeight>10</ZHeight>
-					<LineWidth>1</LineWidth>
-					<LineColor/>
-					<LineMaterial>null</LineMaterial>
-					<LineStyle>SOLID</LineStyle>
-					<Width>280</Width>
-					<Height>650</Height>
-					<Rotation>0.0</Rotation>
-					<FillColor>-1476395009</FillColor>
-					<FillMaterial>null</FillMaterial>
-				</Rectangle>
-				<Text>
-					<Id>1707502145595</Id>
-					<Name><![CDATA[text]]></Name>
-					<X>950</X><Y>70</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-					<Color>-16777216</Color>
-					<Text><![CDATA[The model represents the process of
-crossing an international border at a
-checkpoint. Passport control and vehicle
-inspection processes are separated for
-travelers arriving by buses and those who
-travel by car. 
-
-Border checkpoint has one bus lane and
-three car lanes. Each lane can be used 
-to inspect three vehicles at a time. The
-queue of vehicles is managed by the 
-streetlights.
-
-Travelers who arrive by car have their
-documents checked at one of the six 
-border guard modules. Later on the car
-is inspected allowing travelers to leave 
-the checkpoint if everything is all right. 
-Suspicious cars can be also sent 
-to the full car inspection box.
-
-All travalers who arrive by bus get off it
- in a special area in the immediate vicinity 
-of the border checkpoint. They form a
-queue at the border guard office where
-two border guards check their documents
-while the bus is being inspected. Travelers
-who have passed border control return to
-their bus, the inspection of which must
-be finished by that time. When all travelers
-are back in the bus, it leaves the
-checkpoint.
-
-In this model, three AnyLogic libraries
-interoperate:
-- Process Modeling Library
-- Pedestrian Library 
-- Road Traffic Library]]></Text>
-					<Font>
-						<Name>Serif</Name>
-						<Size>12</Size>
-						<Style>1</Style>
-					</Font>
-					<Alignment>LEFT</Alignment>
-				</Text>
-				<Image>
-					<Id>1707502145597</Id>
-					<Name><![CDATA[image1]]></Name>
-					<X>80</X><Y>60</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<OnClickCode><![CDATA[getExperimentHost().openWebSite("https://www.anylogic.com");]]></OnClickCode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Width>200</Width>
-					<Height>75</Height>
-					<Rotation>0.0</Rotation>
-					<ImageFiles>
-						<ImageResourceReference>
-							<PackageName><![CDATA[border_checkpoint_optimization]]></PackageName>
-							<ClassName><![CDATA[AnyLogic model logo superlight.png]]></ClassName>
-						</ImageResourceReference>
-					</ImageFiles>
-					<OriginalSize>false</OriginalSize>
-				</Image>
-			</Presentation>
-
-			<Parameters>			
-				<Parameter>
-					<ParameterName><![CDATA[useCarInspectorsSchedule]]></ParameterName>
-					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[false]]></Code>
-					</ParameterValue>
-				</Parameter>
-				<Parameter>
-					<ParameterName><![CDATA[overriddenCarInspectors]]></ParameterName>
-					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[6]]></Code>
-					</ParameterValue>
-				</Parameter>
-				<Parameter>
-					<ParameterName><![CDATA[useBusInspectorsSchedule]]></ParameterName>
-					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[false]]></Code>
-					</ParameterValue>
-				</Parameter>
-				<Parameter>
-					<ParameterName><![CDATA[overriddenBusInspectors]]></ParameterName>
-					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[4]]></Code>
-					</ParameterValue>
-				</Parameter>
-				<Parameter>
-					<ParameterName><![CDATA[useCarRateSchedule]]></ParameterName>
-				</Parameter>
-				<Parameter>
-					<ParameterName><![CDATA[overriddenCarRate]]></ParameterName>
-					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[1]]></Code>
-					</ParameterValue>
-				</Parameter>
-				<Parameter>
-					<ParameterName><![CDATA[useBusRateSchedule]]></ParameterName>
-				</Parameter>
-				<Parameter>
-					<ParameterName><![CDATA[overriddenBusRate]]></ParameterName>
-					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[1]]></Code>
-					</ParameterValue>
-				</Parameter>
-			</Parameters>			
-			<PresentationProperties>
-				<EnableZoomAndPanning>true</EnableZoomAndPanning>
-				<ExecutionMode><![CDATA[realTimeScaled]]></ExecutionMode>
-				<Title><![CDATA[Border Checkpoint : Simulation]]></Title>	
-				<EnableDeveloperPanel>true</EnableDeveloperPanel>
-				<ShowDeveloperPanelOnStart>false</ShowDeveloperPanelOnStart>
-				<RealTimeScale>1.0</RealTimeScale>
-			</PresentationProperties>
-			<ModelTimeProperties>
-				<StopOption><![CDATA[Stop at specified date]]></StopOption>
-				<InitialDate><![CDATA[1476199200000]]></InitialDate>	
-				<InitialTime><![CDATA[0.0]]></InitialTime>	
-				<FinalDate><![CDATA[1476230400000]]></FinalDate>	
-				<FinalTime><![CDATA[520.0]]></FinalTime>	
-			</ModelTimeProperties>
-			<BypassInitialScreen>true</BypassInitialScreen>
+			<BypassInitialScreen>false</BypassInitialScreen>
 		</SimulationExperiment>	
 		<!--   =========  Reinforcemenet Learning Experiment   ========  -->
 		<ReinforcementLearningExperiment ActiveObjectClassId="1476194976771">

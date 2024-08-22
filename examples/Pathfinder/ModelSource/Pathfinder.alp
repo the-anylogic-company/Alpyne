@@ -4,10 +4,17 @@
 	         AnyLogic Project File 
 *************************************************	         
 -->
-<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.8.6.202312140435" AlpVersion="8.8.3">
+<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.9.0.202404161156" AlpVersion="8.9.0">
 <Model>
 	<Id>1702508042116</Id>
 	<Name><![CDATA[Pathfinder]]></Name>
+	<Description><![CDATA[This is a toy model made to be useful for getting an initial understanding of working with an AnyLogic model in a compatible RL platform. 
+
+It depicts an agent in an 8x8 grid where it’s trying to reach a single “goal” space while avoiding a number of “hole” spaces. 
+
+The intended training for this model uses Q-learning (i.e., no neural networks) and to export the resulting policy 
+    as a simple JSON file containing a 2D array of shape (8,8)
+    which the model is setup to be able to load and execute actions based on.]]></Description>
 	<EngineVersion>6</EngineVersion>
 	<JavaPackageName><![CDATA[pathfinder]]></JavaPackageName>
 	<ModelTimeUnit><![CDATA[Second]]></ModelTimeUnit>
@@ -248,7 +255,7 @@
 					<EmbeddedIcon>false</EmbeddedIcon>
 					<Z>0</Z>
 					<ZHeight>10</ZHeight>
-					<LineWidth>1</LineWidth>
+					<LineWidth>0</LineWidth>
 					<LineColor>-16777216</LineColor>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
@@ -294,7 +301,7 @@
 					<EmbeddedIcon>false</EmbeddedIcon>
 					<Z>0</Z>
 					<ZHeight>10</ZHeight>
-					<LineWidth>1</LineWidth>
+					<LineWidth>0</LineWidth>
 					<LineColor>-16777216</LineColor>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
@@ -340,7 +347,7 @@
 					<EmbeddedIcon>false</EmbeddedIcon>
 					<Z>0</Z>
 					<ZHeight>10</ZHeight>
-					<LineWidth>1</LineWidth>
+					<LineWidth>0</LineWidth>
 					<LineColor>-16777216</LineColor>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
@@ -386,7 +393,7 @@
 					<EmbeddedIcon>false</EmbeddedIcon>
 					<Z>0</Z>
 					<ZHeight>10</ZHeight>
-					<LineWidth>1</LineWidth>
+					<LineWidth>0</LineWidth>
 					<LineColor>-16777216</LineColor>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
@@ -432,7 +439,7 @@
 					<EmbeddedIcon>false</EmbeddedIcon>
 					<Z>0</Z>
 					<ZHeight>10</ZHeight>
-					<LineWidth>1</LineWidth>
+					<LineWidth>0</LineWidth>
 					<LineColor>-16777216</LineColor>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
@@ -478,7 +485,7 @@
 					<EmbeddedIcon>false</EmbeddedIcon>
 					<Z>0</Z>
 					<ZHeight>10</ZHeight>
-					<LineWidth>1</LineWidth>
+					<LineWidth>0</LineWidth>
 					<LineColor>-16777216</LineColor>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
@@ -524,7 +531,7 @@
 					<EmbeddedIcon>false</EmbeddedIcon>
 					<Z>0</Z>
 					<ZHeight>10</ZHeight>
-					<LineWidth>1</LineWidth>
+					<LineWidth>0</LineWidth>
 					<LineColor>-16777216</LineColor>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
@@ -570,7 +577,7 @@
 					<EmbeddedIcon>false</EmbeddedIcon>
 					<Z>0</Z>
 					<ZHeight>10</ZHeight>
-					<LineWidth>1</LineWidth>
+					<LineWidth>0</LineWidth>
 					<LineColor>-16777216</LineColor>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
@@ -896,7 +903,7 @@
 				<DynamicEventClass>
 					<Id>1706980076142</Id>
 					<Name><![CDATA[ResetVisibility]]></Name>
-					<X>75</X><Y>175</Y>
+					<X>145</X><Y>195</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -927,7 +934,7 @@ poly.setLineColor(prevColor);]]></Action>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1702508744015</Id>
 					<Name><![CDATA[tryMove]]></Name>
-					<X>75</X><Y>75</Y>
+					<X>145</X><Y>95</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -936,23 +943,31 @@ poly.setLineColor(prevColor);]]></Action>
 						<Name><![CDATA[dir]]></Name>
 						<Type><![CDATA[CellDirection]]></Type>
 					</Parameter>
-					<Body><![CDATA[if (!main.ignoreInvalidActions && !main.VALID_DIRECTIONS.contains(dir)) {
+					<Body><![CDATA[// first check that the attempted direction is in the chosen directional space
+// (but we only care when enforcing action validity)
+if (!main.ignoreInvalidActions && !main.VALID_DIRECTIONS.contains(dir)) {
 	error("Cannot move in '%s'; invalid direction.", dir);
 	return;
 }
 
+// convert 'dir' to the slipped direction with the appropriate chance
 CellDirection actualDir = randomTrue(main.slipChance, main.slipRNG) ? randomFrom(main.VALID_DIRECTIONS, main.slipRNG) : dir;
 
 // custom function to handle any animations
 animateMove(dir, actualDir);
 
-if (main.ignoreInvalidActions && !getSpace().isNextCellInsideSpace(actualDir)) {
-	// ignoring...
-} else {
+// only move the agent to the new cell if it's within the environment space
+// (when it's not - e.g., moving north at the top edge - we just ignore it)
+if (getSpace().isNextCellInsideSpace(actualDir)) {
 	Agent a = getSpace().getAgentNextToMe(actualDir);
-	// note: the following will throw a null pointer exception when
-	//	attempting to move outside the board (as were not ignoring invalids)
 	setSpace(a);
+}
+
+// only for user-controlled mode, end the sim here if it's terminal
+if (main.mode == 0 && PathfindingBrain.checkEpisodeStopCondition(main)) {
+	finishSimulation();
+	// also hide the buttons so the user can't take any more actions :)
+	dirButtons.forEach(x -> x.setVisible(false));
 }]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
@@ -960,7 +975,7 @@ if (main.ignoreInvalidActions && !getSpace().isNextCellInsideSpace(actualDir)) {
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1706979663072</Id>
 					<Name><![CDATA[animateMove]]></Name>
-					<X>75</X><Y>140</Y>
+					<X>145</X><Y>160</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2076,7 +2091,7 @@ import pathfinder.PathfindingBrain.Observation;]]></Import>
 			<StartupCode><![CDATA[// initialize the RNG for the slip chance, defined in Addtl class code below
 slipRNG = slipChanceSeed == null ? new Random() : new Random(slipChanceSeed);
 
-if (mode == 3) { // use qtable, load from file
+if (mode == 3) { // use qtable; load from file
 	try {
 		qTable = new ObjectMapper().readValue(new File(qtableFile), double[][].class);
 	} catch (Exception e) {
@@ -2195,7 +2210,7 @@ initializeIndicators();]]></StartupCode>
 					<X>-150</X><Y>500</Y>
 					<Label><X>15</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Type><![CDATA[double]]></Type>
 					<UnitType><![CDATA[NONE]]></UnitType>
@@ -2217,7 +2232,7 @@ initializeIndicators();]]></StartupCode>
 					<X>-150</X><Y>570</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[double[][]]]></Type>        
@@ -2229,7 +2244,7 @@ initializeIndicators();]]></StartupCode>
 					<X>-150</X><Y>50</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
 						<Type><![CDATA[int]]></Type>
@@ -2282,7 +2297,7 @@ initializeIndicators();]]></StartupCode>
 					<X>-150</X><Y>210</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
 						<Type><![CDATA[int]]></Type>
@@ -2306,7 +2321,7 @@ initializeIndicators();]]></StartupCode>
 					<X>-150</X><Y>180</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
 						<Type><![CDATA[int]]></Type>
@@ -2331,7 +2346,7 @@ initializeIndicators();]]></StartupCode>
 					<X>-150</X><Y>100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
 						<Type><![CDATA[boolean]]></Type>
@@ -2356,7 +2371,7 @@ initializeIndicators();]]></StartupCode>
 					<X>-150</X><Y>240</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
 						<Type><![CDATA[boolean]]></Type>
@@ -2381,7 +2396,7 @@ initializeIndicators();]]></StartupCode>
 					<X>-130</X><Y>70</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
 						<Type><![CDATA[String]]></Type>
@@ -2413,7 +2428,7 @@ initializeIndicators();]]></StartupCode>
 					<X>-150</X><Y>130</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
 						<Type><![CDATA[double]]></Type>
@@ -2438,7 +2453,7 @@ initializeIndicators();]]></StartupCode>
 					<X>-130</X><Y>150</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
 						<Type><![CDATA[Long]]></Type>
@@ -2471,7 +2486,7 @@ initializeIndicators();]]></StartupCode>
 					<X>-150</X><Y>450</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" AccessType="public" StaticVariable="false">
 						<CollectionClass><![CDATA[ArrayList]]></CollectionClass>
@@ -2491,7 +2506,7 @@ initializeIndicators();]]></StartupCode>
 					<X>-150</X><Y>300</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties TriggerType="timeout" Mode="cyclic">
 						<Timeout Class="CodeUnitValue">
@@ -2514,9 +2529,15 @@ initializeIndicators();]]></StartupCode>
 						</RecurrenceCode>
 						<Condition><![CDATA[false]]></Condition>
 					</Properties>
-					<Action><![CDATA[switch (mode) {
+					<Action><![CDATA[// Technical note: because of the nuances to how different execution modes work
+//	with events (e.g., random actions update immediately whereas calling 'takeAction' triggers the update in the next event)
+//	and because we don't want to force-finish the sim when training,
+//	the checks for finishing the simulation work differently.
+
+switch (mode) {
 	case 0: // user or unrecognized
-	default:
+		// for user case, sim is running without the guidance of this event;
+		//	finish condition checked in in 'tryMove'
 		self.reset();
 		break;
 	case 1: // random
@@ -2549,7 +2570,7 @@ initializeIndicators();]]></StartupCode>
 					<X>-150</X><Y>400</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Body><![CDATA[Set<Cell> seen = new HashSet<>();
 PriorityQueue<Cell> queue = new PriorityQueue<>((c1,c2) -> Double.compare(c1.getPosition().distance(goalCell.getPosition()), c2.getPosition().distance(goalCell.getPosition())));
@@ -2600,7 +2621,7 @@ return -1;]]></Body>
 					<X>-130</X><Y>370</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Parameter>
 						<Name><![CDATA[depth]]></Name>
@@ -2657,7 +2678,7 @@ if (shuffles > 0)
 					<X>-150</X><Y>350</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Body><![CDATA[validate(0);]]></Body>
 				</Function>
@@ -2669,7 +2690,7 @@ if (shuffles > 0)
 					<X>-120</X><Y>530</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Body><![CDATA[Agent a = agent.getSpace();
 if (a instanceof CellHole)
@@ -2686,7 +2707,7 @@ return 0;]]></Body>
 					<X>-150</X><Y>600</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Body><![CDATA[for (Agent a : agents()) {
 	// all agents in this env are known to subclass Cell
@@ -2715,9 +2736,8 @@ return 0;]]></Body>
 		}
 	}
 }
-
 // setup visiblity of buttons in moving agent
-IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 && i < VALID_DIRECTIONS.size()));
+IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0));// && i < VALID_DIRECTIONS.size()));
 ]]></Body>
 				</Function>
 			</Functions>
@@ -3139,9 +3159,97 @@ IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 
 			<EnableDeveloperPanel>false</EnableDeveloperPanel>
 			<ShowDeveloperPanelOnStart>false</ShowDeveloperPanelOnStart>
 		</AnimationProperties>
-		<Inputs>		
+		<Inputs>
+    		<RunConfigurationInput>
+				<Id>1721070749384</Id>
+				<Name><![CDATA[Q table]]></Name>
+				<InputReference>
+					<PackageName><![CDATA[pathfinder]]></PackageName>
+					<ClassName><![CDATA[qTable.json]]></ClassName>
+				</InputReference>
+    		</RunConfigurationInput>
+    		<RunConfigurationInput>
+				<Id>1721070742350</Id>
+				<Name><![CDATA[Mode]]></Name>
+				<InputReference>
+					<PackageName><![CDATA[pathfinder]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[mode]]></ItemName>
+				</InputReference>
+    		</RunConfigurationInput>
+    		<RunConfigurationInput>
+				<Id>1721070742351</Id>
+				<Name><![CDATA[Num holes]]></Name>
+				<InputReference>
+					<PackageName><![CDATA[pathfinder]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[numHoles]]></ItemName>
+				</InputReference>
+    		</RunConfigurationInput>
+    		<RunConfigurationInput>
+				<Id>1721070742352</Id>
+				<Name><![CDATA[MinStepsRequired]]></Name>
+				<InputReference>
+					<PackageName><![CDATA[pathfinder]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[minStepsRequired]]></ItemName>
+				</InputReference>
+    		</RunConfigurationInput>
+    		<RunConfigurationInput>
+				<Id>1721070742353</Id>
+				<Name><![CDATA[UseMooreNeighbors]]></Name>
+				<InputReference>
+					<PackageName><![CDATA[pathfinder]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[useMooreNeighbors]]></ItemName>
+				</InputReference>
+    		</RunConfigurationInput>
+    		<RunConfigurationInput>
+				<Id>1721070742354</Id>
+				<Name><![CDATA[IgnoreInvalidActions]]></Name>
+				<InputReference>
+					<PackageName><![CDATA[pathfinder]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[ignoreInvalidActions]]></ItemName>
+				</InputReference>
+    		</RunConfigurationInput>
+    		<RunConfigurationInput>
+				<Id>1721070742355</Id>
+				<Name><![CDATA[Qtable file]]></Name>
+				<InputReference>
+					<PackageName><![CDATA[pathfinder]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[qtableFile]]></ItemName>
+				</InputReference>
+    		</RunConfigurationInput>
+    		<RunConfigurationInput>
+				<Id>1721070742356</Id>
+				<Name><![CDATA[Random action chance]]></Name>
+				<InputReference>
+					<PackageName><![CDATA[pathfinder]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[slipChance]]></ItemName>
+				</InputReference>
+    		</RunConfigurationInput>		
 		</Inputs>
 		<Outputs>
+    		<RunConfigurationOutput>
+				<Id>1721070746375</Id>
+				<Name><![CDATA[Score]]></Name>
+				<OutputReference>
+					<PackageName><![CDATA[pathfinder]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[score]]></ItemName>
+				</OutputReference>
+    		</RunConfigurationOutput>
+    		<RunConfigurationOutput>
+				<Id>1721070752133</Id>
+				<Name><![CDATA[Q table (copy)]]></Name>
+				<OutputReference>
+					<PackageName><![CDATA[pathfinder]]></PackageName>
+					<ClassName><![CDATA[qTable.json]]></ClassName>
+				</OutputReference>
+    		</RunConfigurationOutput>
 		</Outputs>
 	</RunConfiguration>
 	<Experiments>	
@@ -3149,7 +3257,9 @@ IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 
 		<SimulationExperiment ActiveObjectClassId="1702510125506">
 			<Id>1702510374819</Id>
 			<Name><![CDATA[Simulation]]></Name>
+			<Import><![CDATA[import java.io.File;]]></Import>
 			<CommandLineArguments><![CDATA[]]></CommandLineArguments>
+			<InitialSetupCode><![CDATA[slipRNGSeedGroup.setVisible(slipChance > 0);]]></InitialSetupCode>
 			<MaximumMemory>512</MaximumMemory>
 			<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
 			<CustomGeneratorCode>new Random()</CustomGeneratorCode>
@@ -3160,11 +3270,11 @@ IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 
 			<Variables>
 				<Variable Class="PlainVariable">
 					<Id>1702512540030</Id>
-					<Name><![CDATA[nh]]></Name>
-					<X>-100</X><Y>170</Y>
+					<Name><![CDATA[numHoles]]></Name>
+					<X>-150</X><Y>250</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[int]]></Type>        
@@ -3175,11 +3285,11 @@ IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 
 				</Variable>
 				<Variable Class="PlainVariable">
 					<Id>1702515042455</Id>
-					<Name><![CDATA[msr]]></Name>
-					<X>-100</X><Y>220</Y>
+					<Name><![CDATA[minSteps]]></Name>
+					<X>-150</X><Y>280</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[int]]></Type>        
@@ -3190,11 +3300,11 @@ IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 
 				</Variable>
 				<Variable Class="PlainVariable">
 					<Id>1703016491312</Id>
-					<Name><![CDATA[m]]></Name>
-					<X>-100</X><Y>110</Y>
+					<Name><![CDATA[mode]]></Name>
+					<X>-150</X><Y>130</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[int]]></Type>        
@@ -3205,11 +3315,11 @@ IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 
 				</Variable>
 				<Variable Class="PlainVariable">
 					<Id>1703016555115</Id>
-					<Name><![CDATA[sc]]></Name>
-					<X>-100</X><Y>270</Y>
+					<Name><![CDATA[slipChance]]></Name>
+					<X>-150</X><Y>310</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
+					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[double]]></Type>        
@@ -3218,7 +3328,83 @@ IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 
 						</InitialValue>
 					</Properties>
 				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1721064954071</Id>
+					<Name><![CDATA[filename]]></Name>
+					<X>-150</X><Y>160</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[String]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA["qTable.json"]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1721065241249</Id>
+					<Name><![CDATA[useMoore]]></Name>
+					<X>-150</X><Y>220</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[boolean]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[true]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1721065322123</Id>
+					<Name><![CDATA[seed]]></Name>
+					<X>-150</X><Y>340</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[1]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1721070243272</Id>
+					<Name><![CDATA[ignoreInvalids]]></Name>
+					<X>-150</X><Y>190</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[boolean]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[false]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
 			</Variables>
+			<Functions>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1721064932547</Id>
+					<Name><![CDATA[checkFileExists]]></Name>
+					<X>-150</X><Y>100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[fileWarnGroup.setVisible(
+	!new File(filename).exists()
+);]]></Body>
+				</Function>
+			</Functions>
 
 			<Presentation>
 				<Text>
@@ -3246,7 +3432,7 @@ IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
 					<Id>1702512549325</Id>
 					<Name><![CDATA[editbox]]></Name>
-					<X>290</X><Y>160</Y>
+					<X>450</X><Y>390</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3261,36 +3447,14 @@ IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 
 					<ExtendedProperties>
 						<Font Name="Dialog" Size="11" Style="0"/>
 						<LinkTo>true</LinkTo>
-						<Link>nh</Link>
+						<Link>numHoles</Link>
 					</ExtendedProperties>
-				</Control>
-				<Control Type="CheckBox">
-				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>1702514542468</Id>
-					<Name><![CDATA[checkbox]]></Name>
-					<X>290</X><Y>120</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<BasicProperties Width="100" Height="30">
-                        <EmbeddedIcon>false</EmbeddedIcon>	
-						<TextColor/>
-						<Enabled>true</Enabled>
-					</BasicProperties>
-					<ExtendedProperties>
-						<Font Name="Dialog" Size="11" Style="0"/>
-						<LabelText><![CDATA[moore]]></LabelText>
-						<DefaultValueCode><![CDATA[true]]></DefaultValueCode>
-						<LinkTo>false</LinkTo>
-	 				</ExtendedProperties>
 				</Control>
 				<Control Type="EditBox">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
 					<Id>1702515048764</Id>
 					<Name><![CDATA[editbox1]]></Name>
-					<X>290</X><Y>200</Y>
+					<X>450</X><Y>430</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3306,26 +3470,26 @@ IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 
 						<Font Name="Dialog" Size="11" Style="0"/>
 						<MinValue><![CDATA[0]]></MinValue>
 						<LinkTo>true</LinkTo>
-						<Link>msr</Link>
+						<Link>minSteps</Link>
 					</ExtendedProperties>
 				</Control>
 				<Control Type="RadioButtons">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
 					<Id>1703016473529</Id>
 					<Name><![CDATA[radio]]></Name>
-					<X>50</X><Y>120</Y>
+					<X>120</X><Y>330</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<BasicProperties Width="90" Height="100">
+					<BasicProperties Width="90" Height="110">
                         <EmbeddedIcon>false</EmbeddedIcon>	
 						<TextColor/>
 						<Enabled>true</Enabled>
 					</BasicProperties>
 					<ExtendedProperties>
-						<Font Name="Dialog" Size="11" Style="0"/>
+						<Font Name="Dialog" Size="14" Style="0"/>
 						<DefaultValueCode><![CDATA[0]]></DefaultValueCode>
 						<Orientation>VERTICAL</Orientation>
 						<Button><![CDATA[Manual]]></Button>
@@ -3333,13 +3497,13 @@ IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 
 						<Button><![CDATA[Random]]></Button>
 						<Button><![CDATA[QTable]]></Button>
 						<LinkTo>true</LinkTo>
-						<Link>m</Link>
+						<Link>mode</Link>
 					</ExtendedProperties>
 				</Control>
 				<Text>
 					<Id>1703016521698</Id>
 					<Name><![CDATA[text1]]></Name>
-					<X>280</X><Y>170</Y>
+					<X>440</X><Y>400</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3353,14 +3517,14 @@ IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>14</Size>
-						<Style>0</Style>
+						<Style>1</Style>
 					</Font>
 					<Alignment>RIGHT</Alignment>
 				</Text>
 				<Text>
 					<Id>1703016535054</Id>
 					<Name><![CDATA[text2]]></Name>
-					<X>280</X><Y>210</Y>
+					<X>440</X><Y>440</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3374,14 +3538,14 @@ IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>14</Size>
-						<Style>0</Style>
+						<Style>1</Style>
 					</Font>
 					<Alignment>RIGHT</Alignment>
 				</Text>
 				<Text>
 					<Id>1703016546883</Id>
 					<Name><![CDATA[text3]]></Name>
-					<X>280</X><Y>260</Y>
+					<X>440</X><Y>490</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3395,7 +3559,7 @@ IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>14</Size>
-						<Style>0</Style>
+						<Style>1</Style>
 					</Font>
 					<Alignment>RIGHT</Alignment>
 				</Text>
@@ -3403,7 +3567,7 @@ IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
 					<Id>1703016566347</Id>
 					<Name><![CDATA[slider]]></Name>
-					<X>290</X><Y>250</Y>
+					<X>450</X><Y>480</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3412,6 +3576,7 @@ IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 
 					<BasicProperties Width="100" Height="30">
                         <EmbeddedIcon>false</EmbeddedIcon>	
 						<Enabled>true</Enabled>
+						<ActionCode><![CDATA[slipRNGSeedGroup.setVisible(value > 0);]]></ActionCode>
 					</BasicProperties>
 					<ExtendedProperties>
 						<DefaultValueCode><![CDATA[0]]></DefaultValueCode>
@@ -3420,13 +3585,13 @@ IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 
 						<MaxValue><![CDATA[1]]></MaxValue>
 						<Step><![CDATA[0.05]]></Step>
 						<LinkTo>true</LinkTo>
-						<Link>sc</Link>
+						<Link>slipChance</Link>
 					</ExtendedProperties>
 				</Control>
 				<Text>
 					<Id>1703016578171</Id>
 					<Name><![CDATA[text4]]></Name>
-					<X>290</X><Y>280</Y>
+					<X>450</X><Y>510</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3448,7 +3613,7 @@ IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 
 				<Text>
 					<Id>1703016578173</Id>
 					<Name><![CDATA[text5]]></Name>
-					<X>390</X><Y>280</Y>
+					<X>550</X><Y>510</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3470,7 +3635,7 @@ IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 
 				<Text>
 					<Id>1703016578175</Id>
 					<Name><![CDATA[text6]]></Name>
-					<X>340</X><Y>280</Y>
+					<X>500</X><Y>510</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3489,52 +3654,491 @@ IntStream.range(0, 8).forEach(i -> agent.dirButtons.get(i).setVisible(mode == 0 
 					</Font>
 					<Alignment>CENTER</Alignment>
 				</Text>
+				<Group>
+					<Id>1721064711011</Id>
+					<Name><![CDATA[fileGroup]]></Name>
+					<X>50</X><Y>460</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<VisibleCode><![CDATA[mode==3
+// qtable]]></VisibleCode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<Control Type="EditBox">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1721064673752</Id>
+					<Name><![CDATA[editbox2]]></Name>
+					<X>70</X><Y>-20</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="150" Height="30">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<FillColor/>
+						<TextColor/>
+						<Enabled>true</Enabled>
+						<ActionCode><![CDATA[checkFileExists();]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<DefaultValueCode><![CDATA["qTable.json"]]></DefaultValueCode>
+						<LinkTo>true</LinkTo>
+						<Link>filename</Link>
+					</ExtendedProperties>
+				</Control>
+				<Text>
+					<Id>1721064686303</Id>
+					<Name><![CDATA[text7]]></Name>
+					<X>0</X><Y>-10</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[JSON file]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>14</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<Group>
+					<Id>1721064898260</Id>
+					<Name><![CDATA[fileWarnGroup]]></Name>
+					<X>220</X><Y>485</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<Group>
+					<Id>1721064864138</Id>
+					<Name><![CDATA[warnIcon]]></Name>
+					<X>-89</X><Y>-1</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<Polyline>
+					<Id>1721064812845</Id>
+					<Name><![CDATA[polyline]]></Name>
+					<X>-1</X><Y>-9</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<BeginArrowSize>1</BeginArrowSize>
+					<BeginArrowStyle>0</BeginArrowStyle>
+					<EndArrowSize>1</EndArrowSize>
+					<EndArrowStyle>0</EndArrowStyle>
+					<FillColor>-23296</FillColor>
+					<FillMaterial>null</FillMaterial>
+					<Points>
+					   <Point><X>0</X><Y>0</Y><Z>0</Z></Point>
+					   <Point><X>-8</X><Y>16</Y><Z>0</Z></Point>
+					   <Point><X>8</X><Y>16</Y><Z>0</Z></Point>
+					</Points>
+					<Closed>true</Closed>
+				</Polyline>
+				<Line>
+					<Id>1721064843237</Id>
+					<Name><![CDATA[line]]></Name>
+					<X>-1</X><Y>-4</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<BeginArrowSize>1</BeginArrowSize>
+					<BeginArrowStyle>0</BeginArrowStyle>
+					<EndArrowSize>1</EndArrowSize>
+					<EndArrowStyle>0</EndArrowStyle>
+					<Dx>0</Dx>
+					<Dy>7</Dy>
+					<Dz>0</Dz>
+				</Line>
+				<Rectangle>
+					<Id>1721064848306</Id>
+					<Name><![CDATA[rectangle]]></Name>
+					<X>-1.5</X><Y>4</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor/>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>1</Width>
+					<Height>1</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-16777216</FillColor>
+					<FillMaterial>null</FillMaterial>
+				</Rectangle>
+			</Presentation>
+
+				</Group>
+				<Text>
+					<Id>1721064871762</Id>
+					<Name><![CDATA[text8]]></Name>
+					<X>-80</X><Y>-9</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-8388608</Color>
+					<Text><![CDATA[Warning: File not found]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>12</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<Text>
+					<Id>1721065077703</Id>
+					<Name><![CDATA[text9]]></Name>
+					<X>440</X><Y>335</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Neighbor Type]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>14</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>RIGHT</Alignment>
+				</Text>
+				<Text>
+					<Id>1721065143785</Id>
+					<Name><![CDATA[text10]]></Name>
+					<X>100</X><Y>335</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Mode]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>14</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>RIGHT</Alignment>
+				</Text>
+				<Control Type="RadioButtons">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1721065175376</Id>
+					<Name><![CDATA[radio1]]></Name>
+					<X>450</X><Y>330</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="140" Height="60">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor/>
+						<Enabled>true</Enabled>
+						<ActionCode><![CDATA[useMoore = value == 1;]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="14" Style="0"/>
+						<DefaultValueCode><![CDATA[1]]></DefaultValueCode>
+						<Orientation>VERTICAL</Orientation>
+						<Button><![CDATA[Euclidean (4)]]></Button>
+						<Button><![CDATA[Moore (8)]]></Button>
+						<LinkTo>false</LinkTo>
+						<Link>mode</Link>
+					</ExtendedProperties>
+				</Control>
+				<Group>
+					<Id>1721065432373</Id>
+					<Name><![CDATA[slipRNGSeedGroup]]></Name>
+					<X>445</X><Y>565</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Presentation>
+				<Text>
+					<Id>1721065308852</Id>
+					<Name><![CDATA[text11]]></Name>
+					<X>-5</X><Y>-10</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Slip-RNG seed]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>14</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>RIGHT</Alignment>
+				</Text>
+				<Control Type="EditBox">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1721065335848</Id>
+					<Name><![CDATA[editbox3]]></Name>
+					<X>5</X><Y>-15</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="100" Height="30">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<FillColor/>
+						<TextColor/>
+						<Enabled>true</Enabled>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<LinkTo>true</LinkTo>
+						<Link>seed</Link>
+					</ExtendedProperties>
+				</Control>
+				<Text>
+					<Id>1721065575774</Id>
+					<Name><![CDATA[text13]]></Name>
+					<X>-5</X><Y>10</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[(only affects slipped direction)]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>10</Size>
+						<Style>2</Style>
+					</Font>
+					<Alignment>RIGHT</Alignment>
+				</Text>
+			</Presentation>
+
+				</Group>
+				<Text>
+					<Id>1721065556468</Id>
+					<Name><![CDATA[text12]]></Name>
+					<X>440</X><Y>460</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[(from start to goal)]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>10</Size>
+						<Style>2</Style>
+					</Font>
+					<Alignment>RIGHT</Alignment>
+				</Text>
+				<Control Type="CheckBox">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1721070260884</Id>
+					<Name><![CDATA[checkbox]]></Name>
+					<X>50</X><Y>530</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="220" Height="30">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor/>
+						<Enabled>true</Enabled>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="14" Style="1"/>
+						<LabelText><![CDATA[Ignore invalid actions]]></LabelText>
+						<LinkTo>true</LinkTo>
+						<Link>ignoreInvalids</Link>
+	 				</ExtendedProperties>
+				</Control>
+				<Text>
+					<Id>1721070287101</Id>
+					<Name><![CDATA[text14]]></Name>
+					<X>70</X><Y>560</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[(false == thows error if choosing 
+an ordinal direction with 
+euclidean movement)]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>10</Size>
+						<Style>2</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1721070645252</Id>
+					<Name><![CDATA[text15]]></Name>
+					<X>50</X><Y>100</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[This is a toy model made to be useful for getting an initial understanding of working with an AnyLogic model in a compatible RL platform. 
+
+It depicts an agent in an 8x8 grid where it’s trying to reach a single “goal” space while avoiding a number of “hole” spaces. 
+
+The intended training for this model uses Q-learning (i.e., no neural networks) and to export the resulting policy 
+    as a simple JSON file containing a 2D array of shape (8,8)
+    which the model is setup to be able to load and execute actions based on.]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>14</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
 			</Presentation>
 
 			<Parameters>			
 				<Parameter>
 					<ParameterName><![CDATA[mode]]></ParameterName>
 					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[m]]></Code>
+						<Code><![CDATA[mode]]></Code>
 					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[numHoles]]></ParameterName>
 					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[nh]]></Code>
+						<Code><![CDATA[numHoles]]></Code>
 					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[minStepsRequired]]></ParameterName>
 					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[msr]]></Code>
+						<Code><![CDATA[minSteps]]></Code>
 					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[useMooreNeighbors]]></ParameterName>
 					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[checkbox.isSelected()]]></Code>
+						<Code><![CDATA[useMoore]]></Code>
 					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[ignoreInvalidActions]]></ParameterName>
 					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[false]]></Code>
+						<Code><![CDATA[ignoreInvalids]]></Code>
 					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[qtableFile]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[filename]]></Code>
+					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[slipChance]]></ParameterName>
 					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[sc]]></Code>
+						<Code><![CDATA[slipChance]]></Code>
 					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[slipChanceSeed]]></ParameterName>
 					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[1L]]></Code>
+						<Code><![CDATA[(long)seed]]></Code>
 					</ParameterValue>
 				</Parameter>
 			</Parameters>			
@@ -3627,6 +4231,13 @@ root.minStepsRequired = minStepsRequired;
 root.ignoreInvalidActions = !throwOnInvalidActions;]]></ConfigurationCode>
 		</ReinforcementLearningExperiment>
 	</Experiments>
+	<ModelResources>
+		<Resource>
+			<Path><![CDATA[qTable.json]]></Path>
+			<ReferencedFromUserCode>true</ReferencedFromUserCode>
+			<Location>FILE_SYSTEM</Location>
+		</Resource>
+	</ModelResources>
     <RequiredLibraryReference>
 		<LibraryName><![CDATA[com.anylogic.libraries.modules.markup_descriptors]]></LibraryName>
 		<VersionMajor>1</VersionMajor>
