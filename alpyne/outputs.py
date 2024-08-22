@@ -70,7 +70,7 @@ class HistogramSmartData(_AnalysisObject):
     lowerBound: float = 0.0
     intervalWidth: float = 0.1
     hits: list[int] = field(default_factory=list)
-    statistics: _Statistics = _Statistics()
+    statistics: _Statistics = field(default_factory=_Statistics)
 
     def __post_init__(self):
         super().__post_init__()

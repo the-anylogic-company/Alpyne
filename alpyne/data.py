@@ -203,6 +203,11 @@ class FieldData:
 
     @property
     def py_value(self):
+        # special case: None value always means None value, regardless of the type (i.e., unlike Java's primitives);
+        # this also suppresses type-validation errors when the default value is not explicitly set
+        if self.value is None:
+            return None
+
         if self.py_type == datetime:
             if not isinstance(self.value, str):  # as of v1.0.0, only accept strings
                 raise TypeError(f"Unexpected type for value: {type(self.value)}")
@@ -232,7 +237,7 @@ class FieldData:
         elif self.py_type == TimeUnits:
             return TimeUnits[self.value]
         # assume already intended data type
-        assert isinstance(self.value, self.py_type), "Unhandled type conversion"
+        assert isinstance(self.value, self.py_type), f"Unhandled type conversion: value of type {type(self.value)} not instance of {self.py_type}"
         return self.value
 
 
