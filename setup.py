@@ -7,11 +7,11 @@ setup(
     name="anylogic-alpyne",
     version="1.2.0",
     author="Tyler Wolfe-Adam",
-    author_email="t.wolfeadam@anylogic.com",
+    author_email="info@anylogic.com",
     description="Run AnyLogic models exported from the RL Experiment",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/t-wolfeadam/Alpyne",
+    url="https://github.com/the-anylogic-company/Alpyne",
     classifiers=[
         "Development Status :: 4 - Beta",
         "Programming Language :: Python :: 3",

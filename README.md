@@ -6,7 +6,7 @@ This is a Python library for interactively running models exported from the RL e
 
 Currently, this library released as a **public beta** (so please excuse any rough edges). If you have problems or bugs, please file them in the `Issues` tab. For general talk or questions, there's the `Discussions` tab.
 
-Full documentation (with background information, getting started guide, and class docs) can be found @ https://t-wolfeadam.github.io/Alpyne
+Full documentation (with background information, getting started guide, and class docs) can be found @ https://the-anylogic-company.github.io/Alpyne
 
 All contributions, including new or improved example models and training scripts, are thoroughly welcomed! See the note at the end for more specifics.
 
@@ -36,7 +36,7 @@ In your Python code, you will create a single AnyLogicSim object which represent
 In creating the AnyLogicSim, you pass a reference to where your exported model is located, in addition to options for log level, engine settings, and other behavioral options.
 This object then gives you access to functions for interacting with the model run, including resetting it, querying its status, applying some action, and getting outputs.
 
-You can learn more about the specifics and deeper background information from reviewing the [documentation](https://t-wolfeadam.github.io/Alpyne) or referencing the provided examples.
+You can learn more about the specifics and deeper background information from reviewing the [documentation](https://the-anylogic-company.github.io/Alpyne) or referencing the provided examples.
 
 Note that some examples require additional libraries to be added in your AnyLogic environment; see their individual READMEs for more details.
 
