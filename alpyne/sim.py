@@ -68,7 +68,7 @@ class AnyLogicSim:
           useful if you do not want log files to be overridden by subsequent or parallel runs;
           you can use $p for the port number, $n for a unique number (starts from 1); defaults to None (empty string)
         :param auto_lock: whether to automatically wait for a 'ready' state after each call to reset or take_action and
-          return the subsequent RL status instead of None; defaults to False
+          return the subsequent RL status instead of None; defaults to True
         :param auto_finish: whether to automatically force the model into a FINISH state once the stop condition
           (defined in the RL experiment) is met; defaults to False
         :param engine_overrides: definition for overrides to the engine settings;

@@ -4,7 +4,7 @@
 	         AnyLogic Project File
 *************************************************
 -->
-<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.9.4.qualifier" AlpVersion="8.9.2">
+<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.9.7.202512121159" AlpVersion="8.9.7">
 <Model>
 	<Id>1347625978601</Id>
 	<Name><![CDATA[Stock Management Game (RL)]]></Name>
@@ -24,9 +24,7 @@ The model is a very simple supply chain. The user is to manage the stock by cont
 	<EngineVersion>6</EngineVersion>
 	<JavaPackageName><![CDATA[stock_management_game1]]></JavaPackageName>
 	<ModelTimeUnit><![CDATA[Day]]></ModelTimeUnit>
-	
 	<Folders>
-		
 	</Folders>
 	<ActiveObjectClasses>
 		<!--   =========   Active Object Class   ========  -->
@@ -56,7 +54,7 @@ if (mode == 3) {
 			<ElementsLimitValue>12</ElementsLimitValue>
 			<MakeDefaultViewArea>true</MakeDefaultViewArea>
 			<SceneGridColor/>
-			<SceneBackgroundColor/>
+			<SceneBackgroundColor>-4144960</SceneBackgroundColor>
 			<SceneSkybox>null</SceneSkybox>
 			<AgentProperties>
 				<EnvironmentDefinesInitialLocation>true</EnvironmentDefinesInitialLocation>
@@ -101,6 +99,7 @@ if (mode == 3) {
 			</EnvironmentProperties>
 			<DatasetsCreationProperties>
 				<AutoCreate>true</AutoCreate>
+					<Id>1347625959995</Id>
 					<OccurrenceAtTime>true</OccurrenceAtTime>
 					<OccurrenceDate>1537430400000</OccurrenceDate>
 					<OccurrenceTime Class="CodeUnitValue">
@@ -236,7 +235,7 @@ if (mode == 3) {
 					<Properties External="false" Constant="true" Array="false">
 						<Formula><![CDATA[0]]></Formula>
 						<Value><![CDATA[uniform(10, 40)]]></Value>
-						<Color/>
+						<Color>-4073239</Color>
 					</Properties>
 
 				</Variable>
@@ -251,7 +250,7 @@ if (mode == 3) {
 					<Properties External="false" Constant="false" Array="false">
 						<Formula><![CDATA[lastAssignedRate + ramp((assignedRate - lastAssignedRate)/acquisitionLag, lastUpdateTime, lastUpdateTime+acquisitionLag)]]></Formula>
 						<Value><![CDATA[0]]></Value>
-						<Color/>
+						<Color>-4073239</Color>
 					</Properties>
 
 				</Variable>
@@ -269,7 +268,7 @@ if (mode == 3) {
 					<Height>52</Height>
 						<Expression><![CDATA[AcquisitionRate - SalesRate]]></Expression>
 						<InitialValue><![CDATA[5000]]></InitialValue>
-						<Color/>
+						<Color>-4073239</Color>
 					</Properties>
 				</Variable>
 				<Variable Class="StockVariable">
@@ -285,7 +284,7 @@ if (mode == 3) {
 					<Width>80</Width>
 					<Height>40</Height>
 						<InitialValue><![CDATA[0]]></InitialValue>
-						<Color/>
+						<Color>-4073239</Color>
 					</Properties>
 				</Variable>
 				<Variable Class="Flow">
@@ -298,7 +297,7 @@ if (mode == 3) {
 					<ShowLabel>true</ShowLabel>
 					<Properties SourceId="1347625984180" TargetId="1631734681455" External="false" Constant="false" Array="false">
 						<Formula><![CDATA[Stock > 0 ? Demand : 0]]></Formula>
-						<Color/>
+						<Color>-4073239</Color>
 						<ValveIndex>1</ValveIndex>
 						<Points>
 							<Point><X>0</X><Y>0</Y></Point>
@@ -318,7 +317,7 @@ if (mode == 3) {
 					<Properties TargetId="1347625984180" External="false" Constant="false" Array="false">
 						<Formula><![CDATA[actualRate]]></Formula>
 						<Value><![CDATA[initialOrderRate]]></Value>
-						<Color/>
+						<Color>-4073239</Color>
 						<ValveIndex>1</ValveIndex>
 						<Points>
 							<Point><X>0</X><Y>0</Y></Point>
@@ -347,28 +346,28 @@ if (mode == 3) {
 							<Label><![CDATA[Execution mode]]></Label>
 							<EditorContolType>RADIO_BUTTONS</EditorContolType>
 							<PredefParamValue>
-								<Id>0</Id>
+								<Id>1347625959994</Id>
 								<Name><![CDATA[User-controlled]]></Name>
 								<Value Class="CodeValue">
 									<Code><![CDATA[0]]></Code>
 								</Value>
 							</PredefParamValue>
 							<PredefParamValue>
-								<Id>0</Id>
+								<Id>1347625959993</Id>
 								<Name><![CDATA[Automatic]]></Name>
 								<Value Class="CodeValue">
 									<Code><![CDATA[1]]></Code>
 								</Value>
 							</PredefParamValue>
 							<PredefParamValue>
-								<Id>0</Id>
+								<Id>1347625959992</Id>
 								<Name><![CDATA[AI training]]></Name>
 								<Value Class="CodeValue">
 									<Code><![CDATA[2]]></Code>
 								</Value>
 							</PredefParamValue>
 							<PredefParamValue>
-								<Id>0</Id>
+								<Id>1347625959991</Id>
 								<Name><![CDATA[AI testing]]></Name>
 								<Value Class="CodeValue">
 									<Code><![CDATA[3]]></Code>
@@ -400,7 +399,7 @@ if (mode == 3) {
 							<Label><![CDATA[AutoMode]]></Label>
 							<EditorContolType>RADIO_BUTTONS</EditorContolType>
 							<HideCondition>
-								<Id>0</Id>
+								<Id>1347625959990</Id>
 								<ParameterId>1619545330246</ParameterId>
 								<Operation>NOT_EQUALS</Operation>
 								<Value Class="CodeValue">
@@ -408,21 +407,21 @@ if (mode == 3) {
 								</Value>
 							</HideCondition>
 							<PredefParamValue>
-								<Id>0</Id>
+								<Id>1347625959989</Id>
 								<Name><![CDATA[Static]]></Name>
 								<Value Class="CodeValue">
 									<Code><![CDATA[0]]></Code>
 								</Value>
 							</PredefParamValue>
 							<PredefParamValue>
-								<Id>0</Id>
+								<Id>1347625959988</Id>
 								<Name><![CDATA[Random]]></Name>
 								<Value Class="CodeValue">
 									<Code><![CDATA[1]]></Code>
 								</Value>
 							</PredefParamValue>
 							<PredefParamValue>
-								<Id>0</Id>
+								<Id>1347625959987</Id>
 								<Name><![CDATA[Heuristic]]></Name>
 								<Value Class="CodeValue">
 									<Code><![CDATA[2]]></Code>
@@ -556,7 +555,7 @@ if (mode == 3) {
 							<Label><![CDATA[Stop condition limits]]></Label>
 							<EditorContolType>TEXT_BOX</EditorContolType>
 							<HideCondition>
-								<Id>0</Id>
+								<Id>1347625959986</Id>
 								<ParameterId>1619545330246</ParameterId>
 								<Operation>NOT_EQUALS</Operation>
 								<Value Class="CodeValue">
@@ -615,7 +614,7 @@ if (mode == 3) {
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
-					<Color/>
+					<Color>-11832691</Color>
 					<LineWidth>1</LineWidth>
 					<Delay>false</Delay>
 				</Link>
@@ -630,7 +629,7 @@ if (mode == 3) {
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
-					<Color/>
+					<Color>-11832691</Color>
 					<LineWidth>1</LineWidth>
 					<Delay>false</Delay>
 				</Link>
@@ -645,7 +644,7 @@ if (mode == 3) {
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
-					<Color/>
+					<Color>-11832691</Color>
 					<LineWidth>1</LineWidth>
 					<Delay>false</Delay>
 				</Link>
@@ -660,7 +659,7 @@ if (mode == 3) {
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
-					<Color/>
+					<Color>-11832691</Color>
 					<LineWidth>1</LineWidth>
 					<Delay>false</Delay>
 				</Link>
@@ -675,7 +674,7 @@ if (mode == 3) {
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
-					<Color/>
+					<Color>-11832691</Color>
 					<LineWidth>1</LineWidth>
 					<Delay>false</Delay>
 				</Link>
@@ -690,7 +689,7 @@ if (mode == 3) {
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
-					<Color/>
+					<Color>-11832691</Color>
 					<LineWidth>1</LineWidth>
 					<Delay>false</Delay>
 				</Link>
@@ -705,7 +704,7 @@ if (mode == 3) {
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
-					<Color/>
+					<Color>-11832691</Color>
 					<LineWidth>1</LineWidth>
 					<Delay>false</Delay>
 				</Link>
@@ -728,6 +727,7 @@ if (mode == 3) {
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="RateUnits"><![CDATA[PER_MINUTE]]></Unit>
 						</Rate>
+						<Id>1347625959985</Id>
 						<OccurrenceAtTime>true</OccurrenceAtTime>
 						<OccurrenceDate>1580515200000</OccurrenceDate>
 						<OccurrenceTime Class="CodeUnitValue">
@@ -793,6 +793,7 @@ if (mode == 3) {
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="RateUnits"><![CDATA[PER_MINUTE]]></Unit>
 						</Rate>
+						<Id>1347625959984</Id>
 						<OccurrenceAtTime>true</OccurrenceAtTime>
 						<OccurrenceDate>1577836800000</OccurrenceDate>
 						<OccurrenceTime Class="CodeUnitValue">
@@ -879,16 +880,19 @@ stockAtLastAction = Stock;]]></Body>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<AutoUpdate>true</AutoUpdate>
-					<OccurrenceAtTime>true</OccurrenceAtTime>
-					<OccurrenceDate>1627977600000</OccurrenceDate>
-					<OccurrenceTime Class="CodeUnitValue">
-						<Code><![CDATA[0]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
-					</OccurrenceTime>
-					<RecurrenceCode Class="CodeUnitValue">
-						<Code><![CDATA[1]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
-					</RecurrenceCode>
+					<RecurrenceProperties>
+						<Id>1776112777394</Id>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1627977600000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[0]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</RecurrenceCode>
+					</RecurrenceProperties>
 					<FreezeXAxis>true</FreezeXAxis>
 					<VerticalAxisExpression><![CDATA[Demand]]></VerticalAxisExpression>
 					<SamplesToKeep>366</SamplesToKeep>
@@ -902,16 +906,19 @@ stockAtLastAction = Stock;]]></Body>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<AutoUpdate>true</AutoUpdate>
-					<OccurrenceAtTime>true</OccurrenceAtTime>
-					<OccurrenceDate>1704441600000</OccurrenceDate>
-					<OccurrenceTime Class="CodeUnitValue">
-						<Code><![CDATA[0]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
-					</OccurrenceTime>
-					<RecurrenceCode Class="CodeUnitValue">
-						<Code><![CDATA[1]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
-					</RecurrenceCode>
+					<RecurrenceProperties>
+						<Id>1776112777396</Id>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1704441600000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[0]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</RecurrenceCode>
+					</RecurrenceProperties>
 					<FreezeXAxis>false</FreezeXAxis>
 					<HorizontalAxisExpression><![CDATA[Demand]]></HorizontalAxisExpression>
 					<VerticalAxisExpression><![CDATA[OrderRate]]></VerticalAxisExpression>
@@ -934,16 +941,19 @@ stockAtLastAction = Stock;]]></Body>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<AutoUpdate>true</AutoUpdate>
-					<OccurrenceAtTime>true</OccurrenceAtTime>
-					<OccurrenceDate>1704441600000</OccurrenceDate>
-					<OccurrenceTime Class="CodeUnitValue">
-						<Code><![CDATA[0]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
-					</OccurrenceTime>
-					<RecurrenceCode Class="CodeUnitValue">
-						<Code><![CDATA[1]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
-					</RecurrenceCode>
+					<RecurrenceProperties>
+						<Id>1776112777398</Id>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1704441600000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[0]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</RecurrenceCode>
+					</RecurrenceProperties>
 					<Discrete>true</Discrete>
 					<ValueCode><![CDATA[Stock]]></ValueCode>
 				</Statistics>
@@ -956,16 +966,19 @@ stockAtLastAction = Stock;]]></Body>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<AutoUpdate>false</AutoUpdate>
-					<OccurrenceAtTime>true</OccurrenceAtTime>
-					<OccurrenceDate>1707465600000</OccurrenceDate>
-					<OccurrenceTime Class="CodeUnitValue">
-						<Code><![CDATA[0]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
-					</OccurrenceTime>
-					<RecurrenceCode Class="CodeUnitValue">
-						<Code><![CDATA[1]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
-					</RecurrenceCode>
+					<RecurrenceProperties>
+						<Id>1776112777400</Id>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1707465600000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[0]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</RecurrenceCode>
+					</RecurrenceProperties>
 					<Value><![CDATA[]]></Value>
 					<NumberOfIntervals>10</NumberOfIntervals>
 					<MinMaxAutodetect>false</MinMaxAutodetect>
@@ -1106,6 +1119,7 @@ stockAtLastAction = Stock;]]></Body>
 					</LocationNameCode>
 					<InitializationType>SPECIFIED_NUMBER</InitializationType>
 					<InitializationDatabaseTableQuery>
+						<Id>1347625959983</Id>
 						<TableReference>
 						</TableReference>
 					</InitializationDatabaseTableQuery>
@@ -1318,16 +1332,19 @@ runSimulation();]]></ActionCode>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
 					<AutoUpdate>true</AutoUpdate>
-					<OccurrenceAtTime>true</OccurrenceAtTime>
-					<OccurrenceDate>1537430400000</OccurrenceDate>
-					<OccurrenceTime Class="CodeUnitValue">
-						<Code><![CDATA[1]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
-					</OccurrenceTime>
-					<RecurrenceCode Class="CodeUnitValue">
-						<Code><![CDATA[1]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
-					</RecurrenceCode>
+					<RecurrenceProperties>
+						<Id>1776112777367</Id>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1537430400000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</RecurrenceCode>
+					</RecurrenceProperties>
 					<EmbeddedIcon>false</EmbeddedIcon>
 					<Width>960</Width>
 					<Height>190</Height>
@@ -1379,16 +1396,19 @@ runSimulation();]]></ActionCode>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
 					<AutoUpdate>true</AutoUpdate>
-					<OccurrenceAtTime>true</OccurrenceAtTime>
-					<OccurrenceDate>1537430400000</OccurrenceDate>
-					<OccurrenceTime Class="CodeUnitValue">
-						<Code><![CDATA[1]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
-					</OccurrenceTime>
-					<RecurrenceCode Class="CodeUnitValue">
-						<Code><![CDATA[1]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
-					</RecurrenceCode>
+					<RecurrenceProperties>
+						<Id>1776112777369</Id>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1537430400000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</RecurrenceCode>
+					</RecurrenceProperties>
 					<EmbeddedIcon>false</EmbeddedIcon>
 					<Width>990</Width>
 					<Height>190</Height>
@@ -1446,16 +1466,19 @@ runSimulation();]]></ActionCode>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
 					<AutoUpdate>false</AutoUpdate>
-					<OccurrenceAtTime>true</OccurrenceAtTime>
-					<OccurrenceDate>1632124800000</OccurrenceDate>
-					<OccurrenceTime Class="CodeUnitValue">
-						<Code><![CDATA[0]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
-					</OccurrenceTime>
-					<RecurrenceCode Class="CodeUnitValue">
-						<Code><![CDATA[1]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
-					</RecurrenceCode>
+					<RecurrenceProperties>
+						<Id>1776112777371</Id>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1632124800000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[0]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</RecurrenceCode>
+					</RecurrenceProperties>
 					<EmbeddedIcon>false</EmbeddedIcon>
 					<Width>380</Width>
 					<Height>200</Height>
@@ -1536,7 +1559,7 @@ runSimulation();]]></ActionCode>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
 					<BasicProperties Width="100" Height="30">
                         <EmbeddedIcon>false</EmbeddedIcon>	
-						<TextColor/>
+						<TextColor>-16777216</TextColor>
 						<Enabled>true</Enabled>
 					</BasicProperties>
 					<ExtendedProperties>
@@ -1581,7 +1604,7 @@ runSimulation();]]></ActionCode>
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<Color>-65536</Color>
-					<Text><![CDATA[For inferencing, this model uses the Pypeline add-on library for AnyLogic (https://git.io/al_py)]]></Text>
+					<Text><![CDATA[For inferencing, this model uses the Pypeline add-on library for AnyLogic (https://github.com/the-anylogic-company/AnyLogic-Pypeline)]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>14</Size>
@@ -1682,11 +1705,14 @@ runSimulation();]]></ActionCode>
 	<FixedTimeStep>0.001</FixedTimeStep>
 	<RelativeAccuracy>1.0E-5</RelativeAccuracy>
 	<TimeAccuracy>1.0E-5</TimeAccuracy>
+	<InspectionWindowColorTheme>DEFAULT</InspectionWindowColorTheme>
 	<Frame>
+		<Id>1347625959996</Id>
 		<Width>1000</Width>
 		<Height>600</Height>
 	</Frame>
 	<Database>
+		<Id>1347625959982</Id>
 		<Logging>false</Logging>
 		<AutoExport>false</AutoExport>
 		<ShutdownCompact>false</ShutdownCompact>
@@ -1968,8 +1994,8 @@ and is modeled as randomly changing.]]></Text>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
 					<BasicProperties Width="60" Height="30">
                         <EmbeddedIcon>false</EmbeddedIcon>	
-						<FillColor/>
-						<TextColor/>
+						<FillColor>-1</FillColor>
+						<TextColor>-16777216</TextColor>
 						<Enabled>true</Enabled>
 					</BasicProperties>
 					<ExtendedProperties>
@@ -2077,8 +2103,8 @@ and is modeled as randomly changing.]]></Text>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
 					<BasicProperties Width="60" Height="30">
                         <EmbeddedIcon>false</EmbeddedIcon>	
-						<FillColor/>
-						<TextColor/>
+						<FillColor>-1</FillColor>
+						<TextColor>-16777216</TextColor>
 						<Enabled>true</Enabled>
 					</BasicProperties>
 					<ExtendedProperties>
@@ -2193,7 +2219,7 @@ To load the trained policy back into the original model, the Pypeline library is
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
 					<BasicProperties Width="110" Height="80">
                         <EmbeddedIcon>false</EmbeddedIcon>	
-						<TextColor/>
+						<TextColor>-16777216</TextColor>
 						<Enabled>true</Enabled>
 					</BasicProperties>
 					<ExtendedProperties>
@@ -2218,7 +2244,7 @@ To load the trained policy back into the original model, the Pypeline library is
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
 					<BasicProperties Width="90" Height="80">
                         <EmbeddedIcon>false</EmbeddedIcon>	
-						<TextColor/>
+						<TextColor>-16777216</TextColor>
 						<VisibleCode><![CDATA[mode == 1]]></VisibleCode>
 						<Enabled>true</Enabled>
 					</BasicProperties>
@@ -2244,8 +2270,8 @@ To load the trained policy back into the original model, the Pypeline library is
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
 					<BasicProperties Width="60" Height="20">
                         <EmbeddedIcon>false</EmbeddedIcon>	
-						<FillColor/>
-						<TextColor/>
+						<FillColor>-1</FillColor>
+						<TextColor>-16777216</TextColor>
 						<VisibleCode><![CDATA[mode == 1 && automode == 0]]></VisibleCode>
 						<Enabled>true</Enabled>
 					</BasicProperties>
@@ -2306,8 +2332,8 @@ To load the trained policy back into the original model, the Pypeline library is
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
 					<BasicProperties Width="140" Height="20">
                         <EmbeddedIcon>false</EmbeddedIcon>	
-						<FillColor/>
-						<TextColor/>
+						<FillColor>-1</FillColor>
+						<TextColor>-16777216</TextColor>
 						<Enabled>true</Enabled>
 					</BasicProperties>
 					<ExtendedProperties>
@@ -2501,16 +2527,19 @@ root.mode = 2; ]]></ConfigurationCode>
 	</Experiments>
 	<ModelResources>
 		<Resource>
+			<Id>1347625959999</Id>
 			<Path><![CDATA[Game scheme.png]]></Path>
 			<ReferencedFromUserCode>false</ReferencedFromUserCode>
 			<Location>FILE_SYSTEM</Location>
 		</Resource>
 		<Resource>
+			<Id>1347625959998</Id>
 			<Path><![CDATA[book.png]]></Path>
 			<ReferencedFromUserCode>false</ReferencedFromUserCode>
 			<Location>FILE_SYSTEM</Location>
 		</Resource>
 		<Resource>
+			<Id>1347625959997</Id>
 			<Path><![CDATA[AnyLogic model logo dark.png]]></Path>
 			<ReferencedFromUserCode>false</ReferencedFromUserCode>
 			<Location>FILE_SYSTEM</Location>
@@ -2529,4 +2558,65 @@ root.mode = 2; ]]></ConfigurationCode>
 		<VersionBuild>5</VersionBuild>
     </RequiredLibraryReference>
 </Model>
+<ConvertersApplied>
+	<Uuid>9f7858c9-b2c8-4ead-9244-fd08833f642b</Uuid>
+	<Uuid>404652e6-561a-404c-aab2-ab7415f40ef5</Uuid>
+	<Uuid>6fd6cd57-6dfe-4fc6-be0b-c74065351957</Uuid>
+	<Uuid>3325dc48-3ad4-41e3-836f-dfd0e98fe1ed</Uuid>
+	<Uuid>3f69ef3d-706e-41a6-8af0-11658c5eef68</Uuid>
+	<Uuid>3f6fe405-e047-4304-91d6-6eee206d1106</Uuid>
+	<Uuid>820d2b51-5b4a-48e7-b0b6-e46418e3c0f2</Uuid>
+	<Uuid>630818fa-8975-4b70-976f-03180dce01db</Uuid>
+	<Uuid>7c7e471c-004e-495e-a4ad-d840620ab38e</Uuid>
+	<Uuid>3e38ff63-1f70-4ec0-b42c-e879b146785d</Uuid>
+	<Uuid>b1eb86e4-14b3-405c-8257-56b80f1b485d</Uuid>
+	<Uuid>d55f9fb6-86bb-45ea-9db1-79cecfa0ce91</Uuid>
+	<Uuid>ab77aafd-8f02-4354-b789-928d45b1f73c</Uuid>
+	<Uuid>e4f14fd7-1c4a-42e9-b91d-db2415f475db</Uuid>
+	<Uuid>6d208120-6c7a-45a6-b411-402f18890d9b</Uuid>
+	<Uuid>1816cdd0-177c-4973-9e88-dd8b95318556</Uuid>
+	<Uuid>5c23f62f-06dc-46ad-8ead-688ec434e3e5</Uuid>
+	<Uuid>5c7d7990-3f35-41eb-ae16-d0c16098acc6</Uuid>
+	<Uuid>02a16c52-a834-4f30-b6af-a6aee51a294e</Uuid>
+	<Uuid>f0988929-2718-4984-a1b6-c1f2ce152f1f</Uuid>
+	<Uuid>1c9d9cfe-ea2b-43f9-8f62-dc31d8ed3ae1</Uuid>
+	<Uuid>34cb742a-8ba4-47a7-87e6-f2685fe69e97</Uuid>
+	<Uuid>4fe10751-c399-4752-94b7-30113ad45070</Uuid>
+	<Uuid>c13fe5ac-6466-446e-886a-12df1431b1eb</Uuid>
+	<Uuid>714f9ca2-426e-4bff-8569-2d18f58fdcf8</Uuid>
+	<Uuid>045aeb5f-1087-4ac7-9702-a49404e7f7e8</Uuid>
+	<Uuid>840e9a0a-de98-4b7d-a172-f9bbda2d6b98</Uuid>
+	<Uuid>e342358b-75ed-4812-9376-6043fb6cb473</Uuid>
+	<Uuid>f3d5ccdc-1bb3-466f-871d-f6b92a26cbb4</Uuid>
+	<Uuid>59acb6fb-561c-4038-b722-a596a748b3c7</Uuid>
+	<Uuid>be7e6726-05c0-4228-821d-a8df91aeb5bc</Uuid>
+	<Uuid>df4a6a60-9ce8-4c6c-91c0-ad5a5d732259</Uuid>
+	<Uuid>47491eb9-4606-42bd-8399-125a2b95fded</Uuid>
+	<Uuid>9b2d1306-5d19-439a-8f2c-b144dd7e22fa</Uuid>
+	<Uuid>ef421152-8732-4f97-9acb-c8e9a6890d5e</Uuid>
+	<Uuid>d48f8080-25b1-44f5-8322-7bf2712ff974</Uuid>
+	<Uuid>6c4de826-daad-4cd4-b703-51dfe803e822</Uuid>
+	<Uuid>01af22d6-6889-4e98-a3df-e6eddc40fc92</Uuid>
+	<Uuid>ea3b3dbe-cca2-4bde-957b-feaef7e18789</Uuid>
+	<Uuid>e737c8c6-b526-4f88-b89e-554e205b0614</Uuid>
+	<Uuid>efd24e87-d7f7-425f-9cb0-3ee17c7b2116</Uuid>
+	<Uuid>a62607e6-047e-4910-a1ec-5426bf9283b5</Uuid>
+	<Uuid>64dceb5b-de05-47c7-8e40-e9b293e80d75</Uuid>
+	<Uuid>8d51c652-6aee-4de8-ba03-47b289a13ec5</Uuid>
+	<Uuid>51d7b5ce-5664-4750-b1a0-fabcdc31e49a</Uuid>
+	<Uuid>6522e3af-aa9e-421c-b667-e11db73cd8ca</Uuid>
+	<Uuid>9ac073a0-7abf-4dff-826f-9c44d4780590</Uuid>
+	<Uuid>2da9c21c-adc7-405a-a36e-46fbd9dfcd42</Uuid>
+	<Uuid>fe4d1053-9c84-4221-bac7-cb489a7064ff</Uuid>
+	<Uuid>1f005f88-e6d7-4bdc-81fa-3acf4c89cf64</Uuid>
+	<Uuid>42dc5a7c-d7b1-4653-92b9-9359b46cc2d4</Uuid>
+	<Uuid>e25721a9-34f9-479c-a4c3-31f5ec9e117d</Uuid>
+	<Uuid>506d1de3-06df-4131-9e88-e43f1768e3d8</Uuid>
+	<Uuid>e6625695-25a2-43d0-9056-1e9a1a594b1e</Uuid>
+	<Uuid>91990287-4edf-4e38-aa6c-66d0e906807b</Uuid>
+	<Uuid>2216cdd0-177c-5678-9e88-dd8b95312234</Uuid>
+	<Uuid>1737c8c6-b526-4dd8-589e-ee4e205b06f4</Uuid>
+	<Uuid>6a43bef6-8b70-4253-a828-82c3ab399655</Uuid>
+	<Uuid>0a27038a-0f3a-48bb-b235-4a44066a1402</Uuid>
+</ConvertersApplied>
 </AnyLogicWorkspace>
