@@ -186,7 +186,7 @@ class AnyLogicSim:
                 logs = [proc.stdout.decode().strip(), proc.stderr.decode().strip()]
                 logs = [log for log in logs if log]  # remove empty strings
                 raise RuntimeError(f"Failed to find path to java executable via {locate_cmd} {java_exe}. Return code: {proc.returncode}; message: {' | '.join(logs)}")
-            java_exe_path = proc.stdout.decode().strip()
+            java_exe_path = proc.stdout.decode().strip().splitlines()[0].strip()
         return str(java_exe_path)
 
 
